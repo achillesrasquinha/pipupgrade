@@ -6,6 +6,9 @@
 </div>
 
 <p align="center">
+    <a href="https://travis-ci.org/achillesrasquinha/pipupgrade">
+        <img src="https://img.shields.io/travis/achillesrasquinha/pipupgrade.svg?style=flat-square">
+    </a>
     <a href="https://pypi.org/project/pipupgrade/">
 		<img src="https://img.shields.io/pypi/v/pipupgrade.svg?style=flat-square">
 	</a>
