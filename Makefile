@@ -19,6 +19,7 @@ PYTHON				  	= ${VENVBIN}/python
 PIP					  	= ${VENVBIN}/pip
 DETOX				  	= ${VENVBIN}/detox
 TWINE					= ${VENVBIN}/twine
+IPYTHON					= ${VENVBIN}/ipython
 
 JOBS				   ?= $(shell $(PYTHON) -c "import multiprocessing as mp; print(mp.cpu_count())")
 
@@ -90,3 +91,7 @@ ifeq (${ENVIRONMENT},development)
 else
 	$(TWINE) upload --repository-url https://upload.pypi.org/legacy/ $(BASEDIR)/dist/* 
 endif
+
+console:
+	$(IPYTHON) \
+		--no-banner

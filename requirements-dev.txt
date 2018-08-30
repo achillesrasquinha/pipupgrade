@@ -1,3 +1,4 @@
 twine
+ipython
 tox-travis
 detox
