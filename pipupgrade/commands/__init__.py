@@ -28,6 +28,7 @@ def command():
             params = list_filter([
                 "install",
                 "--quiet" if not args.verbose else None,
+                "--no-cache",
                 "--upgrade",
                 name
             ], filter_ = bool)
