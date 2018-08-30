@@ -17,7 +17,7 @@ VENVBIN					= ${VENVDIR}/bin
 
 PYTHON				  	= ${VENVBIN}/python
 PIP					  	= ${VENVBIN}/pip
-PYTEST				  	= ${VENVBIN}/pytest
+DETOX				  	= ${VENVBIN}/detox
 TWINE					= ${VENVBIN}/twine
 
 JOBS				   ?= $(shell $(PYTHON) -c "import multiprocessing as mp; print(mp.cpu_count())")
@@ -75,15 +75,7 @@ clean:
 
 test: install
 	$(call log,INFO,Running Python Tests using $(JOBS) jobs.)
-
-ifeq (${TEST_FAIL},true)
-	$(eval FAIL := -x)
-endif
-
-	$(PYTEST) -n $(JOBS) $(FAIL) --cov=$(PROJDIR) --cov-report html $(ARGS)
-	open $(BASEDIR)/htmlcov/index.html
-	
-	$(call log,SUCCESS,Python Tests Successful)
+	$(DETOX) -n $(JOBS)
 
 env:
 	$(call log,INFO,Creating a Virtual Environment ${VENVDIR} with Python - ${PYTHONPATH})

@@ -1,3 +1,6 @@
+# imports - compatibility imports
+from __future__ import print_function
+
 _ACCEPTABLE_YES = ("", "y", "Y")
 
 BOLD  = "\033[0;1m"
