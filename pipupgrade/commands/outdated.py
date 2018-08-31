@@ -1,7 +1,8 @@
 # imports - module imports
-from pipupgrade._pip import get_installed_distributions
-from pipupgrade      import request as req
-from pipupgrade.util import get_if_empty
+from pipupgrade._pip  import get_installed_distributions
+from pipupgrade       import request as req, cli
+from pipupgrade.table import Table
+from pipupgrade.util  import get_if_empty
 
 def _get_pypi_package_info(package, raise_err = False):
     url      = "https://pypi.org/pypi/{}/json".format(package)
@@ -19,17 +20,25 @@ def _get_pypi_package_info(package, raise_err = False):
     return info
 
 def command():
-    packages = get_installed_distributions()
-    results  = [ ]
+    code         = 0
+    
+    packages     = get_installed_distributions()
+    table        = Table()
+    table.header = ["Name", "Current Version", "Latest Version", "Home Page"]
 
+    cli.echo("Checking...")
     for package in packages:
-        result = dict()
-        result["current_version"] = package.version
-        package_info              = get_if_empty(
+        package_info = get_if_empty(
             _get_pypi_package_info(package.project_name, raise_err = False), { }
         )
-    
-        result["latest_version"]  = package_info.get("version",   None)
-        result["url"]             = package_info.get("home_page", None)
 
-    return results
+        table.insert([
+            package.version,
+            package_info.get("version",   None),
+            package_info.get("home_page", None)
+        ])
+
+    string = table.render()
+    cli.echo(string)
+
+    return code
