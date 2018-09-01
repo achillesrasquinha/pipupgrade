@@ -82,7 +82,7 @@ env:
 	$(call log,INFO,Creating a Virtual Environment ${VENVDIR} with Python - ${PYTHONPATH})
 	$(VIRTUALENV) $(VENVDIR) -p $(PYTHONPATH)
 
-release: clean install
+release: test
 	$(PYTHON) setup.py sdist bdist_wheel
 
 ifeq (${ENVIRONMENT},development)
