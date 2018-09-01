@@ -1,5 +1,6 @@
 # imports - compatibility imports
 from __future__ import print_function
+from pipupgrade._compat import input
 
 _ACCEPTABLE_YES = ("", "y", "Y")
 
