@@ -1,6 +1,6 @@
 # imports - compatibility imports
 from __future__ import print_function
-from pipupgrade._compat import input
+from pipupgrade._compat import builtins
 
 _ACCEPTABLE_YES = ("", "y", "Y")
 
@@ -10,7 +10,7 @@ CLEAR = "\033[0m"
 
 def confirm(query):
     query  = "{} [Y/n]: ".format(query)
-    output = input(query)
+    output = builtins.input(query)
 
     return output in _ACCEPTABLE_YES
 
