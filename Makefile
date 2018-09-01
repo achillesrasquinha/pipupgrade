@@ -75,7 +75,7 @@ clean:
 
 test: install
 	$(call log,INFO,Running Python Tests using $(JOBS) jobs.)
-	$(DETOX) -n $(JOBS)
+	$(DETOX) -n $(JOBS) --skip-missing-interpreters
 
 env:
 	$(call log,INFO,Creating a Virtual Environment ${VENVDIR} with Python - ${PYTHONPATH})
