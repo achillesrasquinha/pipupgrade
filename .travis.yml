@@ -7,13 +7,8 @@ python:
   - "3.6"
   - "3.7-dev"
 
-env:
-  global:
-    - VENVDIR=$VIRTUAL_ENV
-    - VERBOSE=true
-
 install:
-  - make
+  - make VENVDIR=$VIRTUAL_ENV VERBOSE=true
 
 script:
-  - make test
+  - make test VENVDIR=$VIRTUAL_ENV VERBOSE=true
