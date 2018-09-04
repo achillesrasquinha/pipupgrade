@@ -43,7 +43,7 @@ $ pip install pipupgrade
 
 ### Usage
 
-```console
+```
 $ pipupgrade
 Do you wish to update 200 packages? [Y/n]: Y
 Updating 1 of 200: pipupgrade
@@ -53,7 +53,7 @@ UPGRADED ALL THE PIP PACKAGES!
 
 That's basically it! Run the help for more details...
 
-```console
+```
 $ pipupgrade --help
 usage: pipupgrade [-h] [-y] [-s] [-c] [-l] [--no-color] [-V] [-v]
 
