@@ -12,6 +12,10 @@ def get_parser():
         action  = "store_true",
         help    = "Confirm for all dialogs"
     )
+    parser.add_argument("-s", "--self",
+        action  = "store_true",
+        help    = "Upgrade self"
+    )
     parser.add_argument("-c", "--check",
         action  = "store_true",
         help    = "Check for outdated packages"
@@ -36,3 +40,9 @@ def get_parser():
     )
 
     return parser
+
+def get_parsed_args():
+    parser        = get_parser()
+    args, unknown = parser.parse_known_args()
+
+    return args

@@ -1,8 +1,13 @@
+# imports - compatibility imports
+from pipupgrade._compat import cmp
+
 # imports - module imports
+from pipupgrade.commands.parser import get_parsed_args
+from pipupgrade.commands.util   import cli_format
 from pipupgrade._pip  import get_installed_distributions
-from pipupgrade       import request as req, cli
 from pipupgrade.table import Table
 from pipupgrade.util  import get_if_empty
+from pipupgrade       import request as req, cli, semver
 
 def _get_pypi_package_info(package, raise_err = False):
     url      = "https://pypi.org/pypi/{}/json".format(package)
@@ -20,25 +25,45 @@ def _get_pypi_package_info(package, raise_err = False):
     return info
 
 def command():
-    code         = 0
-    
-    packages     = get_installed_distributions()
-    table        = Table()
-    table.header = ["Name", "Current Version", "Latest Version", "Home Page"]
+    code     = 0
+    args     = get_parsed_args()
+
+    packages = get_installed_distributions()
+    table    = Table(header = ["Package", "Current", "Latest", "Home Page"])
 
     cli.echo("Checking...")
     for package in packages:
-        package_info = get_if_empty(
+        package_info    = get_if_empty(
             _get_pypi_package_info(package.project_name, raise_err = False), { }
         )
 
-        table.insert([
-            package.version,
-            package_info.get("version",   None),
-            package_info.get("home_page", None)
-        ])
+        project_name    = package.project_name
 
-    string = table.render()
+        version_current = package.version
+        version_latest  = package_info.get("version", None)
+
+        if version_current != version_latest:
+            try:
+                diff_type   = semver.difference(version_current, version_latest)
+            
+                if diff_type == "major":
+                    project_name   = cli_format(project_name, cli.RED)
+                if diff_type == "minor":
+                    project_name = cli_format(project_name, cli.YELLOW)
+                if diff_type == "patch":
+                    project_name = cli_format(project_name, cli.GREEN)
+
+            except ValueError:
+                pass
+                
+            table.insert([
+                project_name,
+                package.version,
+                package_info.get("version",   None),
+                cli_format(package_info.get("home_page", ""), cli.CYAN)
+            ])
+
+    string = cli_format("All packages are upto date.", cli.GREEN) if table.empty else table.render()
     cli.echo(string)
 
     return code

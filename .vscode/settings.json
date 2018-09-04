@@ -16,5 +16,5 @@
     "editor.tabSize": 4,
     "python.pythonPath": "${VIRTUAL_ENV}/bin/python",
     "python.linting.pylintPath": "${VIRTUAL_ENV}/bin/pylint",
-    "python.linting.pylintEnabled": true
+    "python.linting.pylintEnabled": false
 }             

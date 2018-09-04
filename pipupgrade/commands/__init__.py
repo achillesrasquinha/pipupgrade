@@ -1,13 +1,16 @@
 # imports - module imports
 from pipupgrade.commands.outdated import command as pipupgrade_check
-from pipupgrade.commands.parser   import get_parser
+from pipupgrade.commands.parser   import get_parsed_args
+from pipupgrade.commands.util     import cli_format
 from pipupgrade.util import list_filter
 from pipupgrade import _pip
 from pipupgrade import cli
 
 def command():
-    parser    = get_parser()
-    args      = parser.parse_args()
+    code    = 0
+    args    = get_parsed_args()
+
+    format_ = not args.no_color 
 
     if args.check:
         pipupgrade_check()
@@ -21,10 +24,10 @@ def command():
             for i, package in enumerate(packages):
                 name   = package.project_name
 
-                info   = cli.format("Updating {} of {} packages: {}".format(
+                info   = cli_format("Updating {} of {} packages: {}".format(
                     i + 1,
                     npackages,
-                    name if args.no_color else cli.format(name, cli.GREEN)
+                    cli_format(name, cli.GREEN)
                 ), cli.BOLD)
 
                 cli.echo(info)
@@ -39,6 +42,6 @@ def command():
 
                 _pip.main(params)
 
-            cli.echo(cli.format("UPGRADED ALL THE PACKAGES!", cli.BOLD))
+            cli.echo(cli_format("UPGRADED ALL THE PACKAGES!", cli.BOLD))
         
-    return 0
+    return code

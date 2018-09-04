@@ -20,6 +20,7 @@ IPYTHON					= ${VENVBIN}/ipython
 PIP					  	= ${VENVBIN}/pip
 PYTEST					= ${VENVBIN}/pytest
 DETOX				  	= ${VENVBIN}/detox
+COVERALLS				= ${VENVBIN}/coveralls
 TWINE					= ${VENVBIN}/twine
 IPYTHON					= ${VENVBIN}/ipython
 
@@ -79,6 +80,13 @@ clean:
 test: install
 	$(call log,INFO,Running Python Tests using $(JOBS) jobs.)
 	$(DETOX) -n $(JOBS) --skip-missing-interpreters
+
+coverage:
+	$(PYTEST) --cov $(PROJDIR)
+
+ifeq (${ENVIRONMENT},test)
+	$(COVERALLS)
+endif
 
 env:
 	$(call log,INFO,Creating a Virtual Environment ${VENVDIR} with Python - ${PYTHONPATH})

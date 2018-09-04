@@ -12,3 +12,6 @@ install:
 
 script:
   - make test VENVDIR=$VIRTUAL_ENV VERBOSE=true
+
+after_success:
+  - make coverage ENVIRONMENT=test VENVDIR=$VIRTUAL_ENV VERBOSE=true
