@@ -16,7 +16,9 @@ VENVDIR				   ?= ${BASEDIR}/.venv
 VENVBIN					= ${VENVDIR}/bin
 
 PYTHON				  	= ${VENVBIN}/python
+IPYTHON					= ${VENVBIN}/ipython
 PIP					  	= ${VENVBIN}/pip
+PYTEST					= ${VENVBIN}/pytest
 DETOX				  	= ${VENVBIN}/detox
 TWINE					= ${VENVBIN}/twine
 
@@ -90,3 +92,7 @@ ifeq (${ENVIRONMENT},development)
 else
 	$(TWINE) upload --repository-url https://upload.pypi.org/legacy/ $(BASEDIR)/dist/* 
 endif
+
+console:
+	$(IPYTHON) \
+		--no-banner
