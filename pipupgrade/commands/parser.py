@@ -12,21 +12,9 @@ def get_parser():
         action  = "store_true",
         help    = "Confirm for all dialogs"
     )
-    parser.add_argument("-s", "--self",
-        action  = "store_true",
-        help    = "Upgrade self"
-    )
     parser.add_argument("-c", "--check",
         action  = "store_true",
         help    = "Check for outdated packages"
-    )
-    parser.add_argument("-l", "--latest",
-        action  = "store_true",
-        help    = "Install the latest version"
-    )
-    parser.add_argument("-r", "--requirements",
-        type    = str,
-        help    = "Path to requirements.txt file"
     )
     parser.add_argument("--no-color",
         action  = "store_true",
