@@ -43,7 +43,7 @@ $ pip install pipupgrade
 
 ### Usage
 
-```shell
+```console
 $ pipupgrade
 Do you wish to update 200 packages? [Y/n]: Y
 Updating 1 of 200: pipupgrade
