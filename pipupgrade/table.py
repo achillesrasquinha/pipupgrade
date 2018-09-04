@@ -26,7 +26,7 @@ def tabulate(rows):
 
     result = [ ]
     for row in rows:
-        display = " ".join([str(c).ljust(s) if c is not None else ""
+        display = " ".join([str(c) + " " * (s - len(_sanitize(c))) if c is not None else ""
                             for s, c in zip_longest(sizes, row)])
         result.append(display)
 
