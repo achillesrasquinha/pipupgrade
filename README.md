@@ -2,7 +2,8 @@
     <h1>
         pipupgrade
     </h1>
-    <img src=".github/assets/meme.jpg" width="200">
+    <img src=".github/assets/meme.jpg" width="250">
+    <h4>The missing command for <code>pip</code></h4>
 </div>
 
 <p align="center">
