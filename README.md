@@ -52,13 +52,16 @@ That's basically it! Run the help for more details...
 
 ```shell
 $ pipupgrade --help
-usage: pipupgrade [-h] [-y] [--no-color] [-V] [-v]
+usage: pipupgrade [-h] [-y] [-s] [-c] [-l] [--no-color] [-V] [-v]
 
 UPGRADE ALL THE PIP PACKAGES!
 
 optional arguments:
   -h, --help     show this help message and exit
   -y, --yes      Confirm for all dialogs
+  -s, --self     Upgrade self
+  -c, --check    Check for outdated packages
+  -l, --latest   Install the latest version
   --no-color     Avoid colored output
   -V, --verbose  Display verbose output
   -v, --version  show program's version number and exit
