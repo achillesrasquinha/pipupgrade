@@ -9,6 +9,9 @@
     <a href="https://travis-ci.org/achillesrasquinha/pipupgrade">
         <img src="https://img.shields.io/travis/achillesrasquinha/pipupgrade.svg?style=flat-square">
     </a>
+    <a href="https://coveralls.io/github/achillesrasquinha/pipupgrade">
+        <img src="https://img.shields.io/coveralls/github/achillesrasquinha/pipupgrade.svg?style=flat-square">
+    </a>
     <a href="https://pypi.org/project/pipupgrade/">
 		<img src="https://img.shields.io/pypi/v/pipupgrade.svg?style=flat-square">
 	</a>
@@ -50,7 +53,7 @@ UPGRADED ALL THE PIP PACKAGES!
 
 That's basically it! Run the help for more details...
 
-```shell
+```console
 $ pipupgrade --help
 usage: pipupgrade [-h] [-y] [-s] [-c] [-l] [--no-color] [-V] [-v]
 
