@@ -3,6 +3,7 @@ twine
 ipython
 pytest
 pytest-cov
+pytest-xdist
 detox
 tox-travis
 coveralls

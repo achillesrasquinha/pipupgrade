@@ -9,4 +9,3 @@ def cli_format(string, type_):
         string = cli.format(string, type_)
 
     return string
-        

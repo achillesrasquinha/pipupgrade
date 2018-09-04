@@ -2,8 +2,7 @@
 from pipupgrade._compat import cmp
 
 # imports - module imports
-from pipupgrade.commands.parser import get_parsed_args
-from pipupgrade.commands.util   import cli_format
+from pipupgrade.commands.util import cli_format
 from pipupgrade._pip  import get_installed_distributions
 from pipupgrade.table import Table
 from pipupgrade.util  import get_if_empty
@@ -44,9 +43,9 @@ def _cli_format_semver(version, type_):
 
     return version
 
+@cli.command
 def command():
     code     = 0
-    args     = get_parsed_args()
 
     packages = get_installed_distributions()
     table    = Table(header = ["Package", "Current", "Latest", "Home Page"])

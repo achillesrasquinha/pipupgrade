@@ -3,7 +3,7 @@ from pipupgrade._compat import StringIO
 
 # imports - module imports
 from pipupgrade import cli
-from pipupgrade.util.test import mock_input
+from pipupgrade.util._test import mock_input
 
 def test_confirm():
     query = "foobar"

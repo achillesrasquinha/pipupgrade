@@ -70,7 +70,8 @@ clean:
 	rm -rf \
 		$(BASEDIR)/*.egg-info \
 		$(BASEDIR)/.pytest_cache \
-		$(BASEDIR)/.coverage \
+		$(BASEDIR)/.tox \
+		$(BASEDIR)/.coverage* \
 		$(BASEDIR)/htmlcov \
 		$(BASEDIR)/dist \
 		$(BASEDIR)/build \
@@ -82,7 +83,15 @@ test: install
 	$(DETOX) -n $(JOBS) --skip-missing-interpreters
 
 coverage:
-	$(PYTEST) --cov $(PROJDIR)
+ifeq (${ENVIRONMENT},development)
+	$(eval IARGS := --cov-report html)
+endif
+
+	$(PYTEST) -n $(JOBS) --cov $(PROJDIR) $(IARGS) $(ARGS)
+
+ifeq (${ENVIRONMENT},development)
+	$(PYTHON) -c "import webbrowser as wb; wb.open('file:///${BASEDIR}/htmlcov/index.html')"
+endif
 
 ifeq (${ENVIRONMENT},test)
 	$(COVERALLS)

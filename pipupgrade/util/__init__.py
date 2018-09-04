@@ -6,3 +6,9 @@ def list_filter(v, filter_):
     filtered = list(filtered)
 
     return filtered
+        
+def merge_dict(a, b):
+    c = a.copy()
+    c.update(b)
+
+    return c

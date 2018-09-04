@@ -9,13 +9,13 @@ from pipupgrade.util import list_filter
 from pipupgrade import _pip
 from pipupgrade import cli
 
-def command():
+@cli.command
+def command(yes = False, check = False, no_color = True, verbose = False):
     code    = 0
-    args    = get_parsed_args()
 
-    format_ = not args.no_color 
+    format_ = not no_color 
 
-    if args.check:
+    if check:
         pipupgrade_check()
     else:
         packages  = _pip.get_installed_distributions()
@@ -23,7 +23,7 @@ def command():
 
         query     = "Do you wish to update {} packages?".format(npackages)
         
-        if args.yes or cli.confirm(query):
+        if yes or cli.confirm(query):
             for i, package in enumerate(packages):
                 name   = package.project_name
 
@@ -38,7 +38,7 @@ def command():
                 params  = list_filter([
                     "pip",
                     "install",
-                    "--quiet" if not args.verbose else None,
+                    "--quiet" if not verbose else None,
                     "--no-cache",
                     "--upgrade",
                     name
