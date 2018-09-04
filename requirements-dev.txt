@@ -1,4 +1,7 @@
+ipython
 twine
 ipython
-tox-travis
+pytest
+pytest-cov
 detox
+tox-travis

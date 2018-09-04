@@ -1,12 +1,11 @@
 # imports - compatibility imports
-from pipupgrade._compat import builtins
-
-# imports - test imports
-import mock
+from pipupgrade._compat import StringIO
 
 # imports - module imports
-from pipupgrade.commands import command
+from pipupgrade.commands  import command
+from pipupgrade.util.test import mock_input
 
 def test_command():
-    with mock.patch.object(builtins, "input", lambda _: "Y"):
+    with mock_input(StringIO("Y")):
         assert command() == 0
+    pass

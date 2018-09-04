@@ -1,2 +1,4 @@
-tox-travis
+pytest
+pytest-cov
 detox
+tox-travis

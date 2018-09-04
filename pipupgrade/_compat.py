@@ -9,9 +9,17 @@ if PY2:
     # moves
     from urllib2 import urlopen
     from urllib2 import HTTPError
+
+    from __builtin__ import raw_input as input
+
+    from StringIO import StringIO
 else:
     import builtins
 
     # moves
     from urllib.request import urlopen
     from urllib.error   import HTTPError
+
+    from builtins import input
+
+    from io import StringIO
