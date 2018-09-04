@@ -14,9 +14,7 @@ def _strip_ansi(string):
     return string
 
 def _sanitize(string):
-    print(repr(string), string, end = " ")
     string = _strip_ansi(string)
-    print(repr(string))
     return string
 
 def tabulate(rows):
