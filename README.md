@@ -2,7 +2,7 @@
     <h1>
         pipupgrade
     </h1>
-    <h4>The missing command for <code>pip</code></h4>
+    <img src=".github/assets/meme.jpg" width="200">
 </div>
 
 <p align="center">
@@ -25,10 +25,6 @@
 		<img src="https://img.shields.io/badge/donate-💵-f44336.svg?style=flat-square">
 	</a>
 </p>
-
-<div align="center">
-    <img src=".github/assets/meme.jpg">
-</div>
 
 ### Table of Contents
 * [Installation](#installation)
