@@ -1,6 +1,5 @@
 # imports - standard imports
-import subprocess
-from   subprocess import list2cmdline
+from subprocess import call, list2cmdline
 
 # imports - module imports
 from pipupgrade.commands.outdated import command as pipupgrade_check
@@ -46,7 +45,7 @@ def command():
                 ], filter_ = bool)
                 command = list2cmdline(params)
 
-                subprocess.call(command, shell = True)
+                call(command, shell = True)
 
             cli.echo(cli_format("UPGRADED ALL THE PACKAGES!", cli.BOLD))
         
