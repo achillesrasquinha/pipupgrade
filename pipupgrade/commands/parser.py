@@ -24,6 +24,10 @@ def get_parser():
         action  = "store_true",
         help    = "Install the latest version"
     )
+    parser.add_argument("-r", "--requirements",
+        type    = str,
+        help    = "Path to requirements.txt file"
+    )
     parser.add_argument("--no-color",
         action  = "store_true",
         help    = "Avoid colored output"

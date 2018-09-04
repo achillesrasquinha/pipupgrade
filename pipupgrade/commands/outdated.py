@@ -24,6 +24,26 @@ def _get_pypi_package_info(package, raise_err = False):
 
     return info
 
+def _cli_format_semver(version, type_):
+    def format_yellow(string):
+        string = cli_format(string, cli.YELLOW)
+        return string
+
+    semver.parse(version)
+
+    if type_ == "major":
+        version    = format_yellow(version)
+    if type_ == "minor":
+        index      = version.find(".", 1) + 1
+        head, tail = version[:index], version[index:]
+        version    = "".join([head, format_yellow(tail)])
+    if type_ == "patch":
+        index      = version.find(".", 2) + 1
+        head, tail = version[:index], version[index:]
+        version    = "".join([head, format_yellow(tail)])
+
+    return version
+
 def command():
     code     = 0
     args     = get_parsed_args()
@@ -44,22 +64,23 @@ def command():
 
         if version_current != version_latest:
             try:
-                diff_type   = semver.difference(version_current, version_latest)
+                diff_type    = semver.difference(version_current, version_latest)
             
                 if diff_type == "major":
-                    project_name   = cli_format(project_name, cli.RED)
+                    project_name = cli_format(project_name, cli.RED)
                 if diff_type == "minor":
                     project_name = cli_format(project_name, cli.YELLOW)
                 if diff_type == "patch":
                     project_name = cli_format(project_name, cli.GREEN)
-
+                
+                version_latest = _cli_format_semver(version_latest, type_ = diff_type)
             except ValueError:
                 pass
                 
             table.insert([
                 project_name,
                 package.version,
-                package_info.get("version",   None),
+                version_latest,
                 cli_format(package_info.get("home_page", ""), cli.CYAN)
             ])
 
