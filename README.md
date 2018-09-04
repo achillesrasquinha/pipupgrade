@@ -43,6 +43,10 @@ $ pip install pipupgrade
 
 ### Usage
 
+<div align="center">
+    <img src=".github/assets/demo.gif">
+</div>
+
 ```
 $ pipupgrade
 Do you wish to update 200 packages? [Y/n]: Y

@@ -1,3 +1,7 @@
+# imports - standard imports
+import subprocess
+from   subprocess import list2cmdline
+
 # imports - module imports
 from pipupgrade.commands.outdated import command as pipupgrade_check
 from pipupgrade.commands.parser   import get_parsed_args
@@ -32,15 +36,17 @@ def command():
 
                 cli.echo(info)
 
-                params = list_filter([
+                params  = list_filter([
+                    "pip",
                     "install",
                     "--quiet" if not args.verbose else None,
                     "--no-cache",
                     "--upgrade",
                     name
                 ], filter_ = bool)
+                command = list2cmdline(params)
 
-                _pip.main(params)
+                subprocess.call(command, shell = True)
 
             cli.echo(cli_format("UPGRADED ALL THE PACKAGES!", cli.BOLD))
         
