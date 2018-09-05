@@ -1,5 +1,5 @@
 # imports - module imports
-from pipupgrade.commands.parser import get_parsed_args
+from pipupgrade.cli.parser import get_parsed_args
 from pipupgrade import cli
 
 def cli_format(string, type_):

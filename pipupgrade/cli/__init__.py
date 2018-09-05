@@ -6,8 +6,8 @@ from pipupgrade._compat import input
 import inspect
 
 # imports - module imports
-from pipupgrade.commands.parser import get_parsed_args
-from pipupgrade.util import get_if_empty, merge_dict
+from pipupgrade.cli.parser import get_parsed_args
+from pipupgrade.util       import get_if_empty, merge_dict
 
 _ACCEPTABLE_YES = ("", "y", "Y")
 

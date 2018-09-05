@@ -3,7 +3,6 @@ from subprocess import call, list2cmdline
 
 # imports - module imports
 from pipupgrade.commands.outdated import command as pipupgrade_check
-from pipupgrade.commands.parser   import get_parsed_args
 from pipupgrade.commands.util     import cli_format
 from pipupgrade.util import list_filter
 from pipupgrade import _pip

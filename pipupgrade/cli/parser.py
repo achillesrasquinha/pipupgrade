@@ -34,7 +34,7 @@ def get_parser():
     return parser
 
 def get_parsed_args():
-    parser        = get_parser()
-    args, unknown = parser.parse_known_args()
+    parser  = get_parser()
+    args, _ = parser.parse_known_args()
 
     return args

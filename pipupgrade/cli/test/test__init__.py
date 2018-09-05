@@ -29,12 +29,12 @@ def test_format():
     )
 
 def test_echo(capfd):
-    query    = "foobar"
+    query  = "foobar"
     cli.echo(query, nl = False)
-    out, err = capfd.readouterr()
+    out, _ = capfd.readouterr()
 
     assert out == query
 
     cli.echo(query, nl = True)
-    out, err = capfd.readouterr()
+    out, _ = capfd.readouterr()
     assert out == "{}\n".format(query)

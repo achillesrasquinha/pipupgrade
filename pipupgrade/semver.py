@@ -39,8 +39,11 @@ def difference(a, b):
     va = parse(a)
     vb = parse(b)
 
-    for key in ["major", "minor", "patch"]:
-        if cmp(va.get(key), vb.get(key)):
-            return key
-    
-    raise ValueError("Unknown difference between {} and {}".format(a, b))
+    if a != b:
+        for key in ["major", "minor", "patch"]:
+            if cmp(va.get(key), vb.get(key)):
+                return key
+        
+        raise NotImplementedError("Unknown difference between {} and {}".format(a, b))
+    else:
+        return False

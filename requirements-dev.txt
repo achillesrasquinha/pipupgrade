@@ -4,6 +4,7 @@ ipython
 pytest
 pytest-cov
 pytest-xdist
+pylint
 detox
 tox-travis
 coveralls
