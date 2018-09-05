@@ -8,5 +8,3 @@ def test_get_parsed_args():
     assert args.no_color == False
 
     assert args.verbose  == False
-
-    assert args.version  == False
