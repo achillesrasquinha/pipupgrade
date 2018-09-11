@@ -9,6 +9,11 @@ _HTTP_RESPONSE_TYPE = {
 }
 
 class Response:
+    def __init__(self):
+        self.status_code = None
+        self.content     = None
+        self.url         = None
+        
     @property
     def ok(self):
         status_code = self.status_code

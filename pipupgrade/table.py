@@ -19,11 +19,11 @@ def tabulate(rows):
 
     sizes  = [0] * max(len(x) for x in rows)
     for row in rows:
-        sizes = [max(s, len(str(_sanitize_string(c)))) for s, c in zip_longest(sizes, row)]
+        sizes = [max(s, len(str(_sanitize_string(c if c else "")))) for s, c in zip_longest(sizes, row)]
 
     result = [ ]
     for row in rows:
-        display = " ".join([str(c) + " " * (s - len(_sanitize_string(c))) if c is not None else ""
+        display = " ".join([str(c) + " " * (s - len(_sanitize_string(c if c else ""))) if c is not None else ""
                             for s, c in zip_longest(sizes, row)])
         result.append(display)
 
@@ -40,20 +40,22 @@ class Table:
         return _empty
 
     def insert(self, row):
-        self.rows.append(row)    
+        self.rows.append(row)
 
-    def render(self):
+    def render(self, header = True):
         string = ""
 
         _rows  = self.rows[:]
         
-        if self.header:
+        if header and self.header:
             _rows.insert(0, self.header)
 
         if _rows:
             tabulated, sizes = tabulate(_rows)
+            
             # divider
-            tabulated.insert(1, " ".join(map(lambda x: "-" * x, sizes)))
+            if header:
+                tabulated.insert(1, " ".join(map(lambda x: "-" * x, sizes)))
 
             string  = "\n".join(tabulated)
 

@@ -17,5 +17,11 @@
     "editor.tabSize": 4,
     "python.pythonPath": "/home/achilles/.venv/bin/python",
     "python.linting.pylintPath": "/home/achilles/.venv/bin/pylint",
-    "python.linting.pylintEnabled": true
+    "python.linting.pylintEnabled": true,
+    "python.unitTest.pyTestArgs": [
+        "pipupgrade"
+    ],
+    "python.unitTest.unittestEnabled": false,
+    "python.unitTest.nosetestsEnabled": false,
+    "python.unitTest.pyTestEnabled": true
 }             

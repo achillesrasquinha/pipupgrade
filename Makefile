@@ -82,12 +82,12 @@ test: install
 	$(call log,INFO,Running Python Tests using $(JOBS) jobs.)
 	$(DETOX) -n $(JOBS) --skip-missing-interpreters
 
-coverage:
+coverage: install
 ifeq (${ENVIRONMENT},development)
 	$(eval IARGS := --cov-report html)
 endif
 
-	$(PYTEST) -n $(JOBS) --cov $(PROJDIR) $(IARGS) $(ARGS)
+	$(PYTEST) -n $(JOBS) --cov $(PROJDIR) $(IARGS) --verbose $(ARGS)
 
 ifeq (${ENVIRONMENT},development)
 	$(PYTHON) -c "import webbrowser as wb; wb.open('file:///${BASEDIR}/htmlcov/index.html')"

@@ -1,13 +1,9 @@
 # imports - module imports
 from pipupgrade._compat    import StringIO, input
-from pipupgrade.util._test import mock_input
+from pipupgrade.util._test import mock_input, assert_input
 
 def test_mock_input(capfd):
     query = "foobar"
-    
-    with mock_input(StringIO("Y")):
-        output    = input(query)
-        assert output == "Y"
 
-        output, _ = capfd.readouterr()
-        assert output == query
+    assert_input(capfd, query, "Y")
+    assert_input(capfd, query, "Y", input_ = input)

@@ -46,4 +46,4 @@ def difference(a, b):
         
         raise NotImplementedError("Unknown difference between {} and {}".format(a, b))
     else:
-        return False
+        return None
