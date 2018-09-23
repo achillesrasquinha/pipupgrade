@@ -3,13 +3,6 @@ import os.path as osp
 
 from   setuptools import setup, find_packages
 
-import pip
-
-try:
-    from pip._internal.req import parse_requirements # pip 10
-except ImportError:
-    from pip.req           import parse_requirements # pip 9
-
 # globals
 PROJECT_DIRNAME = "pipupgrade"
 COMMAND_NAME    = "pipupgrade"
@@ -22,13 +15,20 @@ with open(osp.join(PROJECT_DIRNAME if isdef("PROJECT_DIRNAME") else __name__, "_
     content = f.read()
     exec(content)
 
+def parse_requirements(path, get_dependency_links = False):
+    with open(path) as f:
+        deps = f.read().strip().split('\n')
+
+    if not get_dependency_links: return deps
+
+    link_pattern = re.compile(r"(git)?\+?(git|https?):\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)")
+    return [re.search(link_pattern, dep).group() for dep in deps if re.search(link_pattern, dep)]
+
 def get_dependencies(type_ = None):
     path         = osp.abspath("requirements{type_}.txt".format(
         type_    = "-dev" if type_ == "development" else ""
     ))
-    requirements = [str(ir.req) for ir in parse_requirements(path, session = "hack")]
-    
-    return requirements
+    return parse_requirements(path)
 
 def read(path):
     path = osp.abspath(path)
