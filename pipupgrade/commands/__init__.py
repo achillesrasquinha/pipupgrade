@@ -38,7 +38,7 @@ class PackageInfo:
         self.home_page      = _pypi_info.get("home_page")
 
 @cli.command
-def command(yes = False, check = False, latest = False, requirements = [ ], no_color = True, verbose = False):
+def command(yes = False, check = False, latest = False, requirements = [ ], no_color = True, verbose = False, user = False):
     cli.echo(cli_format("Checking...", cli.YELLOW))
 
     if requirements:

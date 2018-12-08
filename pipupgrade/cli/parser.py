@@ -25,6 +25,10 @@ def get_parser():
         action  = "store_true",
         help    = "Update all packages to latest"
     )
+    parser.add_argument("-U", "--user",
+        action  = "store_true",
+        help    = "Use user permissions with pip"
+    )
     parser.add_argument("-r", "--requirements",
         action  = "append",
         help    = "Path to requirements.txt file"
