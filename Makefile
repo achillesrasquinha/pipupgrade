@@ -24,6 +24,7 @@ DETOX				  	= ${VENVBIN}/detox
 COVERALLS				= ${VENVBIN}/coveralls
 TWINE					= ${VENVBIN}/twine
 IPYTHON					= ${VENVBIN}/ipython
+BUMPVERSION				= ${VENVBIN}/bumpversion
 SAFETY					= ${VENVBIN}/safety
 
 JOBS				   ?= $(shell $(PYTHON) -c "import multiprocessing as mp; print(mp.cpu_count())")
@@ -127,6 +128,12 @@ endif
 
 	$(call log,INFO,Creating a Virtual Environment ${VENVDIR} with Python - ${PYTHONPATH})
 	$(VIRTUALENV) $(VENVDIR) -p $(PYTHONPATH) $(OUT)
+
+bump: ## Bump Version
+	echo $(VERSION) > $(PROJDIR)/VERSION
+
+	git add $(PROJDIR)/VERSION
+	git commit -m "Bumped to Version $(VERSION)"
 
 release: test
 	$(PYTHON) setup.py sdist bdist_wheel
