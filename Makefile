@@ -109,12 +109,12 @@ test: install ## Run tests.
 	$(call log,INFO,Running Python Tests using $(JOBS) jobs.)
 	$(DETOX) -n $(JOBS) --skip-missing-interpreters $(ARGS)
 
-coverage: ## Run tests and display coverage.
+coverage: install ## Run tests and display coverage.
 ifeq (${ENVIRONMENT},development)
 	$(eval IARGS := --cov-report html)
 endif
 
-	$(PYTEST) -n $(JOBS) --cov $(TESTDIR) $(IARGS) $(ARGS)
+	$(PYTEST) -n $(JOBS) --cov $(PROJDIR) $(IARGS) --verbose $(ARGS)
 
 ifeq (${ENVIRONMENT},development)
 	$(call browse,file:///${BASEDIR}/htmlcov/index.html)

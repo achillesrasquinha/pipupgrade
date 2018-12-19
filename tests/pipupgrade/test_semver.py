@@ -29,7 +29,7 @@ def test_difference():
     assert difference("1.2.3", "2.3.4") == "major"
     assert difference("1.2.3", "1.3.4") == "minor"
     assert difference("1.2.3", "1.2.1") == "patch"
-    assert difference("1.2.3", "1.2.3") == False
+    assert difference("1.2.3", "1.2.3") == None
 
     with pytest.raises(ValueError):
         difference("1.2.3", "1.0")

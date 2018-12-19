@@ -4,6 +4,7 @@ ipython
 pytest
 pytest-cov
 pytest-xdist
+pytest-sugar
 pylint
 detox
 tox-travis

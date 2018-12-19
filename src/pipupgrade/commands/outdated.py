@@ -43,47 +43,62 @@ def _cli_format_semver(version, type_):
 
     return version
 
-@cli.command
-def command():
-    code     = 0
-
+def get_packages_info(raise_err = True):
     packages = get_installed_distributions()
-    table    = Table(header = ["Package", "Current", "Latest", "Home Page"])
+    info     = [ ]
 
-    cli.echo("Checking...")
     for package in packages:
-        package_info    = get_if_empty(
-            _get_pypi_package_info(package.project_name, raise_err = False), { }
+        package_info = get_if_empty(
+            _get_pypi_package_info(package.project_name, raise_err = raise_err), { }
         )
 
         project_name    = package.project_name
 
         version_current = package.version
-        version_latest  = package_info.get("version", None)
+        version_latest  = package_info.get("version")
+        
+        diff_type       = None
 
-        if version_current != version_latest:
+        if version_latest and version_current != version_latest:
             try:
-                diff_type    = semver.difference(version_current, version_latest)
-            
-                if diff_type == "major":
-                    project_name = cli_format(project_name, cli.RED)
-                if diff_type == "minor":
-                    project_name = cli_format(project_name, cli.YELLOW)
-                if diff_type == "patch":
-                    project_name = cli_format(project_name, cli.GREEN)
-                
-                version_latest = _cli_format_semver(version_latest, type_ = diff_type)
+                diff_type = semver.difference(version_current, version_latest)
             except ValueError:
-                pass
+                if raise_err:
+                    raise
+
+        info.append(dict(
+            name             = package_info.get("name"),
+            project_name     = project_name,
+            version          = version_current,
+            latest_version   = version_latest,
+            semver_diff_type = diff_type,
+            home_page        = package_info.get("home_page")
+        ))
+
+    return info
+    
+@cli.command
+def command():
+    cli.echo("Checking...")
+
+    packages = get_packages_info(raise_err = False)
+    # if diff_type == "major":
+    #                 project_name = cli_format(project_name, cli.RED)
+    #             if diff_type == "minor":
+    #                 project_name = cli_format(project_name, cli.YELLOW)
+    #             if diff_type == "patch":
+    #                 project_name = cli_format(project_name, cli.GREEN)
                 
-            table.insert([
-                project_name,
-                package.version,
-                version_latest,
-                cli_format(package_info.get("home_page", ""), cli.CYAN)
-            ])
+    #             version_latest = _cli_format_semver(version_latest, type_ = diff_type)
+
+    table    = Table(header = ["Package", "Current", "Latest", "Home Page"])
+    for package in packages:
+        table.insert([
+            package.name,
+            package.current_version,
+            package.latest_version,
+            package.home_page
+        ])
 
     string = cli_format("All packages are upto date.", cli.GREEN) if table.empty else table.render()
     cli.echo(string)
-
-    return code

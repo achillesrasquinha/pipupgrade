@@ -1,9 +1,9 @@
 # imports - module imports
-from pipupgrade.cli.parser import get_parsed_args
+from pipupgrade.cli.parser import get_args
 from pipupgrade import cli
 
 def cli_format(string, type_):
-    args = get_parsed_args()
+    args = get_args(as_dict = False)
 
     if not args.no_color:
         string = cli.format(string, type_)

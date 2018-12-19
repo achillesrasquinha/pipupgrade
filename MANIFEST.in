@@ -1,3 +1,6 @@
-include requirements.txt
+include requirements*.txt
 include README.md
 include LICENSE
+
+graft   src
+graft   tests

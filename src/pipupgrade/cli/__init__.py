@@ -6,24 +6,28 @@ from pipupgrade._compat import input
 import inspect
 
 # imports - module imports
-from pipupgrade.cli.parser import get_parsed_args
-from pipupgrade.util       import get_if_empty, merge_dict
+from pipupgrade.cli.parser import get_args
+from pipupgrade.util       import get_if_empty
+from pipupgrade.util.types import merge_dict, get_function_arguments
 
-_ACCEPTABLE_YES = ("", "y", "Y")
+_ACCEPTABLE_YES_INPUTS = ("", "y", "Y")
 
-BOLD      = "\033[0;1m"
-UNDERLINE = "\033[0;4m"
-RED       = "\033[0;31m"
-GREEN     = "\033[0;32m"
-YELLOW    = "\033[0;33m"
-CYAN      = "\033[0;36m"
-CLEAR     = "\033[0m"
+_ANSI_FORMAT = "\033[{}m"
+_format_ansi = lambda x: _ANSI_FORMAT.format(x)
+
+BOLD      = _format_ansi("0;1")
+UNDERLINE = _format_ansi("0;4")
+RED       = _format_ansi("0;91")
+GREEN     = _format_ansi("0;92")
+YELLOW    = _format_ansi("0;93")
+CYAN      = _format_ansi("0;96")
+CLEAR     = _format_ansi("0")
 
 def confirm(query):
     query  = "{} [Y/n]: ".format(query)
     output = input(query)
 
-    return output in _ACCEPTABLE_YES
+    return output in _ACCEPTABLE_YES_INPUTS
 
 def format(string, type_):
     string = "{}{}{}".format(type_, string, CLEAR)
@@ -33,18 +37,13 @@ def echo(string, nl = True):
     print(string, end = "\n" if nl else "")
 
 def command(fn):
-    argspec = inspect.getargspec(fn)
+    args    = get_args()
     
-    keys    = argspec.args
-    values  = get_if_empty(argspec.defaults, [ ])
+    params  = get_function_arguments(fn)
 
-    fnargs  = dict(zip(keys, values))
-
-    parsed  = get_parsed_args()
+    params  = merge_dict(params, args)
     
-    merged  = merge_dict(fnargs, parsed.__dict__)
-
     def wrapper(*args, **kwargs):
-        return fn(**merged)
+        return fn(**params)
 
     return wrapper

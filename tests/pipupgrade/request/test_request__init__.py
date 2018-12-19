@@ -15,6 +15,8 @@ def test_get():
     json = res.json() 
     assert all(k in json for k in ("url", "origin", "headers", "args"))
 
+    res.raise_for_status()
+    
     res  = req.get("http://httpbin.org/status/404")
     assert not res.ok
     assert res.status_code == 404
