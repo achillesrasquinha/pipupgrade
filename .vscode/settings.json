@@ -2,7 +2,7 @@
     "files.exclude": {
         "**/*.pyc": true,
         "**/__pycache__": true,
-        "*.egg-info": true,
+        "**/*.egg-info": true,
         ".pytest_cache": true,
         "*.coverage": true,
         "*.coverage.*": true,

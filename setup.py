@@ -1,3 +1,5 @@
+# pylint: disable=E0602
+
 import sys
 import os.path as osp
 
@@ -11,60 +13,82 @@ except ImportError:
     from pip.req           import parse_requirements # pip 9
 
 # globals
-PROJECT_DIRNAME = "pipupgrade"
-COMMAND_NAME    = "pipupgrade"
-ENVIRONMENT     = "production" if sys.argv[1] == "install" else "development"
+PACKAGE     = "pipupgrade"
+SRCDIR      = "src"
+
+COMMAND     = "pipupgrade"
 
 def isdef(var):
     return var in globals()
 
-with open(osp.join(PROJECT_DIRNAME if isdef("PROJECT_DIRNAME") else __name__, "__attr__.py")) as f:
-    content = f.read()
-    exec(content)
-
-def get_dependencies(type_ = None):
-    path         = osp.abspath("requirements{type_}.txt".format(
-        type_    = "-dev" if type_ == "development" else ""
-    ))
-    requirements = [str(ir.req) for ir in parse_requirements(path, session = "hack")]
-    
-    return requirements
-
 def read(path):
-    path = osp.abspath(path)
+    content = None
     
     with open(path) as f:
         content = f.read()
+
     return content
 
+def get_package_info():
+    attr = osp.join(SRCDIR, PACKAGE, "__attr__.py")
+    info = dict(__file__ = attr) # HACK
+    
+    with open(attr) as f:
+        content = f.read()
+        exec(content, info)
+
+    return info
+
+def get_dependencies(type_ = None):
+    path         = osp.realpath("requirements.txt")
+    requirements = [str(ir.req) for ir in parse_requirements(path, session = "hack")]
+
+    if type_ == "development":
+        path         = osp.realpath("requirements-dev.txt")
+        requirements = [
+            str(ir.req) for ir in parse_requirements(path, session = "hack")
+                if str(ir.req) not in requirements
+        ]
+    
+    return requirements
+
+PKGINFO    = get_package_info()
+
 setup(
-    name                 = __name__,
-    version              = __version__,
-    url                  = __url__,
-    author               = __author__,
-    author_email         = __email__,
-    description          = __description__,
+    name                 = PKGINFO["__name__"],
+    version              = PKGINFO["__version__"],
+    url                  = PKGINFO["__url__"],
+    author               = PKGINFO["__author__"],
+    author_email         = PKGINFO["__email__"],
+    description          = PKGINFO["__description__"],
     long_description     = read("README.md"),
-    license              = __license__,
-    keywords             = " ".join(__keywords__),
-    packages             = find_packages(),
+    license              = PKGINFO["__license__"],
+    keywords             = " ".join(PKGINFO["__keywords__"]),
+    packages             = find_packages(SRCDIR),
+    package_dir          = { "": SRCDIR },
     entry_points         = {
         "console_scripts": [
-            "{name} = {project}.__main__:main".format(
-                name    = COMMAND_NAME    if isdef("COMMAND_NAME")    else __name__,
-                project = PROJECT_DIRNAME if isdef("PROJECT_DIRNAME") else __name__
+            "%s = %s.__main__:main" % (
+                COMMAND if isdef("COMMAND_NAME") else PKGINFO["__name__"],
+                PACKAGE
             )
         ]
     },
-    install_requires     = get_dependencies(type_ = ENVIRONMENT if isdef(ENVIRONMENT) else None),
+    
+    install_requires     = get_dependencies(type_ = "production"),
+    extras_require       = dict(
+        dev = get_dependencies(type_ = "development")
+    ),
     include_package_data = True,
     classifiers          = (
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
+        
         "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 2.7",
+        
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
