@@ -1,5 +1,4 @@
 language: python
-sudo: true
 
 python:
   - "2.7"
@@ -15,7 +14,7 @@ env:
     - VERBOSE=true
 
 install:
-  - . $TRAVIS_BUILD_DIR/ci/scripts/install.sh
+  - sudo $TRAVIS_BUILD_DIR/ci/scripts/install.sh
   - make install
 
 script:

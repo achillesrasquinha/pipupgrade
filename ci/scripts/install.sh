@@ -1,6 +1,4 @@
-if [[ -z "${NODE_MAJOR_VERSION}" ]]; then
-    NODE_MAJOR_VERSION="10"
-fi
+export NODE_MAJOR_VERSION="10"
 
 apt-get update                                                                                      \
     `# Install Dependencies`                                                                        \
