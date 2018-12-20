@@ -10,15 +10,14 @@ python:
 env:
   global:
     - ENVIRONMENT=test
-    - VENVDIR=$VIRTUAL_ENV
     - VERBOSE=true
 
 install:
   - sudo $TRAVIS_BUILD_DIR/ci/scripts/install.sh
-  - make install
+  - VENVDIR=$VIRTUAL_ENV make install
 
 script:
-  - make test
+  - VENVDIR=$VIRTUAL_ENV make test
 
 after_success:
-  - make coverage
+  - VENVDIR=$VIRTUAL_ENV make coverage
