@@ -4,5 +4,6 @@ apt-get update                                                                  
     `# Install Dependencies`                                                                        \
     && apt-get install -y --no-install-recommends                                                   \
         curl                                                                                        \
-    && curl -sL https://deb.nodesource.com/setup_$NODE_MAJOR_VERSION.x | bash -                     \
+    && curl -sL https://deb.nodesource.com/setup_10.x | bash -                     \
     && apt-get install -y --no-install-recommends nodejs                                            \
+    && npm install -g @semantic-release@15                                                          \
