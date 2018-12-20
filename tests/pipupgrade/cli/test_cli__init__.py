@@ -4,7 +4,6 @@ from pipupgrade._compat import StringIO, iteritems, iterkeys
 # imports - module imports
 from pipupgrade import cli
 from pipupgrade.cli import get_args
-from pipupgrade.util import get_if_empty
 from pipupgrade.util.types import merge_dict
 from pipupgrade.util._test import mock_input, assert_input, assert_stdout
 

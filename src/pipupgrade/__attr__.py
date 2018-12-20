@@ -35,6 +35,10 @@ def safe_decode(object_, encoding = "utf-8"):
 
     return decoded
 
+def sequence_filter(list_, filter_, type_ = list):
+    result = type_(filter(filter_, list_))
+    return result
+
 def get_revision(path, short = False, raise_err = True):
     """
     Returns the git revision of a repository. Raises error if not a valid git repository.
@@ -43,7 +47,7 @@ def get_revision(path, short = False, raise_err = True):
 
     try:
         short    = "--short" if short else ""
-        output   = subprocess.check_output(["git", "rev-parse", short, "HEAD"], cwd = path)
+        output   = subprocess.check_output(sequence_filter(["git", "rev-parse", short, "HEAD"], filter_ = None), cwd = path)
         revision = safe_decode(strip(output))
     except (subprocess.CalledProcessError, FileNotFoundError):
         if raise_err:
@@ -51,11 +55,12 @@ def get_revision(path, short = False, raise_err = True):
 
     return revision
 
-path            = dict()
-path["base"]    = pardir(__file__)
-path["version"] = osp.join(path["base"], "VERSION")
+path                        = dict()
+path["base"]                = pardir(__file__)
+path["version"]             = osp.join(path["base"], "VERSION")
 
 __name__                    = "pipupgrade"
+__command__                 = __name__
 __version__                 = read(path["version"])
 __build__                   = get_revision(pardir(path["base"], 2), short = True, raise_err = False)
 __url__                     = "https://github.com/achillesrasquinha/pipupgrade"

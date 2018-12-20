@@ -16,8 +16,6 @@ except ImportError:
 PACKAGE     = "pipupgrade"
 SRCDIR      = "src"
 
-COMMAND     = "pipupgrade"
-
 def isdef(var):
     return var in globals()
 
@@ -69,7 +67,7 @@ setup(
     entry_points         = {
         "console_scripts": [
             "%s = %s.__main__:main" % (
-                COMMAND if isdef("COMMAND_NAME") else PKGINFO["__name__"],
+                PKGINFO["__command__"] if hasattr(PKGINFO, "__command__") else PKGINFO["__name__"],
                 PACKAGE
             )
         ]

@@ -4,12 +4,13 @@ import argparse
 # imports - module imports
 from pipupgrade.__attr__ import (
     __version__,
-    __description__
+    __description__,
+    __command__
 )
-from pipupgrade.util import get_if_empty
 
 def get_parser():
     parser = argparse.ArgumentParser(
+        prog        = __command__,
         description = __description__,
         add_help    = False
     )
@@ -28,6 +29,11 @@ def get_parser():
     parser.add_argument("-r", "--requirements",
         action  = "append",
         help    = "Path to requirements.txt file"
+    )
+    parser.add_argument("-u", "--user",
+        action  = "store_true",
+        help    = "Install to the Python user install directory for environment \
+                    variables and user configuration."
     )
     parser.add_argument("--no-color",
         action  = "store_true",
@@ -52,7 +58,6 @@ def get_parser():
 
 def get_args(args = None, known = True, as_dict = True):
     parser  = get_parser()
-    args    = get_if_empty(args, None)
 
     if known:
         args, _ = parser.parse_known_args(args)

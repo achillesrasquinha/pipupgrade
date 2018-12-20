@@ -6,7 +6,6 @@ from subprocess import call, list2cmdline
 # imports - module imports
 from pipupgrade.commands.outdated import command as pipupgrade_check, get_packages_info
 from pipupgrade.commands.util     import cli_format
-from pipupgrade.util       import get_if_empty
 from pipupgrade.table      import Table
 from pipupgrade.util.types import list_filter
 from pipupgrade import _pip, request as req, cli, semver
@@ -32,13 +31,13 @@ class PackageInfo:
 			self.name            = package.name
 			self.current_version = package.installed_version
 
-		_pypi_info = get_if_empty(_get_pypi_info(self.name, raise_err = False), { })
+		_pypi_info = _get_pypi_info(self.name, raise_err = False) or { }
 
 		self.latest_version = _pypi_info.get("version")
 		self.home_page      = _pypi_info.get("home_page")
 
 @cli.command
-def command(yes = False, check = False, latest = False, requirements = [ ], no_color = True, verbose = False):
+def command(yes = False, check = False, latest = False, requirements = [ ], user = False, no_color = True, verbose = False):
 	cli.echo(cli_format("Checking...", cli.YELLOW))
 
 	if requirements:

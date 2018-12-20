@@ -2,7 +2,6 @@
 from pipupgrade._compat     import zip_longest
 
 # imports - module imports
-from pipupgrade.util        import get_if_empty
 from pipupgrade.util.string import strip_ansi
 
 def _sanitize_string(string):
@@ -32,7 +31,7 @@ def tabulate(rows):
 class Table:
     def __init__(self, header = None):
         self.rows   = [ ]
-        self.header = get_if_empty(header, [ ])
+        self.header = header or [ ]
 
     @property
     def empty(self):

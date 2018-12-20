@@ -13,13 +13,13 @@ def test_args():
         assert _get_arg(args, "check")    == False
         assert _get_arg(args, "latest")   == False
         assert _get_arg(args, "no_color") == False
-        assert _get_arg(args, "verbose")  == False
-            
+
     args = get_args()
     _assert_args(args)
 
     args = get_args(as_dict = False)
     _assert_args(args)
 
-    args = get_args(known = False)
+    args = ["--verbose"]
+    args = get_args(args, known = False)
     _assert_args(args)

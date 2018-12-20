@@ -5,9 +5,6 @@ from pipupgrade._compat import StringIO, input
 import sys
 from   contextlib import contextmanager
 
-# imports - module imports
-from pipupgrade.util import get_if_empty
-
 __STDIN__ = sys.stdin
 
 @contextmanager
@@ -24,9 +21,9 @@ def assert_stdout(capfd, output):
 def assert_input(capfd, text, output, expected = None, input_ = None, stdout = None):
     if expected == None:
         expected = output
-    input_ = get_if_empty(input_, input)
-    stdout = get_if_empty(stdout, text)
-
+    input_ = input_ or input
+    stdout = stdout or text
+    
     with mock_input(StringIO(output)):
         assert input_(text) == expected
         assert_stdout(capfd, stdout)

@@ -1,6 +1,10 @@
 ipython
 twine
-ipython
+bumpversion
+vulture
+safety
+pylint
+autopep8
 pytest
 pytest-cov
 pytest-xdist

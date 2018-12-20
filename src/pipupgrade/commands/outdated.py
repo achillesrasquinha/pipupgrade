@@ -5,7 +5,6 @@ from pipupgrade._compat import cmp
 from pipupgrade.commands.util import cli_format
 from pipupgrade._pip  import get_installed_distributions
 from pipupgrade.table import Table
-from pipupgrade.util  import get_if_empty
 from pipupgrade       import request as req, cli, semver
 
 def _get_pypi_package_info(package, raise_err = False):
@@ -48,9 +47,7 @@ def get_packages_info(raise_err = True):
     info     = [ ]
 
     for package in packages:
-        package_info = get_if_empty(
-            _get_pypi_package_info(package.project_name, raise_err = raise_err), { }
-        )
+        package_info    = _get_pypi_package_info(package.project_name, raise_err = raise_err) or { }
 
         project_name    = package.project_name
 
