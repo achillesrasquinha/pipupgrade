@@ -6,7 +6,6 @@ apt-get install -y --no-install-recommends curl
 
 curl -sL https://deb.nodesource.com/setup_$NODE_MAJOR_VERSION.x | bash -
 
-apt-get install -y --no-install-recommends nodejs
-apt-get install -y --no-install-recommends npm
+apt-get install -y nodejs
 
 npm install -g @semantic-release@$SEMANTIC_RELEASE_MAJOR_VERSION
