@@ -77,11 +77,6 @@ endif
 	$(call log,INFO,Installing Requirements)
 	$(PIP) install -qr $(BASEDIR)/requirements-dev.txt
 
-	$(call log,INFO,Freezing Requirements)
-ifneq (${ENVIRONMENT},test)
-	$(PIP) freeze > $(BASEDIR)/requirements-freeze.txt
-endif
-
 	$(call log,INFO,Installing ${PROJECT} (${ENVIRONMENT}))
 ifeq (${ENVIRONMENT},production)
 	$(PYTHON) setup.py install $(OUT)
@@ -122,7 +117,7 @@ ifeq (${ENVIRONMENT},development)
 	$(eval IARGS := --cov-report html)
 endif
 
-	$(PYTEST) -n $(JOBS) --cov $(PROJDIR) $(IARGS) --verbose $(ARGS)
+	$(PYTEST) -n $(JOBS) --cov $(TESTDIR) $(IARGS) -vv $(ARGS)
 
 ifeq (${ENVIRONMENT},development)
 	$(call browse,file:///${BASEDIR}/htmlcov/index.html)

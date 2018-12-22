@@ -40,7 +40,6 @@ def test_command():
         @cli.command
         def foobar(*args, **kwargs):
             args    = get_args()
-            raise Exception(args)
             params  = merge_dict(args, override)
             
             for k, v in iteritems(values):

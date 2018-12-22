@@ -3,4 +3,3 @@ include README.md
 include LICENSE
 
 graft   src
-graft   tests

@@ -63,7 +63,7 @@ setup(
     long_description     = read("README.md"),
     license              = PKGINFO["__license__"],
     keywords             = " ".join(PKGINFO["__keywords__"]),
-    packages             = find_packages(SRCDIR),
+    packages             = find_packages(where = SRCDIR, exclude = ["tests"]),
     package_dir          = { "": SRCDIR },
     entry_points         = {
         "console_scripts": [
