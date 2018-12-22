@@ -154,7 +154,7 @@ def command(requirements = [ ], latest = False, user = False, check = False, yes
 				spackages = pluralize("package", npackages) # Packages "string"
 
 				query 	  = "Do you wish to update %s %s?" % (npackages, spackages)
-				if yes or cli.confirm(query):
+				if npackages and (yes or cli.confirm(query)):
 					for i, package in enumerate(dinfo):
 						if package.diff_type != "major" or latest:
 							cli.echo(cli_format(
