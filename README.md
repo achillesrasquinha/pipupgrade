@@ -28,9 +28,16 @@
 </p>
 
 ### Table of Contents
+* [Features](#Features)
 * [Installation](#installation)
 * [Usage](#usage)
 * [License](#license)
+
+### Features
+* Updates system packages and local packages.
+* Updates packages mentioned within a `requirements.txt` file (Also pins upto-date versions if mentioned).
+* Detects semantic version to avoid updates that break changes.
+* Zero Dependencies!
 
 #### Installation
 
