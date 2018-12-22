@@ -56,17 +56,23 @@ That's basically it! Run the help for more details...
 
 ```
 $ pipupgrade --help
-usage: pipupgrade [-h] [-y] [-c] [--no-color] [-V] [-v]
+usage: pipupgrade [-y] [-c] [-l] [-r REQUIREMENTS] [-u] [--no-color] [-V] [-v]
+                  [-h]
 
 UPGRADE ALL THE PIP PACKAGES!
 
 optional arguments:
-  -h, --help     show this help message and exit
-  -y, --yes      Confirm for all dialogs
-  -c, --check    Check for outdated packages
-  --no-color     Avoid colored output
-  -V, --verbose  Display verbose output
-  -v, --version  show program's version number and exit
+  -y, --yes             Confirm for all dialogs
+  -c, --check           Check for outdated packages
+  -l, --latest          Update all packages to latest
+  -r REQUIREMENTS, --requirements REQUIREMENTS
+                        Path to requirements.txt file
+  -u, --user            Install to the Python user install directory for
+                        environment variables and user configuration.
+  --no-color            Avoid colored output
+  -V, --verbose         Display verbose output
+  -v, --version         show program's version number and exit
+  -h, --help            Show this help message and exit
 ```
 
 ### License
