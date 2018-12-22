@@ -69,6 +69,8 @@ def test_get_revision(tmpdir):
 
     # Initialize the git repository
     call("git","init",path)
+    call("git","config","user.email","foobar@foobar.com", cwd = path)
+    call("git","config","user.name" ,"Foo Bar", cwd = path)
 
     with pytest.raises(subprocess.CalledProcessError):
         get_revision(path)

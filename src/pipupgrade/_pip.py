@@ -11,3 +11,9 @@ else:
     from pip._internal.utils.misc      import get_installed_distributions
     from pip._internal.req             import parse_requirements
     from pip._internal.req.req_install import InstallRequirement
+
+from pip._vendor.pkg_resources import (
+    Distribution,
+    DistInfoDistribution,
+    EggInfoDistribution
+)

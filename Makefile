@@ -51,8 +51,15 @@ ifndef VERBOSE
 .SILENT:
 endif
 
-help: ## Show help and exit.
-	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+.DEFAULT_GOAL 		   := help 
+
+env: ## Create a Virtual Environment
+ifneq (${VERBOSE},true)
+	$(eval OUT = > /dev/null)
+endif
+
+	$(call log,INFO,Creating a Virtual Environment ${VENVDIR} with Python - ${PYTHONPATH})
+	$(VIRTUALENV) $(VENVDIR) -p $(PYTHONPATH) $(OUT)
 
 install: clean ## Install dependencies and module.
 ifneq (${VERBOSE},true)
@@ -121,14 +128,6 @@ ifeq (${ENVIRONMENT},development)
 	$(call browse,file:///${BASEDIR}/htmlcov/index.html)
 endif
 
-env: ## Create a Virtual Environment
-ifneq (${VERBOSE},true)
-	$(eval OUT = > /dev/null)
-endif
-
-	$(call log,INFO,Creating a Virtual Environment ${VENVDIR} with Python - ${PYTHONPATH})
-	$(VIRTUALENV) $(VENVDIR) -p $(PYTHONPATH) $(OUT)
-
 bump: ## Bump Version
 	echo $(VERSION) > $(PROJDIR)/VERSION
 
@@ -149,3 +148,6 @@ shell: ## Launch an IPython shell.
 	$(call log,INFO,Launching Python Shell)
 	$(IPYTHON) \
 		--no-banner
+
+help: ## Show help and exit.
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)

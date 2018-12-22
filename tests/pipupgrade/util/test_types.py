@@ -10,11 +10,11 @@ from pipupgrade.util.types import (
 _TEST_GLOBAL = "foobar"
 
 def test_merge_dict():
-    assert merge_dict(dict(foo = "bar", bar = "baz"), dict(foo = "baz")) \
-        == dict(foo = "baz", bar = "baz")
-    assert merge_dict(dict(foo = "bar"), { 1: 2, 3: 4})                  \
-        == { "foo": "bar", 1: 2, 3: 4 }
-
+    assert merge_dict({ "foo": "bar" }, { "bar": "baz" })     == { "foo": "bar", "bar": "baz" }
+    assert merge_dict({ "foo": "bar" }, { "foo": "baz" })     == { "foo": "baz" }
+    assert merge_dict({ 1: 2 }, { 3: 4 }, { 5: 6 }, { 7: 8 }) == { 1: 2, 3: 4, 5: 6, 7: 8 }
+    assert merge_dict({ 1: 2 }, { 1: 3 }, { 1: 4 }, { 1: 1 }) == { 1: 1 }
+    
 def test_list_filter():
     assert list_filter([1,2,3,None], filter_ = bool)                 == [1,2,3]
     assert list_filter([1,2,3,4,5],  filter_ = lambda x: x % 2 == 0) == [2,4]

@@ -32,7 +32,7 @@ def format(string, type_):
     string = "{}{}{}".format(type_, string, CLEAR)
     return string
 
-def echo(string, nl = True):
+def echo(string = "", nl = True):
     print(string, end = "\n" if nl else "")
 
 def command(fn):

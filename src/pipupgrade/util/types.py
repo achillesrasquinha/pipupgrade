@@ -5,11 +5,14 @@ from pipupgrade import _compat
 import sys
 import inspect
 
-def merge_dict(a, b):
-    copy = a.copy()
-    copy.update(b)
+def merge_dict(*args):
+    merged = dict()
 
-    return copy
+    for arg in args:
+        copy = arg.copy()
+        merged.update(copy)
+
+    return merged
     
 def list_filter(v, filter_):
     filtered = filter(filter_, v)
@@ -25,12 +28,15 @@ def isdef(var, scope):
 
 def get_function_arguments(fn):
     # https://stackoverflow.com/a/2677263
-    params = dict()
-    
+    params  = dict()
+    success = False
+
     if _compat.PY2:
         argspec_getter = inspect.getargspec
+        success        = True
     if _compat.PYTHON_VERSION >= (3,0) and _compat.PYTHON_VERSION <= (3,4):
         argspec_getter = inspect.getfullargspec
+        success        = True
 
     if isdef("argspec_getter", scope = locals()):
         argspec   = argspec_getter(fn)
@@ -41,8 +47,10 @@ def get_function_arguments(fn):
         parameters = signature.parameters
 
         params     = { k: v.default for k, v in _compat.iteritems(parameters) }
-    else:
-        # I think this is bad code.
+
+        success    = True
+
+    if not success:
         raise ValueError("Unknown Python Version {} for fetching functional arguments.".format(sys.version))
 
     return params

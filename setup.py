@@ -2,6 +2,7 @@
 
 import sys
 import os.path as osp
+import glob
 
 from   setuptools import setup, find_packages
 

@@ -35,7 +35,7 @@ parso==0.3.1
 pathlib2==2.3.3
 pexpect==4.6.0
 pickleshare==0.7.5
--e git+git@github.com:achillesrasquinha/pipupgrade@d62bdbd32969ad91fa0fd81eea720aeed18cba7a#egg=pipupgrade
+-e git+git@github.com:achillesrasquinha/pipupgrade@e10e134dfdbfcaa71fc831b8a0f24c587ee4ad2d#egg=pipupgrade
 pkginfo==1.4.2
 pluggy==0.8.0
 prompt-toolkit==2.0.7
