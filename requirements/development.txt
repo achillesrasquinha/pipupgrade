@@ -1,2 +1,5 @@
 ipython
 twine
+bumpversion
+vulture
+safety

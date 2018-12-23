@@ -1,4 +1,5 @@
 <div align="center">
+    <img src=".github/assets/meme.jpg" width="250">
     <h1>
         pipupgrade
     </h1>
@@ -8,6 +9,9 @@
 <p align="center">
     <a href="https://travis-ci.org/achillesrasquinha/pipupgrade">
         <img src="https://img.shields.io/travis/achillesrasquinha/pipupgrade.svg?style=flat-square">
+    </a>
+    <a href="https://coveralls.io/github/achillesrasquinha/pipupgrade">
+        <img src="https://img.shields.io/coveralls/github/achillesrasquinha/pipupgrade.svg?style=flat-square">
     </a>
     <a href="https://pypi.org/project/pipupgrade/">
 		<img src="https://img.shields.io/pypi/v/pipupgrade.svg?style=flat-square">
@@ -23,14 +27,17 @@
 	</a>
 </p>
 
-<div align="center">
-    <img src=".github/assets/meme.jpg">
-</div>
-
 ### Table of Contents
+* [Features](#Features)
 * [Installation](#installation)
 * [Usage](#usage)
 * [License](#license)
+
+### Features
+* Updates system packages and local packages.
+* Updates packages mentioned within a `requirements.txt` file (Also pins upto-date versions if mentioned).
+* Detects semantic version to avoid updates that break changes.
+* Zero Dependencies!
 
 #### Installation
 
@@ -40,28 +47,31 @@ $ pip install pipupgrade
 
 ### Usage
 
-```shell
-$ pipupgrade
-Do you wish to update 200 packages? [Y/n]: Y
-Updating 1 of 200: pipupgrade
-...
-UPGRADED ALL THE PIP PACKAGES!
-```
+<div align="center">
+    <img src=".github/assets/demo.gif">
+</div>
 
 That's basically it! Run the help for more details...
 
-```shell
+```
 $ pipupgrade --help
-usage: pipupgrade [-h] [-y] [--no-color] [-V] [-v]
+usage: pipupgrade [-y] [-c] [-l] [-r REQUIREMENTS] [-u] [--no-color] [-V] [-v]
+                  [-h]
 
 UPGRADE ALL THE PIP PACKAGES!
 
 optional arguments:
-  -h, --help     show this help message and exit
-  -y, --yes      Confirm for all dialogs
-  --no-color     Avoid colored output
-  -V, --verbose  Display verbose output
-  -v, --version  show program's version number and exit
+  -y, --yes             Confirm for all dialogs
+  -c, --check           Check for outdated packages
+  -l, --latest          Update all packages to latest
+  -r REQUIREMENTS, --requirements REQUIREMENTS
+                        Path to requirements.txt file
+  -u, --user            Install to the Python user install directory for
+                        environment variables and user configuration.
+  --no-color            Avoid colored output
+  -V, --verbose         Display verbose output
+  -v, --version         show program's version number and exit
+  -h, --help            Show this help message and exit
 ```
 
 ### License

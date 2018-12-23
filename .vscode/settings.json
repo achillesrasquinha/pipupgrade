@@ -2,9 +2,10 @@
     "files.exclude": {
         "**/*.pyc": true,
         "**/__pycache__": true,
-        "*.egg-info": true,
+        "**/*.egg-info": true,
         ".pytest_cache": true,
-        "*.coverage*": true,
+        "*.coverage": true,
+        "*.coverage.*": true,
         "requirements*.txt": true,
         "**/.tox": true,
         ".venv": true,
@@ -14,7 +15,6 @@
     },
     "editor.fontFamily": "Consolas",
     "editor.tabSize": 4,
-    "python.pythonPath": "${VIRTUAL_ENV}/bin/python",
-    "python.linting.pylintPath": "${VIRTUAL_ENV}/bin/pylint",
-    "python.linting.pylintEnabled": true
+    "python.pythonPath": ".venv/bin/python",
+    "python.linting.pylintPath": "${workspaceFolder}/.venv/bin/pylint"
 }             

@@ -1,6 +1,15 @@
 ipython
 twine
+bumpversion
+vulture
+safety
+pylint
+autopep8
 pytest
 pytest-cov
+pytest-xdist
+pytest-sugar
+pytest-travis-fold
 detox
 tox-travis
+coveralls
