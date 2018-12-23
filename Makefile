@@ -123,6 +123,10 @@ ifeq (${ENVIRONMENT},development)
 	$(call browse,file:///${BASEDIR}/htmlcov/index.html)
 endif
 
+ifeq (${ENVIRONMENT},test)
+	$(COVERALLS)
+endif
+
 bump: ## Bump Version
 	echo $(VERSION) > $(PROJDIR)/VERSION
 
