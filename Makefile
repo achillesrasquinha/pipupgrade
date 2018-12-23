@@ -117,10 +117,14 @@ ifeq (${ENVIRONMENT},development)
 	$(eval IARGS := --cov-report html)
 endif
 
-	$(PYTEST) -n $(JOBS) --cov $(TESTDIR) $(IARGS) -vv $(ARGS)
+	$(PYTEST) -n $(JOBS) --cov $(PROJDIR) $(IARGS) -vv $(ARGS)
 
 ifeq (${ENVIRONMENT},development)
 	$(call browse,file:///${BASEDIR}/htmlcov/index.html)
+endif
+
+ifeq (${ENVIRONMENT},test)
+	$(COVERALLS)
 endif
 
 bump: ## Bump Version

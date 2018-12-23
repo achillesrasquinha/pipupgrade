@@ -2,6 +2,7 @@ pytest
 pytest-cov
 pytest-xdist
 pytest-sugar
+pytest-travis-fold
 detox
 tox-travis
 coveralls
