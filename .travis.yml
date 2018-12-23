@@ -22,3 +22,4 @@ script:
 
 after_success:
   - VENVDIR=$VIRTUAL_ENV make coverage
+  - npx semantic-release
