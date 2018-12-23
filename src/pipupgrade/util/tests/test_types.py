@@ -23,12 +23,6 @@ def test_dict_from_list():
     assert dict_from_list(["foo", "bar"], [1, 2]) == dict(foo = 1, bar = 2)
     assert dict_from_list([1, 2], ["foo", "bar"]) == { 1: "foo", 2: "bar" }
 
-def test_isdef():
-    test_local = None
-
-    assert isdef("_TEST_GLOBAL", scope = globals())
-    assert isdef("test_local"  , scope =  locals())
-
 def test_get_function_arguments():
     def foobar(foo = "bar", bar = "baz"):
         pass

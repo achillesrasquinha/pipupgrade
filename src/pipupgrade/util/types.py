@@ -26,9 +26,6 @@ def list_filter(v, filter_):
 def dict_from_list(keys, values):
     return dict(zip(keys, values))
 
-def isdef(var, scope):
-    return var in scope    
-
 def get_function_arguments(fn):
     # https://stackoverflow.com/a/2677263
     params  = dict()
@@ -37,11 +34,11 @@ def get_function_arguments(fn):
     if _compat.PY2:
         argspec_getter = inspect.getargspec
         success        = True
-    if _compat.PYTHON_VERSION >= (3,0) and _compat.PYTHON_VERSION <= (3,4):
+    if _compat.PYTHON_VERSION >= (3,0) and (3,4) <= _compat.PYTHON_VERSION:
         argspec_getter = inspect.getfullargspec
         success        = True
 
-    if isdef("argspec_getter", scope = locals()):
+    if success:
         argspec   = argspec_getter(fn)
         params    = dict_from_list(argspec.args, argspec.defaults or [])
 
