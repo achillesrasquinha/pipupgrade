@@ -49,6 +49,7 @@ if PY2:
 
     from StringIO import StringIO
 
+    from itertools import izip         as zip
     from itertools import izip_longest as zip_longest
 else:
     import builtins
@@ -62,3 +63,5 @@ else:
     from io import StringIO
 
     from itertools import zip_longest
+
+    zip = zip

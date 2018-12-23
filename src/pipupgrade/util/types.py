@@ -1,5 +1,8 @@
+# pylint: disable=E1101
+
 # imports - compatibility imports
-from pipupgrade import _compat
+from pipupgrade         import _compat
+from pipupgrade._compat import zip
 
 # imports - standard imports
 import sys
@@ -40,7 +43,7 @@ def get_function_arguments(fn):
 
     if isdef("argspec_getter", scope = locals()):
         argspec   = argspec_getter(fn)
-        params    = dict_from_list(argspec.args, argspec.defaults)
+        params    = dict_from_list(argspec.args, argspec.defaults or [])
 
     if _compat.PYTHON_VERSION >= (3,5):
         signature  = inspect.signature(fn)
