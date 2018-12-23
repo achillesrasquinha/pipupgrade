@@ -3,7 +3,6 @@ from pipupgrade.util.types import (
     merge_dict,
     list_filter,
     dict_from_list,
-    isdef,
     get_function_arguments
 )
 
