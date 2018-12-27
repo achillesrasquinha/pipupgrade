@@ -14,3 +14,9 @@ def pluralize(string, count = 1):
             string += "s"
     
     return string
+
+def kebab_case(string, delimiter = " "):
+    words = string.replace(delimiter, " ").split()
+    kebab = "-".join([word.lower() for word in words])
+    
+    return kebab

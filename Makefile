@@ -133,7 +133,7 @@ bump: ## Bump Version
 	git add $(PROJDIR)/VERSION
 	git commit -m "Bumped to Version $(VERSION)"
 
-release: test
+release: test ## Create a Release
 	$(PYTHON) setup.py sdist bdist_wheel
 
 ifeq (${ENVIRONMENT},development)

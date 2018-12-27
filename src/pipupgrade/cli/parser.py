@@ -26,6 +26,10 @@ def get_parser():
         action  = "store_true",
         help    = "Update all packages to latest"
     )
+    parser.add_argument("-s", "--self",
+        action  = "store_true",
+        help    = "Update self"
+    )
     parser.add_argument("-r", "--requirements",
         action  = "append",
         help    = "Path to requirements.txt file"
