@@ -37,6 +37,7 @@
 * Updates system packages and local packages.
 * Updates packages mentioned within a `requirements.txt` file (Also pins upto-date versions if mentioned).
 * Detects semantic version to avoid updates that break changes.
+* Python 2.7+ and Python 3.4+ compatible. Also pip 9+, pip 10+ and pip 18+ compatible.
 * Zero Dependencies!
 
 #### Installation
