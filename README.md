@@ -55,8 +55,8 @@ That's basically it! Run the help for more details...
 
 ```
 $ pipupgrade --help
-usage: pipupgrade [-y] [-c] [-l] [-r REQUIREMENTS] [-u] [--no-color] [-V] [-v]
-                  [-h]
+usage: pipupgrade [-y] [-c] [-l] [-s] [-r REQUIREMENTS] [-u] [--no-color] [-V]
+                  [-v] [-h]
 
 UPGRADE ALL THE PIP PACKAGES!
 
@@ -64,6 +64,7 @@ optional arguments:
   -y, --yes             Confirm for all dialogs
   -c, --check           Check for outdated packages
   -l, --latest          Update all packages to latest
+  -s, --self            Update self
   -r REQUIREMENTS, --requirements REQUIREMENTS
                         Path to requirements.txt file
   -u, --user            Install to the Python user install directory for
