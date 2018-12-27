@@ -65,6 +65,7 @@ setup(
     keywords             = " ".join(PKGINFO["__keywords__"]),
     packages             = find_packages(where = SRCDIR, exclude = ["tests"]),
     package_dir          = { "": SRCDIR },
+    zip_safe             = False,
     entry_points         = {
         "console_scripts": [
             "%s = %s.__main__:main" % (
