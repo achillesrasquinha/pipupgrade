@@ -63,7 +63,7 @@ setup(
     long_description     = read("README.md"),
     license              = PKGINFO["__license__"],
     keywords             = " ".join(PKGINFO["__keywords__"]),
-    packages             = find_packages(where = SRCDIR, exclude = ["tests"]),
+    packages             = find_packages(where = SRCDIR),
     package_dir          = { "": SRCDIR },
     zip_safe             = False,
     entry_points         = {
