@@ -1,8 +1,7 @@
 environment:
-  global:
-    - ENVIRONMENT: "test"
-    - VERBOSE: "true"
-    - VIRTUALENV: ".venv"
+  ENVIRONMENT: "test"
+  VERBOSE: "true"
+  VIRTUALENV: ".venv"
 
 matrix:
   - PYTHON: "C:\\Python27"
