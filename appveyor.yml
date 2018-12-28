@@ -67,8 +67,7 @@ environment:
 
 install:
   - "pip install virtualenv"
-  - echo $env:VIRTUALENV
-  - "virtualenv $($env:VIRTUALENV)"
+  - "virtualenv $env:VIRTUALENV"
 
 test_script:
   - "C:\\MinGW\\bin\\mingw32-make test"
