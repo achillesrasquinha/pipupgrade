@@ -75,7 +75,7 @@ endif
 	@cat $(BASEDIR)/requirements/production.txt  > $(BASEDIR)/requirements.txt
 
 	$(call log,INFO,Installing Requirements)
-	$(PIP) install -qr $(BASEDIR)/requirements-dev.txt
+	$(PIP) install -r $(BASEDIR)/requirements-dev.txt $(OUT)
 
 	$(call log,INFO,Installing ${PROJECT} (${ENVIRONMENT}))
 ifeq (${ENVIRONMENT},production)

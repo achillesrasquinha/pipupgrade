@@ -1,3 +1,8 @@
+if [[ $TRAVIS_PYTHON_VERSION == "3.3" ]]; then
+    pip install virtualenv==15.2.0
+    pip install tox==3.1.3
+fi
+
 export NODE_MAJOR_VERSION="10"
 export SEMANTIC_RELEASE_MAJOR_VERSION="15"
 
@@ -9,5 +14,3 @@ curl -sL https://deb.nodesource.com/setup_$NODE_MAJOR_VERSION.x | bash -
 apt-get install -y nodejs
 
 npm install -g semantic-release@$SEMANTIC_RELEASE_MAJOR_VERSION
-
-pip install setuptools==36.4.0
