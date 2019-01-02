@@ -19,6 +19,9 @@
     <a href="https://pypi.org/project/pipupgrade/">
 		<img src="https://img.shields.io/pypi/l/pipupgrade.svg?style=flat-square">
 	</a>
+    <a href="https://pypi.org/project/pipupgrade/">
+		<img src="https://img.shields.io/pypi/pyversions/pipupgrade.svg?style=flat-square">
+	</a>
 	<a href="https://saythanks.io/to/achillesrasquinha">
 		<img src="https://img.shields.io/badge/Say%20Thanks-🦉-1EAEDB.svg?style=flat-square">
 	</a>
