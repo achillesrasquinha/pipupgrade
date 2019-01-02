@@ -28,6 +28,7 @@ BUMPVERSION				= ${VENVBIN}/bumpversion
 SAFETY					= ${VENVBIN}/safety
 
 JOBS				   ?= $(shell $(PYTHON) -c "import multiprocessing as mp; print(mp.cpu_count())")
+PYTHON_VERSION         ?= $(shell $(PYTHON) -c "import sys;v=sys.version_info;print('py%s%s'%(v.major,v.minor))")
 
 NULL					= /dev/null
 
@@ -77,7 +78,7 @@ endif
 	$(call log,INFO,Installing Requirements)
 	$(PIP) install -r $(BASEDIR)/requirements-dev.txt $(OUT)
 
-ifeq (${TRAVIS_PYTHON_VERSION},"3.3")
+ifeq (${PYTHON_VERSION},"py33")
 	$(call log,INFO,Installing Requirements for Python 3.3)
 	$(PIP) install -r $(BASEDIR)/requirements/py33.txt
 endif
