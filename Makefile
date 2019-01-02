@@ -83,7 +83,7 @@ endif
 
 	$(call log,INFO,Installing Requirements for ${PYTHON_ENVIRONMENT})
 	if test -d $(BASEDIR)/requirements/$(PYTHON_ENVIRONMENT); then \
-		@find $(BASEDIR)/requirements/${PYTHON_ENVIRONMENT} -maxdepth 1 -type f | xargs awk '{print}' | xargs $(PIP) install; \
+		find $(BASEDIR)/requirements/${PYTHON_ENVIRONMENT} -maxdepth 1 -type f | xargs awk '{print}' | xargs $(PIP) install; \
 	fi
 
 	$(call log,INFO,Installing ${PROJECT} (${ENVIRONMENT}))
