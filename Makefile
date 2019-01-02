@@ -81,11 +81,6 @@ endif
 	$(call log,INFO,Installing Requirements)
 	$(PIP) install -r $(BASEDIR)/requirements-dev.txt $(OUT)
 
-	$(call log,INFO,Installing Requirements for ${PYTHON_ENVIRONMENT})
-	if test -d $(BASEDIR)/requirements/$(PYTHON_ENVIRONMENT); then \
-		find $(BASEDIR)/requirements/${PYTHON_ENVIRONMENT} -maxdepth 1 -type f | xargs awk '{print}' | xargs $(PIP) install; \
-	fi
-
 	$(call log,INFO,Installing ${PROJECT} (${ENVIRONMENT}))
 ifeq (${ENVIRONMENT},production)
 	$(PYTHON) setup.py install $(OUT)
@@ -119,7 +114,7 @@ endif
 
 test: install ## Run tests.
 	$(call log,INFO,Running Python Tests using $(JOBS) jobs.)
-	$(DETOX) -n $(JOBS) --skip-missing-interpreters $(ARGS)
+	$(DETOX)  -n $(JOBS) --skip-missing-interpreters $(ARGS)
 
 coverage: install ## Run tests and display coverage.
 ifeq (${ENVIRONMENT},development)
