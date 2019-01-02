@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ $TRAVIS_PYTHON_VERSION == "3.3" ]]; then
-    pip install setuptools==39.2.0
+    pip install virtualenv==15.1.0
 fi
 
 NODE_MAJOR_VERSION=${NODE_MAJOR_VERSION:="10"}
