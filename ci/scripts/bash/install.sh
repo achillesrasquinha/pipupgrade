@@ -1,9 +1,7 @@
 #!/bin/bash
 
 if [[ $TRAVIS_PYTHON_VERSION == "3.3" ]]; then
-    # https://github.com/aws/base64io-python/issues/4#issuecomment-412696588
-    pip install virtualenv==15.2.0
-    pip install tox==3.1.3
+    pip install setuptools==39.2.0
 fi
 
 NODE_MAJOR_VERSION=${NODE_MAJOR_VERSION:="10"}
