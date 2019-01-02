@@ -71,11 +71,16 @@ ifneq (${PIPCACHEDIR},)
 endif
 
 	$(call log,INFO,Building Requirements)
-	@awk '{print}' $(BASEDIR)/requirements/*.txt > $(BASEDIR)/requirements-dev.txt
+	@find $(BASEDIR)/requirements ! -name "py33.txt" -type f | xargs awk '{print}' > $(BASEDIR)/requirements-dev.txt
 	@cat $(BASEDIR)/requirements/production.txt  > $(BASEDIR)/requirements.txt
 
 	$(call log,INFO,Installing Requirements)
 	$(PIP) install -r $(BASEDIR)/requirements-dev.txt $(OUT)
+
+ifeq (${TRAVIS_PYTHON_VERSION},"3.3")
+	$(call log,INFO,Installing Requirements for Python 3.3)
+	$(PIP) install -r $(BASEDIR)/requirements/py33.txt
+endif
 
 	$(call log,INFO,Installing ${PROJECT} (${ENVIRONMENT}))
 ifeq (${ENVIRONMENT},production)

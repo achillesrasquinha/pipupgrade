@@ -1,10 +1,10 @@
+pylint
+autopep8
 ipython
 twine
 bumpversion
 vulture
 safety
-pylint
-autopep8
 pytest
 pytest-cov
 pytest-xdist
