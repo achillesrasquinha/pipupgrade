@@ -77,6 +77,10 @@ endif
 	$(call log,INFO,Installing Requirements)
 	$(PIP) install -r $(BASEDIR)/requirements-dev.txt $(OUT)
 
+ifeq $(${TRAVIS_PYTHON_VERSION},"3.3")
+	$(PIP) install setuptools==39.2.0
+endif
+
 	$(call log,INFO,Installing ${PROJECT} (${ENVIRONMENT}))
 ifeq (${ENVIRONMENT},production)
 	$(PYTHON) setup.py install $(OUT)
