@@ -22,6 +22,9 @@
     <a href="https://pypi.org/project/pipupgrade/">
 		<img src="https://img.shields.io/pypi/pyversions/pipupgrade.svg?style=flat-square">
 	</a>
+    <a href="https://git.io/boilpy">
+      <img src="https://img.shields.io/badge/made%20with-boilpy-red.svg?style=flat-square">
+    </a>
 	<a href="https://saythanks.io/to/achillesrasquinha">
 		<img src="https://img.shields.io/badge/Say%20Thanks-🦉-1EAEDB.svg?style=flat-square">
 	</a>
@@ -82,3 +85,9 @@ optional arguments:
 ### License
 
 This repository has been released under the [MIT License](LICENSE).
+
+---
+
+<div align="center">
+  Made with ❤️ using <a href="https://git.io/boilpy">boilpy</a>.
+</div>
