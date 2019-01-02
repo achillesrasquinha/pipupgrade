@@ -1,4 +1,5 @@
 ipython
+setuptools==39.2.0
 twine
 bumpversion
 vulture
