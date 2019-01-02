@@ -75,17 +75,16 @@ ifneq (${PIPCACHEDIR},)
 endif
 
 	$(call log,INFO,Building Requirements)
-	@find $(BASEDIR)/requirements ! -name "py33.txt" -type f | xargs awk '{print}' > $(BASEDIR)/requirements-dev.txt
+	@find $(BASEDIR)/requirements -maxdepth 1 -type f | xargs awk '{print}' > $(BASEDIR)/requirements-dev.txt
 	@cat $(BASEDIR)/requirements/production.txt  > $(BASEDIR)/requirements.txt
 
 	$(call log,INFO,Installing Requirements)
 	$(PIP) install -r $(BASEDIR)/requirements-dev.txt $(OUT)
 
-
-ifeq (${PYTHON_ENVIRONMENT},py33)
-	$(call log,INFO,Installing Requirements for Python 3.3)
-	$(PIP) install -r $(BASEDIR)/requirements/py33.txt
-endif
+	$(call log,INFO,Installing Requirements for ${PYTHON_ENVIRONMENT})
+	if test -d $(BASEDIR)/requirements/$(PYTHON_ENVIRONMENT); then \
+		@find $(BASEDIR)/requirements/${PYTHON_ENVIRONMENT} -maxdepth 1 -type f | xargs awk '{print}' | xargs $(PIP) install; \
+	fi
 
 	$(call log,INFO,Installing ${PROJECT} (${ENVIRONMENT}))
 ifeq (${ENVIRONMENT},production)
