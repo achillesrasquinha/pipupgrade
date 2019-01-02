@@ -28,7 +28,7 @@ BUMPVERSION				= ${VENVBIN}/bumpversion
 SAFETY					= ${VENVBIN}/safety
 
 JOBS				   ?= $(shell $(PYTHON) -c "import multiprocessing as mp; print(mp.cpu_count())")
-PYTHON_VERSION         ?= $(shell $(PYTHON) -c "import sys;v=sys.version_info;print('py%s%s'%(v.major,v.minor))")
+PYTHON_ENVIRONMENT      = $(shell $(PYTHON) -c "import sys;v=sys.version_info;print('py%s%s'%(v.major,v.minor))")
 
 NULL					= /dev/null
 
@@ -62,7 +62,10 @@ endif
 	$(call log,INFO,Creating a Virtual Environment ${VENVDIR} with Python - ${PYTHONPATH})
 	$(VIRTUALENV) $(VENVDIR) -p $(PYTHONPATH) $(OUT)
 
-install: clean ## Install dependencies and module.
+info: ## Display Information
+	@echo "Python Environment: ${PYTHON_ENVIRONMENT}"
+
+install: clean info ## Install dependencies and module.
 ifneq (${VERBOSE},true)
 	$(eval OUT = > /dev/null)
 endif
@@ -78,7 +81,8 @@ endif
 	$(call log,INFO,Installing Requirements)
 	$(PIP) install -r $(BASEDIR)/requirements-dev.txt $(OUT)
 
-ifeq (${PYTHON_VERSION},"py33")
+
+ifeq (${PYTHON_ENVIRONMENT},py33)
 	$(call log,INFO,Installing Requirements for Python 3.3)
 	$(PIP) install -r $(BASEDIR)/requirements/py33.txt
 endif
