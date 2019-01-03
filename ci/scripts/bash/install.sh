@@ -14,4 +14,6 @@ curl -sL https://deb.nodesource.com/setup_$NODE_MAJOR_VERSION.x | bash -
 
 apt-get install -y nodejs
 
-npm install -g semantic-release@$SEMANTIC_RELEASE_MAJOR_VERSION
+npm install -g semantic-release@$SEMANTIC_RELEASE_MAJOR_VERSION \
+    @semantic-release/exec \
+    @semantic-release/git  
