@@ -7,7 +7,7 @@
         }],
         ["@semantic-release/git", {
              "assets": "src/pipupgrade/VERSION",
-            "message": "chore(release): Bumped to Version ${nextRelease.version}\n\n{nextRelease.notes}" 
+            "message": "chore(release): Bumped to Version ${nextRelease.version}\n\n${nextRelease.notes}" 
         }],
         "@semantic-release/github"
     ]
