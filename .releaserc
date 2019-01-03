@@ -5,7 +5,9 @@
         ["@semantic-release/exec", {
             "prepareCmd": "echo ${nextRelease.version} > src/pipupgrade/VERSION"
         }],
-        "@semantic-release/git",
+        ["@semantic-release/git", {
+            "assets": "src/pipupgrade/VERSION"
+        }],
         "@semantic-release/github"
     ]
 }
