@@ -23,3 +23,12 @@ script:
 after_success:
   - VENVDIR=$VIRTUAL_ENV make coverage
   - npx semantic-release
+
+deploy:
+  provider: pypi
+  user: achillesrasquinha
+  password:
+    secure: DxyaBiRgMiAZDshCiERWpg/CEtGzqNDvBJPNUPWmapxkpsWFx/n9gLqJW9774q0GmcPim15HvwJ9Wu6QRmsKAZ2lAXb7dxU1UcJh2YJVZvnJFiUg4ycil9eSxyhIz6RwHzKVzHCbzHgxyVhVvdEKaeLqy7FojEbJ4EUyJnp1+0i2SEP0t1urM5yShosHyYX9wkXTsUJ2NnwM5onboJZq3WYLyPfSXLdk9ylbvh0cRiuMZl5irxBsdrz0pxQXiDWjfti93qToe6CisNUO5ImdBZAB4/sbG510CUoQHY1/AGSzysPNp88PMK4jrfNRwlKkopTOLswnfoJO7rmTsbB2R2CoBq7CpQW/GgsOwdHPODwOC9ionROYHBrNmeAWKtDlXZL757qZnCHRYP4CXBKPcDVZfpae25eezrwaISYKDlV3HDUaLODv0GqmvVNQaABrMt7kZ9zPDP0M7aXR/n+YFYkjQgW8LJUtWxhNrYXPmX+oNJA6os1Pet0w9iT+oC4QeYpTojO9dKuvFSglFuSqwVVbeK5CSKlsA5OBDgsYFK4PZK4+JxV+jnZ/Fb6AjEj7/4FR/bAeO/hkNfqmUsOLOKRp09soyJRtx0qw7BSwe9rEA7pL7TCa5aB0RAEDwYiNuf+JRe9sPUEE7fhcqA2zM7YP+sHpfgzm59ouDh4XLME=
+  on:
+    tags: true
+  skip_existing: true
