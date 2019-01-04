@@ -70,8 +70,16 @@ install:
   # TODO: Concat path.
   # - ps: . .\ci\scripts\ps\install.ps1
   # TODO: Makefile for Windows
+<<<<<<< HEAD
   
   - "pip install -r requirements-dev.txt"
 
+=======
+
+  - "pip install -r requirements-dev.txt"
+
+build: off
+
+>>>>>>> hotfix
 test_script:
   - "detox --skip-missing-interpreters"
