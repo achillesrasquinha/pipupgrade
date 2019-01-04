@@ -3,6 +3,7 @@
 import sys
 import os.path as osp
 import glob
+import io
 
 from   setuptools import setup, find_packages
 
@@ -20,16 +21,16 @@ SRCDIR      = "src"
 def isdef(var):
     return var in globals()
 
-def read(path):
+def read(path, encoding = None):
     content = None
     
-    with open(path) as f:
+    with open(path, encoding = encoding) as f:
         content = f.read()
 
     return content
 
 def get_package_info():
-    attr = osp.join(SRCDIR, PACKAGE, "__attr__.py")
+    attr = osp.abspath(osp.join(SRCDIR, PACKAGE, "__attr__.py"))
     info = dict(__file__ = attr) # HACK
     
     with open(attr) as f:
@@ -60,7 +61,7 @@ setup(
     author               = PKGINFO["__author__"],
     author_email         = PKGINFO["__email__"],
     description          = PKGINFO["__description__"],
-    long_description     = read("README.md"),
+    long_description     = read("README.md", encoding = "utf8"),
     license              = PKGINFO["__license__"],
     keywords             = " ".join(PKGINFO["__keywords__"]),
     packages             = find_packages(where = SRCDIR),
