@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import sys
 import os.path as osp
 import subprocess
