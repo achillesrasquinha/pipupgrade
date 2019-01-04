@@ -68,9 +68,9 @@ environment:
 install:
   # TODO: Use $env:APPVEYOR_BUILD_FOLDER.
   # TODO: Concat path.
-  - ps: . .\ci\scripts\ps\install.ps1
-
-test_script:
+  # - ps: . .\ci\scripts\ps\install.ps1
   # TODO: Makefile for Windows
   - "pip install -r requirements-dev.txt"
+
+test_script:
   - "detox --skip-missing-interpreters"
