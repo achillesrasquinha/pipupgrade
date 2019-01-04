@@ -66,11 +66,11 @@ environment:
       TOXENV: "py37"
 
 install:
-  - "pip install virtualenv"
-  - "virtualenv $env:VIRTUALENV"
+  # TODO: Use $env:APPVEYOR_BUILD_FOLDER.
+  # TODO: Concat path.
+  - ps: . .\ci\scripts\ps\install.ps1
 
 test_script:
-  - "C:\\MinGW\\bin\\mingw32-make test"
-
-on_success:
-  - "C:\\MinGW\\bin\\mingw32-make coverage"
+  # TODO: Makefile for Windows
+  - "pip install -r requirements-dev.txt"
+  - "detox --skip-missing-interpreters"

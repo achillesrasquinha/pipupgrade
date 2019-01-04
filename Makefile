@@ -114,7 +114,7 @@ endif
 
 test: install ## Run tests.
 	$(call log,INFO,Running Python Tests using $(JOBS) jobs.)
-	$(DETOX)  -n $(JOBS) --skip-missing-interpreters $(ARGS)
+	$(DETOX) -n $(JOBS) --skip-missing-interpreters $(ARGS)
 
 coverage: install ## Run tests and display coverage.
 ifeq (${ENVIRONMENT},development)
