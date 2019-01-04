@@ -10,6 +10,9 @@
     <a href="https://travis-ci.org/achillesrasquinha/pipupgrade">
         <img src="https://img.shields.io/travis/achillesrasquinha/pipupgrade.svg?style=flat-square">
     </a>
+    <a href="https://ci.appveyor.com/project/achillesrasquinha/pipupgrade">
+        <img src="https://img.shields.io/appveyor/ci/achillesrasquinha/pipupgrade.svg?style=flat-square&logo=appveyor">
+    </a>
     <a href="https://coveralls.io/github/achillesrasquinha/pipupgrade">
         <img src="https://img.shields.io/coveralls/github/achillesrasquinha/pipupgrade.svg?style=flat-square">
     </a>
