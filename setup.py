@@ -24,7 +24,7 @@ def isdef(var):
 def read(path, encoding = None):
     content = None
     
-    with open(path, encoding = encoding) as f:
+    with io.open(path, encoding = encoding) as f:
         content = f.read()
 
     return content
