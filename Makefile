@@ -11,7 +11,6 @@ PROJDIR					= ${BASEDIR}/src/pipupgrade
 TESTDIR					= ${BASEDIR}/tests
 
 PYTHONPATH		 	   ?= $(shell command -v python)
-VIRTUALENV			   ?= $(shell command -v virtualenv)
 
 VENVDIR				   ?= ${BASEDIR}/.venv
 VENVBIN					= ${VENVDIR}/bin
@@ -60,7 +59,7 @@ ifneq (${VERBOSE},true)
 endif
 
 	$(call log,INFO,Creating a Virtual Environment ${VENVDIR} with Python - ${PYTHONPATH})
-	$(VIRTUALENV) $(VENVDIR) -p $(PYTHONPATH) $(OUT)
+	@virtualenv $(VENVDIR) -p $(PYTHONPATH) $(OUT)
 
 info: ## Display Information
 	@echo "Python Environment: ${PYTHON_ENVIRONMENT}"
@@ -137,9 +136,7 @@ bump: ## Bump Version
 	git add $(PROJDIR)/VERSION
 	git commit -m "Bumped to Version $(VERSION)"
 
-release: test ## Create a Release
-	$(PYTHON) setup.py sdist bdist_wheel
-
+release: test build ## Create a Release
 ifeq (${ENVIRONMENT},development)
 	$(call log,WARN,Ensure your environment is in production mode.)
 	$(TWINE) upload --repository-url https://test.pypi.org/legacy/   $(BASEDIR)/dist/* 
@@ -151,6 +148,13 @@ shell: ## Launch an IPython shell.
 	$(call log,INFO,Launching Python Shell)
 	$(IPYTHON) \
 		--no-banner
+
+build:  clean ## Build the Distribution.
+	$(PYTHON) setup.py sdist bdist_wheel
+
+dbuild: clean ## Build the Docker Image.
+	$(call log,INFO,Building Docker Image)
+	@docker build $(BASEDIR) --tag $(PROJECT)
 
 help: ## Show help and exit.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
