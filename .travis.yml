@@ -23,9 +23,9 @@ install:
 
 script:
   - make test
+  - test $TRAVIS_BRANCH == "master" && make docker-build
 
 after_success:
-  - make coverage
   - $TRAVIS_BUILD_DIR/ci/scripts/bash/release.sh
 
 deploy:

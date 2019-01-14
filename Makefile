@@ -152,11 +152,11 @@ shell: ## Launch an IPython shell.
 build:  clean ## Build the Distribution.
 	$(PYTHON) setup.py sdist bdist_wheel
 
-dbuild: clean ## Build the Docker Image.
+docker-build: clean ## Build the Docker Image.
 	$(call log,INFO,Building Docker Image)
 	@docker build $(BASEDIR) --tag $(PROJECT)
 
-dtest: clean ## Test using Docker Tox Image.
+docker-tox: clean ## Test using Docker Tox Image.
 	$(call log,INFO,Testing the Docker Image)
 	@docker run --rm -v $(shell pwd):/app themattrix/tox
 
