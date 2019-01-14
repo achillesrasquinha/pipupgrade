@@ -42,7 +42,7 @@
 * [Usage](#usage)
 * [License](#license)
 
-### Features
+#### Features
 * Updates system packages and local packages.
 * Updates packages mentioned within a `requirements.txt` file (Also pins upto-date versions if mentioned).
 * Detects semantic version to avoid updates that break changes.
@@ -55,7 +55,7 @@
 $ pip install pipupgrade
 ```
 
-### Usage
+#### Usage
 
 <div align="center">
     <img src=".github/assets/demo.gif">
@@ -85,7 +85,7 @@ optional arguments:
   -h, --help            Show this help message and exit
 ```
 
-### License
+#### License
 
 This repository has been released under the [MIT License](LICENSE).
 

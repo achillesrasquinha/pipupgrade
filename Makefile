@@ -10,10 +10,10 @@ PROJECT					= pipupgrade
 PROJDIR					= ${BASEDIR}/src/pipupgrade
 TESTDIR					= ${BASEDIR}/tests
 
-PYTHONPATH		 	   ?= $(shell command -v python)
+PYTHONPATH		 	   ?= python
 
-VENVDIR				   ?= ${BASEDIR}/.venv
-VENVBIN					= ${VENVDIR}/bin
+VIRTUAL_ENV			   ?= ${BASEDIR}/.venv
+VENVBIN					= ${VIRTUAL_ENV}/bin
 
 PYTHON				  	= ${VENVBIN}/python
 IPYTHON					= ${VENVBIN}/ipython
@@ -58,8 +58,8 @@ ifneq (${VERBOSE},true)
 	$(eval OUT = > /dev/null)
 endif
 
-	$(call log,INFO,Creating a Virtual Environment ${VENVDIR} with Python - ${PYTHONPATH})
-	@virtualenv $(VENVDIR) -p $(PYTHONPATH) $(OUT)
+	$(call log,INFO,Creating a Virtual Environment ${VIRTUAL_ENV} with Python - ${PYTHONPATH})
+	@virtualenv $(VIRTUAL_ENV) -p $(PYTHONPATH) $(OUT)
 
 info: ## Display Information
 	@echo "Python Environment: ${PYTHON_ENVIRONMENT}"
@@ -136,7 +136,7 @@ bump: ## Bump Version
 	git add $(PROJDIR)/VERSION
 	git commit -m "Bumped to Version $(VERSION)"
 
-release: test build ## Create a Release
+release: test build ## Create a Release (DEPRECATED - Use auto-deploy using .travis.yml)
 ifeq (${ENVIRONMENT},development)
 	$(call log,WARN,Ensure your environment is in production mode.)
 	$(TWINE) upload --repository-url https://test.pypi.org/legacy/   $(BASEDIR)/dist/* 

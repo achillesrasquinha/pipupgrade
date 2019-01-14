@@ -13,8 +13,6 @@ RUN pip install $PIPUPGRADEPATH
 
 WORKDIR $PIPUPGRADEPATH
 
-COPY ./docker/docker-entrypoint.sh /entrypoint.sh
-
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/usr/local/src/pipupgrade/docker/entrypoint.sh"]
 
 CMD ["pipupgrade"]
