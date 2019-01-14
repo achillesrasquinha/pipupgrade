@@ -2,10 +2,14 @@ language: python
 
 python:
   - "2.7"
+  # - "3.3" # Too many problems with setuptools compatibility, try distutils instead?
   - "3.4"
   - "3.5"
   - "3.6"
   - "3.7-dev"
+
+services:
+  - docker
 
 env:
   global:
@@ -15,14 +19,14 @@ env:
 
 install:
   - sudo $TRAVIS_BUILD_DIR/ci/scripts/bash/install.sh
-  - VENVDIR=$VIRTUAL_ENV make install
+  - make install
 
 script:
-  - VENVDIR=$VIRTUAL_ENV make test
+  - make test
 
 after_success:
-  - VENVDIR=$VIRTUAL_ENV make coverage
-  - npx semantic-release
+  - make coverage
+  - $TRAVIS_BUILD_DIR/ci/scripts/bash/release.sh
 
 deploy:
   provider: pypi
@@ -32,3 +36,9 @@ deploy:
   on:
     tags: true
   skip_existing: true
+
+deploy:
+  provider: script
+  script: $TRAVIS_BUILD_DIR/ci/scripts/bash/deploy.sh
+  on:
+    branch: master

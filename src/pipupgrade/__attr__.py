@@ -63,7 +63,7 @@ path["version"]             = osp.join(path["base"], "VERSION")
 
 __name__                    = "pipupgrade"
 __command__                 = "pipupgrade"
-__version__                 = read(path["version"])
+__version__                 = strip(read(path["version"]))
 __build__                   = get_revision(pardir(path["base"], 2), short = True, raise_err = False)
 __url__                     = "https://github.com/achillesrasquinha/pipupgrade"
 __author__                  = "Achilles Rasquinha"
