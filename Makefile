@@ -156,7 +156,7 @@ dbuild: clean ## Build the Docker Image.
 	$(call log,INFO,Building Docker Image)
 	@docker build $(BASEDIR) --tag $(PROJECT)
 
-dtest: clean ## Test the Docker Image.
+dtest: clean ## Test using Docker Tox Image.
 	$(call log,INFO,Testing the Docker Image)
 	@docker run --rm -v $(shell pwd):/app themattrix/tox
 
