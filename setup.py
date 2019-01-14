@@ -62,6 +62,7 @@ setup(
     author_email         = PKGINFO["__email__"],
     description          = PKGINFO["__description__"],
     long_description     = read("README.md", encoding = "utf8"),
+    long_description_content_type = "text/markdown",
     license              = PKGINFO["__license__"],
     keywords             = " ".join(PKGINFO["__keywords__"]),
     packages             = find_packages(where = SRCDIR),
