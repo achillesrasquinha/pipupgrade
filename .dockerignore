@@ -9,4 +9,3 @@ docker/pipupgrade
 .releasrc
 .travis.yml
 Makefile
-tox.ini

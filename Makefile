@@ -156,5 +156,9 @@ dbuild: clean ## Build the Docker Image.
 	$(call log,INFO,Building Docker Image)
 	@docker build $(BASEDIR) --tag $(PROJECT)
 
+dtest: clean ## Test the Docker Image.
+	$(call log,INFO,Testing the Docker Image)
+	@docker run --rm -v $(shell pwd):/app themattrix/tox
+
 help: ## Show help and exit.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
