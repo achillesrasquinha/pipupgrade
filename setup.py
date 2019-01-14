@@ -5,10 +5,7 @@ import os.path as osp
 import glob
 import io
 
-try:
-    from setuptools     import setup, find_packages
-except ImportError:
-    from distutils.core import setup
+from setuptools import setup, find_packages
 
 import pip
 
@@ -24,23 +21,13 @@ SRCDIR      = "src"
 def isdef(var):
     return var in globals()
 
-def decode(string, encoding = "utf8", raise_err = True):
-    try:
-        string = string.decode(encoding)
-    except Exception:
-        if raise_err:
-            raise
-    
-    return string
-
 def read(path, encoding = None):
     content = None
     
     with io.open(path, encoding = encoding) as f:
         content = f.read()
-        decoded = decode(content, encoding = encoding, raise_err = False)
 
-    return decoded
+    return content
 
 def get_package_info():
     attr = osp.abspath(osp.join(SRCDIR, PACKAGE, "__attr__.py"))

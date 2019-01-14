@@ -19,7 +19,7 @@ PYTHON				  	= ${VENVBIN}/python
 IPYTHON					= ${VENVBIN}/ipython
 PIP					  	= ${VENVBIN}/pip
 PYTEST					= ${VENVBIN}/pytest
-DETOX				  	= ${VENVBIN}/detox
+TOX						= ${VENVBIN}/tox
 COVERALLS				= ${VENVBIN}/coveralls
 TWINE					= ${VENVBIN}/twine
 IPYTHON					= ${VENVBIN}/ipython
@@ -113,7 +113,7 @@ endif
 
 test: install ## Run tests.
 	$(call log,INFO,Running Python Tests using $(JOBS) jobs.)
-	$(DETOX) -n $(JOBS) --skip-missing-interpreters $(ARGS)
+	$(TOX) --skip-missing-interpreters $(ARGS)
 
 coverage: install ## Run tests and display coverage.
 ifeq (${ENVIRONMENT},development)
