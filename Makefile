@@ -12,8 +12,6 @@ TESTDIR					= ${BASEDIR}/tests
 
 PYTHONPATH		 	   ?= python
 
-BRANCH					= $(shell git rev-parse --abbrev-ref HEAD)
-
 VIRTUAL_ENV			   ?= ${BASEDIR}/.venv
 VENVBIN					= ${VIRTUAL_ENV}/bin
 
@@ -156,7 +154,7 @@ build:  clean ## Build the Distribution.
 
 docker-build: clean ## Build the Docker Image.
 	$(call log,INFO,Building Docker Image)
-ifeq (${BRANCH},master)
+ifeq (${TRAVIS_BRANCH},master)
 	$(eval BRANCH = latest)
 endif
 
