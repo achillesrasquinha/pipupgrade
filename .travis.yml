@@ -28,8 +28,7 @@ install:
   - make install
 
 script:
-  - make test
-  - test $TRAVIS_BRANCH == "master" && make docker-build
+  - make test docker-build
 
 after_success:
   - $TRAVIS_BUILD_DIR/ci/scripts/bash/release.sh
