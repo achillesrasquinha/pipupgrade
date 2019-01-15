@@ -32,6 +32,7 @@ script:
 
 after_success:
   - $TRAVIS_BUILD_DIR/ci/scripts/bash/release.sh
+  - $TRAVIS_BUILD_DIR/ci/scripts/bash/docker-deploy.sh
 
 deploy:
   provider: pypi
@@ -41,9 +42,3 @@ deploy:
   on:
     tags: true
   skip_existing: true
-
-deploy:
-  provider: script
-  script: $TRAVIS_BUILD_DIR/ci/scripts/bash/deploy.sh
-  on:
-    branch: master
