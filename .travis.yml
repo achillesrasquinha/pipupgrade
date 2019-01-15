@@ -16,7 +16,6 @@ env:
     # Environment Variables - Travis CI
     - PYPI_USERNAME       = achillesrasquinha
     - DOCKER_HUB_USERNAME = achillesrasquinha
-    - DOCKER_HUB_REPONAME = pipupgrade
 
     # Environment Variables - Makefile
     - ENVIRONMENT         = test
