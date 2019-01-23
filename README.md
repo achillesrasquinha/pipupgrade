@@ -68,24 +68,25 @@ That's basically it! Run the help for more details...
 
 ```
 $ pipupgrade --help
-usage: pipupgrade [-y] [-c] [-l] [-s] [-r REQUIREMENTS] [-u] [--no-color] [-V]
-                  [-v] [-h]
+usage: pipupgrade [-y] [-c] [-l] [-s] [-r REQUIREMENTS] [-i] [-u] [--no-color]
+                  [-V] [-v] [-h]
 
 UPGRADE ALL THE PIP PACKAGES!
 
 optional arguments:
-  -y, --yes             Confirm for all dialogs
-  -c, --check           Check for outdated packages
-  -l, --latest          Update all packages to latest
-  -s, --self            Update self
+  -y, --yes             Confirm for all dialogs.
+  -c, --check           Check for outdated packages.
+  -l, --latest          Update all packages to latest.
+  -s, --self            Update pipupgrade.
   -r REQUIREMENTS, --requirements REQUIREMENTS
-                        Path to requirements.txt file
+                        Path to requirements.txt file.
+  -i, --interactive     Interactive Mode
   -u, --user            Install to the Python user install directory for
                         environment variables and user configuration.
-  --no-color            Avoid colored output
-  -V, --verbose         Display verbose output
-  -v, --version         show program's version number and exit
-  -h, --help            Show this help message and exit
+  --no-color            Avoid colored output.
+  -V, --verbose         Display verbose output.
+  -v, --version         Show pipupgrade's version number and exit.
+  -h, --help            Show this help message and exit.
 ```
 
 #### License

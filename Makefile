@@ -21,9 +21,7 @@ PIP					  	= ${VENVBIN}/pip
 PYTEST					= ${VENVBIN}/pytest
 TOX						= ${VENVBIN}/tox
 COVERALLS				= ${VENVBIN}/coveralls
-TWINE					= ${VENVBIN}/twine
 IPYTHON					= ${VENVBIN}/ipython
-BUMPVERSION				= ${VENVBIN}/bumpversion
 SAFETY					= ${VENVBIN}/safety
 
 JOBS				   ?= $(shell $(PYTHON) -c "import multiprocessing as mp; print(mp.cpu_count())")
@@ -128,20 +126,6 @@ endif
 
 ifeq (${ENVIRONMENT},test)
 	$(COVERALLS)
-endif
-
-bump: ## Bump Version
-	echo $(VERSION) > $(PROJDIR)/VERSION
-
-	git add $(PROJDIR)/VERSION
-	git commit -m "Bumped to Version $(VERSION)"
-
-release: test build ## Create a Release (DEPRECATED - Use auto-deploy using .travis.yml)
-ifeq (${ENVIRONMENT},development)
-	$(call log,WARN,Ensure your environment is in production mode.)
-	$(TWINE) upload --repository-url https://test.pypi.org/legacy/   $(BASEDIR)/dist/* 
-else
-	$(TWINE) upload --repository-url https://upload.pypi.org/legacy/ $(BASEDIR)/dist/* 
 endif
 
 shell: ## Launch an IPython shell.
