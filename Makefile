@@ -12,8 +12,6 @@ TESTDIR					= ${BASEDIR}/tests
 
 PYTHONPATH		 	   ?= python
 
-BRANCH					= $(shell git rev-parse --abbrev-ref HEAD)
-
 VIRTUAL_ENV			   ?= ${BASEDIR}/.venv
 VENVBIN					= ${VIRTUAL_ENV}/bin
 
@@ -156,11 +154,8 @@ build:  clean ## Build the Distribution.
 
 docker-build: clean ## Build the Docker Image.
 	$(call log,INFO,Building Docker Image)
-ifeq (${BRANCH},master)
-	$(eval BRANCH = latest)
-endif
 
-	@docker build $(BASEDIR) --tag $(DOCKER_HUB_USERNAME)/$(PROJECT):$(BRANCH)
+	@docker build $(BASEDIR) --tag $(DOCKER_HUB_USERNAME)/$(PROJECT)
 
 docker-tox: clean ## Test using Docker Tox Image.
 	$(call log,INFO,Testing the Docker Image)
