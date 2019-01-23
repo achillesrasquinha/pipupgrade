@@ -95,7 +95,7 @@ def _update_requirements(path, package):
 		write(path, content)
 
 @cli.command
-def command(requirements = [ ], latest = False, self = False, user = False, check = False, yes = False, no_color = True, verbose = False):
+def command(requirements = [ ], latest = False, self = False, user = False, check = False, interactive = False, yes = False, no_color = True, verbose = False):
 	cli.echo(cli_format("Checking...", cli.YELLOW))
 	
 	registry = dict()
@@ -151,17 +151,32 @@ def command(requirements = [ ], latest = False, self = False, user = False, chec
 				string = table.render()
 			
 				cli.echo("\nSource: %s\n" % stitle)
-				cli.echo(string)
-				cli.echo()
+				
+				if not interactive:
+					cli.echo(string)
+					cli.echo()
 
 				if not check:
-					npackages = len(dinfo) - (len([p for p in dinfo if p.diff_type == "major"]) if not latest else 0)
-					spackages = pluralize("package", npackages) # Packages "string"
+					packages  = [p for p in dinfo if p.diff_type != "major" or latest]
+					npackages = len(packages)
 
-					query 	  = "Do you wish to update %s %s?" % (npackages, spackages)
-					if npackages and (yes or cli.confirm(query)):
-						for i, package in enumerate(dinfo):
-							if package.diff_type != "major" or latest:
+					spackages = pluralize("package", npackages) # Packages "string"
+					query     = "Do you wish to update %s %s?" % (npackages, spackages)
+
+					if npackages and (yes or interactive or cli.confirm(query)):
+						for i, package in enumerate(packages):
+							update = True
+							
+							query  = "%s (%s > %s)" % (
+								cli_format(package.name, _SEMVER_COLOR_MAP.get(package.diff_type, cli.CLEAR)),
+								package.current_version,
+								_cli_format_semver(package.latest_version, package.diff_type)
+							)
+
+							if interactive:
+								update = yes or cli.confirm(query)
+								
+							if update:
 								cli.echo(cli_format(
 									"Updating %s of %s %s: %s" % (
 										i + 1,
@@ -171,7 +186,7 @@ def command(requirements = [ ], latest = False, self = False, user = False, chec
 									)
 								, cli.BOLD))
 
-								_pip.install(package.name, user = user, quiet = not verbose, no_cache = True, upgrade = True)
+								_pip.install(package.name, user = user, quiet = not verbose, no_cache_dir = True, upgrade = True)
 
 								if package.source != "__INSTALLED__":
 									_update_requirements(package.source, package)

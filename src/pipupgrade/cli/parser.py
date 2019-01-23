@@ -35,6 +35,10 @@ def get_parser():
         action  = "append",
         help    = "Path to requirements.txt file."
     )
+    parser.add_argument("-i", "--interactive",
+        action  = "store_true",
+        help    = "Interactive Mode"
+    )
     parser.add_argument("-u", "--user",
         action  = "store_true",
         help    = "Install to the Python user install directory for environment \
@@ -48,7 +52,6 @@ def get_parser():
         action  = "store_true",
         help    = "Display verbose output."
     )
-
     parser.add_argument("-v", "--version",
         action  = "version",
         version = __version__,
