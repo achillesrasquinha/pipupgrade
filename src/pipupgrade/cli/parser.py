@@ -33,11 +33,15 @@ def get_parser():
     )
     parser.add_argument("-r", "--requirements",
         action  = "append",
-        help    = "Path to requirements.txt file."
+        help    = "Path(s) to requirements.txt file."
     )
     parser.add_argument("-i", "--interactive",
         action  = "store_true",
         help    = "Interactive Mode"
+    )
+    parser.add_argument("-p", "--project",
+        action  = "append",
+        help    = "Path(s) to Project"
     )
     parser.add_argument("-u", "--user",
         action  = "store_true",

@@ -4,11 +4,12 @@ from pipupgrade._compat import iteritems
 # imports - standard imports
 import sys, os, os.path as osp
 import re
+import glob
 
 # imports - module imports
 from pipupgrade.commands.util import cli_format
 from pipupgrade.table      	  import Table
-from pipupgrade.util.string   import pluralize
+from pipupgrade.util.string   import strip, pluralize
 from pipupgrade.util.system   import read, write
 from pipupgrade 		      import _pip, request as req, cli, semver
 from pipupgrade.__attr__      import __name__
@@ -91,11 +92,27 @@ def _update_requirements(path, package):
 					)
 					
 					f.write(line)
-	except Exception:
+	except Exception as e:
 		write(path, content)
 
+def _get_included_requirements(fname):
+	path    = osp.realpath(fname)
+
+
+
 @cli.command
-def command(requirements = [ ], latest = False, self = False, user = False, check = False, interactive = False, yes = False, no_color = True, verbose = False):
+def command(
+	requirements = [ ],
+	project      = None,
+	latest		 = False,
+	self 		 = False,
+	user		 = False,
+	check		 = False,
+	interactive  = False,
+	yes			 = False,
+	no_color 	 = True,
+	verbose		 = False
+):
 	cli.echo(cli_format("Checking...", cli.YELLOW))
 	
 	registry = dict()
@@ -103,10 +120,43 @@ def command(requirements = [ ], latest = False, self = False, user = False, chec
 	if self:
 		package = __name__
 
-		_pip.install(package, user = user, quiet = not verbose, no_cache = True, upgrade = True)
+		_pip.install(package, user = user, quiet = not verbose, no_cache_dir = True, upgrade = True)
 		cli.echo("%s upto date." % cli_format(package, cli.CYAN))
 	else:
+		if project:
+			for p in project:
+				projpath     = osp.abspath(p)
+				requirements = requirements or [ ]
+
+				# COLLECT ALL THE REQUIREMENTS FILES!
+
+				# Detect Requirements Files
+				# Check requirements*.txt files in current directory.
+				for requirement in glob.glob(osp.join(projpath, "requirements*.txt")):
+					requirements.insert(0, requirement)
+
+				# Check if requirements is a directory
+				if osp.isdir(osp.join(projpath, "requirements")):
+					for requirement in glob.glob(osp.join(projpath, "requirements", "*.txt")):
+						requirements.insert(0, requirement)
+
 		if requirements:
+			for requirement in requirements:
+				path = osp.realpath(requirement)
+
+				if not osp.exists(path):
+					cli.echo(cli_format("{} not found.".format(path), cli.RED))
+					sys.exit(os.EX_NOINPUT)
+				else:
+					filenames = _get_included_requirements(requirement)
+					
+					# with open(path) as f:
+					# 	content = f.readlines()
+						
+						# for line in content:
+						# 	if strip(line).startswith("-r "):
+						# 		# fname = 
+
 			for requirement in requirements:
 				path = osp.realpath(requirement)
 
@@ -124,6 +174,7 @@ def command(requirements = [ ], latest = False, self = False, user = False, chec
 
 			for package in packages:
 				package = PackageInfo(package)
+				package.source = source
 
 				if package.latest_version and package.current_version != package.latest_version:
 					diff_type = None
@@ -140,10 +191,12 @@ def command(requirements = [ ], latest = False, self = False, user = False, chec
 						cli_format(package.home_page, cli.CYAN)
 					])
 
-					package.source    = source
 					package.diff_type = diff_type
 
 					dinfo.append(package)
+
+				if package.source != "__INSTALLED__":
+					_update_requirements(package.source, package)
 
 			stitle = "Installed Distributions" if source == "__INSTALLED__" else source
 
@@ -187,8 +240,5 @@ def command(requirements = [ ], latest = False, self = False, user = False, chec
 								, cli.BOLD))
 
 								_pip.install(package.name, user = user, quiet = not verbose, no_cache_dir = True, upgrade = True)
-
-								if package.source != "__INSTALLED__":
-									_update_requirements(package.source, package)
 			else:
 				cli.echo("%s upto date." % cli_format(stitle, cli.CYAN))
