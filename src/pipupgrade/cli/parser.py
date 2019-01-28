@@ -2,12 +2,13 @@
 import argparse
 
 # imports - module imports
-from pipupgrade.__attr__ import (
+from pipupgrade.__attr__     import (
     __name__,
     __version__,
     __description__,
     __command__
 )
+from pipupgrade.util.environ import getenv
 
 def get_parser():
     parser = argparse.ArgumentParser(
@@ -42,6 +43,18 @@ def get_parser():
     parser.add_argument("-p", "--project",
         action  = "append",
         help    = "Path(s) to Project"
+    )
+    parser.add_argument("--git-username",
+        help    = "Git Username",
+        default = getenv("GIT_USERNAME")
+    )
+    parser.add_argument("--git-email",
+        help    = "Git Email",
+        default = getenv("GIT_EMAIL")
+    )
+    parser.add_argument("--pull-request",
+        action  = "store_true",
+        help    = "Perform a Pull Request"
     )
     parser.add_argument("-u", "--user",
         action  = "store_true",

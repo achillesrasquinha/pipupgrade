@@ -1,6 +1,16 @@
 # imports - module imports
-from pipupgrade.util.string import strip_ansi, pluralize, kebab_case
+from pipupgrade.util.string import strip, strip_ansi, pluralize, kebab_case
 from pipupgrade import cli
+
+def test_strip():
+    string = "foobar"
+    assert strip(string) == string
+
+    string = "\n   foobar\nfoobar   \n   "
+    assert strip(string) == "foobar\nfoobar"
+
+    string = "\n\n\n"
+    assert strip(string) == ""
 
 def test_strip_ansi():
     assert strip_ansi(cli.format("foobar", cli.GREEN)) == "foobar"

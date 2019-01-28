@@ -7,10 +7,12 @@ import re
 import glob
 
 # imports - module imports
+from pipupgrade.model         import Project
 from pipupgrade.commands.util import cli_format
 from pipupgrade.table      	  import Table
 from pipupgrade.util.string   import strip, pluralize
-from pipupgrade.util.system   import read, write
+from pipupgrade.util.system   import read, write, popen
+from pipupgrade.util.environ  import getenvvar
 from pipupgrade 		      import _pip, request as req, cli, semver
 from pipupgrade.__attr__      import __name__
 
@@ -82,28 +84,51 @@ def _update_requirements(path, package):
 			version = re.escape(package.current_version)
 		)
 		lines   = content.splitlines()
+		nlines  = len(lines)
 		
 		with open(path, "w") as f:
-			for line in lines:
+			for i, line in enumerate(lines):
 				if re.search(pattern, line, flags = re.IGNORECASE):
 					line = line.replace(
 						"==%s" % package.current_version,
 						"==%s" % package.latest_version
 					)
 					
-					f.write(line)
-	except Exception as e:
-		write(path, content)
+				f.write(line)
 
-def _get_included_requirements(fname):
-	path    = osp.realpath(fname)
+				if i < nlines - 1:
+					f.write("\n")
+	except Exception:
+		# In case we fucked up!
+		write(path, content, force = True)
 
+def _get_included_requirements(filename):
+	path         = osp.realpath(filename)
+	basepath     = osp.dirname(path)
+	requirements = [ ]
 
+	with open(path) as f:
+		content = f.readlines()
+
+		for line in content:
+			line = strip(line)
+
+			if line.startswith("-r "):
+				filename = line.split("-r ")[1]
+				realpath = osp.join(basepath, filename)
+				requirements.append(realpath)
+
+				requirements += _get_included_requirements(realpath)
+
+	return requirements
 
 @cli.command
 def command(
 	requirements = [ ],
 	project      = None,
+	pull_request = False,
+	git_username = None,
+	git_email    = None,
 	latest		 = False,
 	self 		 = False,
 	user		 = False,
@@ -124,21 +149,11 @@ def command(
 		cli.echo("%s upto date." % cli_format(package, cli.CYAN))
 	else:
 		if project:
-			for p in project:
-				projpath     = osp.abspath(p)
-				requirements = requirements or [ ]
+			requirements = requirements or [ ]
 
-				# COLLECT ALL THE REQUIREMENTS FILES!
-
-				# Detect Requirements Files
-				# Check requirements*.txt files in current directory.
-				for requirement in glob.glob(osp.join(projpath, "requirements*.txt")):
-					requirements.insert(0, requirement)
-
-				# Check if requirements is a directory
-				if osp.isdir(osp.join(projpath, "requirements")):
-					for requirement in glob.glob(osp.join(projpath, "requirements", "*.txt")):
-						requirements.insert(0, requirement)
+			for i, p in enumerate(project):
+				project[i]    = Project(osp.abspath(p))
+				requirements += project[i].requirements
 
 		if requirements:
 			for requirement in requirements:
@@ -148,14 +163,7 @@ def command(
 					cli.echo(cli_format("{} not found.".format(path), cli.RED))
 					sys.exit(os.EX_NOINPUT)
 				else:
-					filenames = _get_included_requirements(requirement)
-					
-					# with open(path) as f:
-					# 	content = f.readlines()
-						
-						# for line in content:
-						# 	if strip(line).startswith("-r "):
-						# 		# fname = 
+					requirements += _get_included_requirements(requirement)
 
 			for requirement in requirements:
 				path = osp.realpath(requirement)
@@ -242,3 +250,22 @@ def command(
 								_pip.install(package.name, user = user, quiet = not verbose, no_cache_dir = True, upgrade = True)
 			else:
 				cli.echo("%s upto date." % cli_format(stitle, cli.CYAN))
+
+		if project and pull_request:
+			if not git_username:
+				raise ValueError('Git Username not found. Use --git-username or the environment variable "%s" to set value.' % getenvvar("GIT_USERNAME"))
+			if not git_email:
+				raise ValueError('Git Email not found. Use --git-email or the environment variable "%s" to set value.' % getenvvar("GIT_EMAIL"))
+
+			for p in project:
+				popen("git config user.name  %s" % git_username, cwd = p.path)
+				popen("git config user.email %s" % git_email,    cwd = p.path)
+
+				_, output, _ = popen("git status -s", output = True)
+
+				if output:
+					# TODO: cross-check with "git add" ?
+					popen("git add %s" % " ".join(p.requirements), cwd = p.path)
+					popen("git commit -m 'fix(dependencies): Update dependencies to latest.'", cwd = p.path)
+
+					popen("git push", cwd = p.path)

@@ -54,3 +54,14 @@ def get_function_arguments(fn):
         raise ValueError("Unknown Python Version {} for fetching functional arguments.".format(sys.version))
 
     return params
+
+def auto_typecast(value):
+    str_to_bool = lambda x: { "True": True, "False": False, "None": None}[x]
+
+    for type_ in (str_to_bool, int, float):
+        try:
+            return type_(value)
+        except (KeyError, ValueError, TypeError):
+            pass
+
+    return value
