@@ -56,6 +56,10 @@ def get_parser():
         action  = "store_true",
         help    = "Perform a Pull Request"
     )
+    parser.add_argument("--github-access-token",
+        help    = "GitHub Access Token",
+        default = getenv("GITHUB_ACCESS_TOKEN")
+    )
     parser.add_argument("-u", "--user",
         action  = "store_true",
         help    = "Install to the Python user install directory for environment \

@@ -13,6 +13,7 @@ from pipupgrade.table      	  import Table
 from pipupgrade.util.string   import strip, pluralize
 from pipupgrade.util.system   import read, write, popen
 from pipupgrade.util.environ  import getenvvar
+from pipupgrade.util.datetime import get_timestamp_str
 from pipupgrade 		      import _pip, request as req, cli, semver
 from pipupgrade.__attr__      import __name__
 
@@ -124,19 +125,20 @@ def _get_included_requirements(filename):
 
 @cli.command
 def command(
-	requirements = [ ],
-	project      = None,
-	pull_request = False,
-	git_username = None,
-	git_email    = None,
-	latest		 = False,
-	self 		 = False,
-	user		 = False,
-	check		 = False,
-	interactive  = False,
-	yes			 = False,
-	no_color 	 = True,
-	verbose		 = False
+	requirements 		= [ ],
+	project      		= None,
+	pull_request 		= False,
+	git_username 		= None,
+	git_email    		= None,
+	github_access_token = None,
+	latest				= False,
+	self 		 		= False,
+	user		 		= False,
+	check		 		= False,
+	interactive  		= False,
+	yes			 		= False,
+	no_color 	 		= True,
+	verbose		 		= False
 ):
 	cli.echo(cli_format("Checking...", cli.YELLOW))
 	
@@ -264,6 +266,8 @@ def command(
 				_, output, _ = popen("git status -s", output = True)
 
 				if output:
+					popen("git checkout -B %s" % get_timestamp_str(format_ = "%Y%m%d%H%M%S"))
+
 					# TODO: cross-check with "git add" ?
 					popen("git add %s" % " ".join(p.requirements), cwd = p.path)
 					popen("git commit -m 'fix(dependencies): Update dependencies to latest.'", cwd = p.path)
