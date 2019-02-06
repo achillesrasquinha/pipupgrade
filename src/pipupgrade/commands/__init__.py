@@ -191,7 +191,7 @@ def command(
 
 					try:
 						diff_type = semver.difference(package.current_version, package.latest_version)
-					except ValueError:
+					except (TypeError, ValueError):
 						pass
 
 					table.insert([
