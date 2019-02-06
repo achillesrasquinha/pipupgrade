@@ -68,7 +68,7 @@ ifneq (${VERBOSE},true)
 endif
 
 ifneq (${PIPCACHEDIR},)
-	$(eval PIPCACHEDIR = --cache-dir $(PIPCACHEDIR))
+	$(eval PIPCACHEDIR := --cache-dir $(PIPCACHEDIR))
 endif
 
 	$(call log,INFO,Building Requirements)
@@ -142,8 +142,15 @@ docker-build: clean ## Build the Docker Image.
 	@docker build $(BASEDIR) --tag $(DOCKER_HUB_USERNAME)/$(PROJECT)
 
 docker-tox: clean ## Test using Docker Tox Image.
-	$(call log,INFO,Testing the Docker Image)
-	@docker run --rm -v $(shell pwd):/app themattrix/tox
+	$(call log,INFO,Running Tests using Docker Tox)
+	$(eval TMPDIR := /tmp/$(PROJECT)-$(shell date +"%Y_%m_%d_%H_%M_%S"))
+
+	@mkdir   $(TMPDIR)
+	@cp -R . $(TMPDIR)
+
+	@docker run --rm -v $(TMPDIR):/app themattrix/tox
+
+	@rm -rf  $(TMPDIR)
 
 help: ## Show help and exit.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)

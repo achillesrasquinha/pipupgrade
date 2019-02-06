@@ -1,10 +1,9 @@
 pylint
 autopep8
 ipython
-twine
-bumpversion
 vulture
 safety
+pre-commit
 pytest
 pytest-cov
 pytest-xdist

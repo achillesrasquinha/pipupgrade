@@ -16,12 +16,6 @@ def merge_dict(*args):
         merged.update(copy)
 
     return merged
-    
-def list_filter(v, filter_):
-    filtered = filter(filter_, v)
-    filtered = list(filtered)
-
-    return filtered
 
 def dict_from_list(keys, values):
     return dict(zip(keys, values))

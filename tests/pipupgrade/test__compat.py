@@ -8,7 +8,6 @@ from pipupgrade.util._test import mock_input, assert_input
 
 def test_imports():
     from pipupgrade._compat import (
-        builtins    as _,
         StringIO    as _,
 
         urlopen     as _,

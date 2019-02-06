@@ -15,7 +15,6 @@ _ANSI_FORMAT = "\033[{}m"
 _format_ansi = lambda x: _ANSI_FORMAT.format(x)
 
 BOLD      = _format_ansi("0;1")
-UNDERLINE = _format_ansi("0;4")
 RED       = _format_ansi("0;91")
 GREEN     = _format_ansi("0;92")
 YELLOW    = _format_ansi("0;93")

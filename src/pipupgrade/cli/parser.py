@@ -33,7 +33,7 @@ def get_parser():
     )
     parser.add_argument("-r", "--requirements",
         action  = "append",
-        help    = "Path to requirements.txt file."
+        help    = "Path(s) to requirements.txt file."
     )
     parser.add_argument("-i", "--interactive",
         action  = "store_true",
