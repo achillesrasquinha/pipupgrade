@@ -8,7 +8,7 @@ import pytest
 from pipupgrade.commands   import command
 from pipupgrade.util._test import mock_input
 
-def test_command(capsys):
+def test_command():
     with mock_input(StringIO("Y")):
         command(check = True)
 
