@@ -72,7 +72,7 @@ $ pipupgrade --help
 usage: pipupgrade [--pip-path PIP_PATH] [-y] [-c] [-l] [-s] [-r REQUIREMENTS]
                   [-i] [-u] [--no-color] [-V] [-v] [-h]
 
-pipupgrade (v 1.3.1)
+pipupgrade (v 1.4.0)
 
 UPGRADE ALL THE PIP PACKAGES!
 
