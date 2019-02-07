@@ -72,13 +72,12 @@ $ pipupgrade --help
 usage: pipupgrade [--pip-path PIP_PATH] [-y] [-c] [-l] [-s] [-r REQUIREMENTS]
                   [-i] [-u] [--no-color] [-V] [-v] [-h]
 
-pipupgrade (v 1.3.1)
+pipupgrade (v 1.4.0)
 
 UPGRADE ALL THE PIP PACKAGES!
 
 optional arguments:
-  --pip-path PIP_PATH   Path to pip executable to be used. (default:
-                        /Users/achilles/dev/pipupgrade/.venv/bin/pip)
+  --pip-path PIP_PATH   Path to pip executable to be used. (default: pip)
   -y, --yes             Confirm for all dialogs. (default: False)
   -c, --check           Check for outdated packages. (default: False)
   -l, --latest          Update all packages to latest. (default: False)
