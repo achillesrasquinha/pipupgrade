@@ -18,6 +18,6 @@ def test_install(tmpdir):
     tempfile  = directory.join("tmp.log")
     path      = str(tempfile)
 
-    _pip.install("foobar")
-    _pip.install("foobar", quiet = True)
-    _pip.install("foobar", log = path)
+    _pip.install("requests")
+    _pip.install("requests", quiet = True)
+    _pip.install("requests", log   = path)
