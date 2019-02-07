@@ -1,3 +1,4 @@
+pipenv
 ipython
 vulture
 safety

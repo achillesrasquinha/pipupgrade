@@ -7,6 +7,7 @@ pytest-sugar
 pytest-travis-fold
 tox-travis
 coveralls
+pipenv
 ipython
 vulture
 safety

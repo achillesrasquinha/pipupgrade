@@ -55,6 +55,10 @@ def get_parser():
         action  = "append",
         help    = "Path(s) to requirements.txt file."
     )
+    parser.add_argument("--pipfile",
+        action  = "append",
+        help    = "Path(s) to Pipfile"
+    )
     parser.add_argument("-i", "--interactive",
         action  = "store_true",
         help    = "Interactive Mode"

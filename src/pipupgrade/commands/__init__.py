@@ -130,12 +130,12 @@ def _get_included_requirements(filename):
 def command(
 	pip_path            = _pip._PIP_EXECUTABLE,
 	requirements 		= [ ],
+	pipfile             = [ ],
 	project      		= None,
 	pull_request 		= False,
 	git_username 		= None,
 	git_email    		= None,
 	github_access_token = None,
-	requirements 		= [ ],
 	latest				= False,
 	self 		 		= False,
 	user		 		= False,

@@ -12,6 +12,8 @@ class Project:
         self.path         = path
         self.requirements = self._get_requirements()
 
+        self.pipfile      = self._get_pipfile()
+
     def _get_requirements(self):
         # COLLECT ALL THE REQUIREMENTS FILES!
         path         = self.path
@@ -28,3 +30,9 @@ class Project:
                 requirements.append(requirement)
 
         return requirements
+
+    def _get_pipfile(self):
+        path    = self.path
+        pipfile = osp.join(path, "Pipfile")
+        
+        return pipfile if osp.exists(pipfile) else None
