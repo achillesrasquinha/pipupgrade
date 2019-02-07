@@ -1,9 +1,5 @@
 pylint
 autopep8
-ipython
-vulture
-safety
-pre-commit
 pytest
 pytest-cov
 pytest-xdist
@@ -11,3 +7,7 @@ pytest-sugar
 pytest-travis-fold
 tox-travis
 coveralls
+ipython
+vulture
+safety
+pre-commit
