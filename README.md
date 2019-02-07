@@ -68,23 +68,28 @@ That's basically it! Run the help for more details...
 
 ```
 $ pipupgrade --help
-usage: pipupgrade [-y] [-c] [-l] [-s] [-r REQUIREMENTS] [-i] [-u] [--no-color]
-                  [-V] [-v] [-h]
+usage: pipupgrade [--pip-path PIP_PATH] [-y] [-c] [-l] [-s] [-r REQUIREMENTS]
+                  [-i] [-u] [--no-color] [-V] [-v] [-h]
+
+pipupgrade (v 1.3.1)
 
 UPGRADE ALL THE PIP PACKAGES!
 
 optional arguments:
-  -y, --yes             Confirm for all dialogs.
-  -c, --check           Check for outdated packages.
-  -l, --latest          Update all packages to latest.
-  -s, --self            Update pipupgrade.
+  --pip-path PIP_PATH   Path to pip executable to be used. (default:
+                        /Users/achilles/dev/pipupgrade/.venv/bin/pip)
+  -y, --yes             Confirm for all dialogs. (default: False)
+  -c, --check           Check for outdated packages. (default: False)
+  -l, --latest          Update all packages to latest. (default: False)
+  -s, --self            Update pipupgrade. (default: False)
   -r REQUIREMENTS, --requirements REQUIREMENTS
-                        Path to requirements.txt file.
-  -i, --interactive     Interactive Mode
+                        Path(s) to requirements.txt file. (default: None)
+  -i, --interactive     Interactive Mode (default: False)
   -u, --user            Install to the Python user install directory for
                         environment variables and user configuration.
-  --no-color            Avoid colored output.
-  -V, --verbose         Display verbose output.
+                        (default: False)
+  --no-color            Avoid colored output. (default: False)
+  -V, --verbose         Display verbose output. (default: False)
   -v, --version         Show pipupgrade's version number and exit.
   -h, --help            Show this help message and exit.
 ```
