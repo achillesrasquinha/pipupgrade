@@ -3,7 +3,7 @@ LABEL maintainer=achillesrasquinha@gmail.com
 
 ENV PIPUPGRADEPATH=/usr/local/src/pipupgrade
 
-RUN apk add --no-cache bash
+RUN apk add --no-cache bash git
 
 RUN mkdir -p $PIPUPGRADEPATH
 

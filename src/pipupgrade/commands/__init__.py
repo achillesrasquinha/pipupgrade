@@ -196,7 +196,7 @@ def command(
 
 					table.insert([
 						cli_format(package.name, _SEMVER_COLOR_MAP.get(diff_type, cli.CLEAR)),
-						package.current_version,
+						package.current_version or "na",
 						_cli_format_semver(package.latest_version, diff_type),
 						cli_format(package.home_page, cli.CYAN)
 					])
@@ -226,7 +226,7 @@ def command(
 					spackages = pluralize("package", npackages) # Packages "string"
 					query     = "Do you wish to update %s %s?" % (npackages, spackages)
 
-					if npackages and (yes or interactive or cli.confirm(query)):
+					if npackages and (yes or interactive or cli.confirm(query, quit_ = True)):
 						for i, package in enumerate(packages):
 							update = True
 							

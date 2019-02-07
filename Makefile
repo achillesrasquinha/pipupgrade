@@ -23,6 +23,7 @@ TOX						= ${VENVBIN}/tox
 COVERALLS				= ${VENVBIN}/coveralls
 IPYTHON					= ${VENVBIN}/ipython
 SAFETY					= ${VENVBIN}/safety
+PRECOMMIT				= ${VENVBIN}/pre-commit
 
 JOBS				   ?= $(shell $(PYTHON) -c "import multiprocessing as mp; print(mp.cpu_count())")
 PYTHON_ENVIRONMENT      = $(shell $(PYTHON) -c "import sys;v=sys.version_info;print('py%s%s'%(v.major,v.minor))")
@@ -133,10 +134,13 @@ shell: ## Launch an IPython shell.
 	$(IPYTHON) \
 		--no-banner
 
-build:  clean ## Build the Distribution.
+build: clean ## Build the Distribution.
 	$(PYTHON) setup.py sdist bdist_wheel
 
-docker-build: clean ## Build the Docker Image.
+pre-commit: ## Perform Pre-Commit Tasks.
+	$(PRECOMMIT) run
+
+docker-build: clean pre-commit ## Build the Docker Image.
 	$(call log,INFO,Building Docker Image)
 
 	@docker build $(BASEDIR) --tag $(DOCKER_HUB_USERNAME)/$(PROJECT)
