@@ -8,12 +8,31 @@ from pipupgrade.__attr__ import (
     __description__,
     __command__
 )
+from pipupgrade.cli           import util as _cli
+from pipupgrade.cli.formatter import ArgumentParserFormatter
+from pipupgrade._pip          import _PIP_EXECUTABLE
+
+_DESCRIPTION_JUMBOTRON = \
+"""
+%s (v %s)
+
+%s
+""" % (
+    _cli.format(__name__,        _cli.RED),
+    _cli.format(__version__,     _cli.BOLD),
+    _cli.format(__description__, _cli.BOLD)
+)
 
 def get_parser():
     parser = argparse.ArgumentParser(
-        prog        = __command__,
-        description = __description__,
-        add_help    = False
+        prog            = __command__,
+        description     = _DESCRIPTION_JUMBOTRON,
+        add_help        = False,
+        formatter_class = ArgumentParserFormatter
+    )
+    parser.add_argument("--pip-path",
+        default = _PIP_EXECUTABLE,
+        help    = "Path to pip executable to be used."
     )
     parser.add_argument("-y", "--yes",
         action  = "store_true",

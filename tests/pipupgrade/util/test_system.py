@@ -1,4 +1,12 @@
-from pipupgrade.util.system import read, write
+# imports - standard imports
+import os, os.path as osp
+import subprocess  as sp
+
+# imports - test imports
+import pytest
+
+# imports - module imports
+from pipupgrade.util.system import read, write, popen
 
 def test_read(tmpdir):
     directory = tmpdir.mkdir("tmp")
@@ -34,3 +42,36 @@ def test_write(tmpdir):
 
     write(path, next_, force = True)
     assert tempfile.read() == next_
+
+def test_popen(tmpdir):
+    directory = tmpdir.mkdir("tmp")
+    dirpath   = str(directory)
+
+    string    = "Hello, World!"
+
+    code, out, err = popen("echo '%s'" % string,
+        output = True)
+    assert code == 0
+    assert out  == string
+    assert not err
+    
+    env = dict({ "FOOBAR": "foobar" })
+    code, out, err = popen("echo $FOOBAR; echo $PATH",
+        output = True, env = env)
+    assert code == 0
+    assert out  == "%s\n%s" % (env["FOOBAR"], os.environ["PATH"])
+    assert not err
+
+    with pytest.raises(sp.CalledProcessError):
+        code = popen("exit 42")
+
+    errstr = "foobar"
+    code, out, err = popen('python -c "raise Exception("%s")"' % errstr,
+        output = True, raise_err = False)
+    assert code == 1
+    assert not out
+    assert errstr in err
+
+    filename = "foobar.txt"
+    popen("touch %s" % filename, cwd = dirpath)
+    assert osp.exists(osp.join(dirpath, filename))

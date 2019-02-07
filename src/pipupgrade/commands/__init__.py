@@ -64,6 +64,9 @@ class PackageInfo:
 		elif isinstance(package, _pip.InstallRequirement):
 			self.name            = package.name
 			self.current_version = package.installed_version
+		elif isinstance(package, dict):
+			self.name            = package["name"]
+			self.current_version = package["version"]
 
 		_pypi_info = _get_pypi_info(self.name, raise_err = False) or { }
 
@@ -95,7 +98,18 @@ def _update_requirements(path, package):
 		write(path, content)
 
 @cli.command
-def command(requirements = [ ], latest = False, self = False, user = False, check = False, interactive = False, yes = False, no_color = True, verbose = False):
+def command(
+	pip_path            = _pip._PIP_EXECUTABLE,
+	requirements 		= [ ],
+	latest				= False,
+	self 		 		= False,
+	user		 		= False,
+	check		 		= False,
+	interactive  		= False,
+	yes			 		= False,
+	no_color 	 		= True,
+	verbose		 		= False
+):
 	cli.echo(cli_format("Checking...", cli.YELLOW))
 	
 	registry = dict()
@@ -116,7 +130,8 @@ def command(requirements = [ ], latest = False, self = False, user = False, chec
 				else:
 					registry[path] = _pip.parse_requirements(requirement, session = "hack")
 		else:
-			registry["__INSTALLED__"] = _pip.get_installed_distributions()
+			registry["__INSTALLED__"] = _pip.list_(pip_exec = pip_path)
+			# _pip.get_installed_distributions() # https://github.com/achillesrasquinha/pipupgrade/issues/13
 
 		for source, packages in iteritems(registry):
 			table = Table(header = ["Name", "Current Version", "Latest Version", "Home Page"])
@@ -186,7 +201,7 @@ def command(requirements = [ ], latest = False, self = False, user = False, chec
 									)
 								, cli.BOLD))
 
-								_pip.install(package.name, user = user, quiet = not verbose, no_cache_dir = True, upgrade = True)
+								_pip.install(package.name, pip_exec = pip_path, user = user, quiet = not verbose, no_cache_dir = True, upgrade = True)
 
 								if package.source != "__INSTALLED__":
 									_update_requirements(package.source, package)
