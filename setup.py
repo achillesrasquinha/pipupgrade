@@ -82,7 +82,7 @@ setup(
         dev = get_dependencies(type_ = "development")
     ),
     include_package_data = True,
-    classifiers          = (
+    classifiers          = [
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
         "Intended Audience :: Developers",
@@ -98,5 +98,5 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy"
-    )
+    ]
 )
