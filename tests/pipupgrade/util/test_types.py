@@ -2,8 +2,7 @@
 from pipupgrade.util.types import (
     merge_dict,
     dict_from_list,
-    get_function_arguments,
-    auto_typecast
+    get_function_arguments
 )
 
 _TEST_GLOBAL = "foobar"
