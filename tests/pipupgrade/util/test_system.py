@@ -1,12 +1,13 @@
 # imports - standard imports
 import os, os.path as osp
 import subprocess  as sp
+from   distutils.spawn import find_executable
 
 # imports - test imports
 import pytest
 
 # imports - module imports
-from pipupgrade.util.system import read, write, popen
+from pipupgrade.util.system import read, write, popen, which
 
 def test_read(tmpdir):
     directory = tmpdir.mkdir("tmp")
@@ -75,3 +76,10 @@ def test_popen(tmpdir):
     filename = "foobar.txt"
     popen("touch %s" % filename, cwd = dirpath)
     assert osp.exists(osp.join(dirpath, filename))
+
+def test_which():
+    assert which("foobar") == None
+    assert which("python") == find_executable("python")
+
+    with pytest.raises(ValueError) as e:
+        which("foobar", raise_err = True)

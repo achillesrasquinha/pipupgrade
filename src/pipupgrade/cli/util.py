@@ -3,9 +3,11 @@ from __future__ import print_function
 from pipupgrade._compat import input
 
 # imports - standard imports
+import sys, os
 import inspect
 
-_ACCEPTABLE_YES_INPUTS = ("", "y", "Y")
+_ACCEPTABLE_INPUTS_YES  = ("", "y", "Y")
+_ACCEPTABLE_INPUTS_QUIT = ("q", "Q")
 
 _ANSI_FORMAT = "\033[{}m"
 _format_ansi = lambda x: _ANSI_FORMAT.format(x)
@@ -17,11 +19,16 @@ YELLOW    = _format_ansi("0;93")
 CYAN      = _format_ansi("0;96")
 CLEAR     = _format_ansi("0")
 
-def confirm(query):
-    query  = "{} [Y/n]: ".format(query)
-    output = input(query)
+def confirm(query, quit_ = True):
+    choices = "[Y/n%s]" % "/q" if quit_ else ""
+    query   = "%s %s: " % (query, choices)
 
-    return output in _ACCEPTABLE_YES_INPUTS
+    output  = input(query)
+
+    if output in _ACCEPTABLE_INPUTS_QUIT:
+        sys.exit(os.EX_OK)
+    
+    return output in _ACCEPTABLE_INPUTS_YES
 
 def format(string, type_):
     string = "{}{}{}".format(type_, string, CLEAR)
