@@ -5,8 +5,10 @@ from pipupgrade._compat import StringIO
 import pytest
 
 # imports - module imports
-from pipupgrade.commands   import command
-from pipupgrade.util._test import mock_input
+from pipupgrade.commands import command
+
+# imports - test imports
+from tests.util import mock_input
 
 def test_command():
     with mock_input(StringIO("Y")):

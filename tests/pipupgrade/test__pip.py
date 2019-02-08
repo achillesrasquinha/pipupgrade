@@ -13,11 +13,13 @@ def test_imports():
         DistInfoDistribution        as _
     )
 
-def test_install(tmpdir):
+def test_call(tmpdir):
     directory = tmpdir.mkdir("tmp")
     tempfile  = directory.join("tmp.log")
     path      = str(tempfile)
 
-    _pip.install("requests")
-    _pip.install("requests", quiet = True)
-    _pip.install("requests", log   = path)
+    _pip.call("install", "requests")
+    _pip.call("install", "requests", quiet = True)
+    _pip.call("install", "requests", log   = path)
+
+    _pip.call("list")

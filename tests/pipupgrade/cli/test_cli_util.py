@@ -1,6 +1,8 @@
 # imports - module imports
 from pipupgrade import cli
-from pipupgrade.util._test import assert_input, assert_stdout
+
+# imports - test imports
+from tests.util import assert_input, assert_stdout
 
 def test_confirm(capfd):
     query  = "foobar"
