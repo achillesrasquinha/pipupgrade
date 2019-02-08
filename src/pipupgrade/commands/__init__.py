@@ -68,10 +68,13 @@ class PackageInfo:
 		elif isinstance(package, dict):
 			self.name            = package["name"]
 			self.current_version = package["version"]
+			self.latest_version  = package.get("version")
 
 		_pypi_info = _get_pypi_info(self.name, raise_err = False) or { }
-
-		self.latest_version = _pypi_info.get("version")
+		
+		if not self.latest_version:
+			self.latest_version = _pypi_info.get("version")
+			
 		self.home_page      = _pypi_info.get("home_page")
 
 def _update_requirements(path, package):
