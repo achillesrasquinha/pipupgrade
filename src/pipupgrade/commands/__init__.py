@@ -75,7 +75,7 @@ class PackageInfo:
 
 		_pypi_info = _get_pypi_info(self.name, raise_err = False) or { }
 		
-		if not self.latest_version:
+		if not hasattr(self, "latest_version"):
 			self.latest_version = _pypi_info.get("version")
 			
 		self.home_page      = _pypi_info.get("home_page")
