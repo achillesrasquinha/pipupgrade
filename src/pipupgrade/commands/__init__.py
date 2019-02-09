@@ -141,6 +141,7 @@ def command(
 	github_access_token = None,
 	github_reponame     = None,
 	github_username     = None,
+	target_branch       = "master",
 	latest				= False,
 	self 		 		= False,
 	user		 		= False,
@@ -287,9 +288,12 @@ def command(
 					branch   = get_timestamp_str(format_ = "%Y%m%d%H%M%S")
 					popen("git checkout -B %s" % branch)
 
+					title    = "fix(dependencies): Update dependencies to latest"
+					body     = ""
+
 					# TODO: cross-check with "git add" ?
 					popen("git add %s" % " ".join(p.requirements), cwd = p.path)
-					popen("git commit -m 'fix(dependencies): Update dependencies to latest.'", cwd = p.path)
+					popen("git commit -m '%s'" % title, cwd = p.path)
 
 					popen("git push origin %s" % branch, cwd = p.path)
 
@@ -297,3 +301,17 @@ def command(
 						raise ValueError(errstr % ("GitHub Reponame", "--github-reponame", getenvvar("GITHUB_REPONAME")))
 					if not github_username:
 						raise ValueError(errstr % ("GitHub Username", "--github-username", getenvvar("GITHUB_USERNAME")))
+
+					url       = "/".join(["https://api.github.com", "repos", github_username, github_reponame])
+					params    = dict(
+						head  = "%s:branch" % git_username,
+						base  = target_branch,
+						title = title,
+						body  = body
+					)
+					response = req.post(url, params = params)
+
+					if response.ok:
+						pass
+					else:
+						response.raise_for_status()

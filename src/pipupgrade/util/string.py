@@ -26,3 +26,11 @@ def kebab_case(string, delimiter = " "):
     kebab = "-".join([word.lower() for word in words])
     
     return kebab
+
+def safe_encode(obj, encoding = "utf-8"):
+    try:
+        obj = obj.encode(encoding)
+    except (AttributeError, UnicodeEncodeError):
+        pass
+    
+    return obj

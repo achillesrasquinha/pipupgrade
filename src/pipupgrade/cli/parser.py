@@ -91,6 +91,10 @@ def get_parser():
         help    = "Target GitHub Username",
         default = getenv("GITHUB_USERNAME")
     )
+    parser.add_argument("--target-branch",
+        help    = "Target Branch",
+        default = getenv("TARGET_BRANCH", "master")
+    )
     parser.add_argument("-u", "--user",
         action  = "store_true",
         help    = "Install to the Python user install directory for environment \

@@ -40,7 +40,7 @@ def iterkeys(dict_, **kwargs):
 
 if PY2:
     # moves
-    from urllib2 import urlopen
+    from urllib2 import urlopen, Request, urlencode
     from urllib2 import HTTPError
 
     from __builtin__ import raw_input as input
@@ -51,7 +51,8 @@ if PY2:
     from itertools import izip_longest as zip_longest
 else:
     # moves
-    from urllib.request import urlopen
+    from urllib.request import urlopen, Request
+    from urllib.parse   import urlencode
     from urllib.error   import HTTPError
 
     from builtins import input
