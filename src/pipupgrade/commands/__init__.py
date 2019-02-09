@@ -78,7 +78,7 @@ class PackageInfo:
 		if not hasattr(self, "latest_version"):
 			self.latest_version = _pypi_info.get("version")
 			
-		self.home_page      = _pypi_info.get("home_page")
+		self.home_page = _pypi_info.get("home_page")
 
 def _update_requirements(path, package):
 	path 	= osp.realpath(path)
@@ -280,10 +280,11 @@ def command(
 				_, output, _ = popen("git status -s", output = True)
 
 				if output:
-					popen("git checkout -B %s" % get_timestamp_str(format_ = "%Y%m%d%H%M%S"))
+					branch   = get_timestamp_str(format_ = "%Y%m%d%H%M%S")
+					popen("git checkout -B %s" % branch)
 
 					# TODO: cross-check with "git add" ?
 					popen("git add %s" % " ".join(p.requirements), cwd = p.path)
 					popen("git commit -m 'fix(dependencies): Update dependencies to latest.'", cwd = p.path)
 
-					popen("git push", cwd = p.path)
+					popen("git push origin %s" % branch, cwd = p.path)
