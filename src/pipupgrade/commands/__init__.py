@@ -4,7 +4,7 @@ from pipupgrade._compat import iteritems
 # imports - standard imports
 import sys, os, os.path as osp
 import re
-import glob
+import json
 
 # imports - module imports
 from pipupgrade.model         import Project
@@ -71,10 +71,13 @@ class PackageInfo:
 		elif isinstance(package, dict):
 			self.name            = package["name"]
 			self.current_version = package["version"]
+			self.latest_version  = package.get("version")
 
 		_pypi_info = _get_pypi_info(self.name, raise_err = False) or { }
-
-		self.latest_version = _pypi_info.get("version")
+		
+		if not self.latest_version:
+			self.latest_version = _pypi_info.get("version")
+			
 		self.home_page      = _pypi_info.get("home_page")
 
 def _update_requirements(path, package):
@@ -152,7 +155,7 @@ def command(
 	if self:
 		package = __name__
 
-		_pip.install(package, user = user, quiet = not verbose, no_cache_dir = True, upgrade = True)
+		_pip.call("install", package, user = user, quiet = not verbose, no_cache = True, upgrade = True)
 		cli.echo("%s upto date." % cli_format(package, cli.CYAN))
 	else:
 		if project:
@@ -181,7 +184,9 @@ def command(
 				else:
 					registry[path] = _pip.parse_requirements(requirement, session = "hack")
 		else:
-			registry["__INSTALLED__"] = _pip.list_(pip_exec = pip_path)
+			_, output, _ = _pip.call("list", outdated = True, \
+				format = "json", pip_exec = pip_path)
+			registry["__INSTALLED__"] = json.loads(output)
 			# _pip.get_installed_distributions() # https://github.com/achillesrasquinha/pipupgrade/issues/13
 
 		for source, packages in iteritems(registry):
@@ -255,7 +260,7 @@ def command(
 									)
 								, cli.BOLD))
 
-								_pip.install(package.name, pip_exec = pip_path, user = user, quiet = not verbose, no_cache_dir = True, upgrade = True)
+								_pip.call("install", package.name, pip_exec = pip_path, user = user, quiet = not verbose, no_cache_dir = True, upgrade = True)
 
 								if package.source != "__INSTALLED__":
 									_update_requirements(package.source, package)

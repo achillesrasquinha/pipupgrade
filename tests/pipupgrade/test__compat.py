@@ -2,9 +2,11 @@
 import collections
 
 # imports - module imports
-from pipupgrade._compat    import (cmp, input, StringIO, iteritems, iterkeys,
+from pipupgrade._compat import (cmp, input, StringIO, iteritems, iterkeys,
     PYTHON_VERSION, _is_python_version)
-from pipupgrade.util._test import mock_input, assert_input
+
+# imports - test imports
+from tests.util import mock_input, assert_input
 
 def test_imports():
     from pipupgrade._compat import (

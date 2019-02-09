@@ -2,7 +2,6 @@
 from pipupgrade._compat import iteritems
 
 # imports - standard imports
-from   subprocess import call, list2cmdline
 import pip
 import json
 
@@ -14,11 +13,11 @@ from pipupgrade.util.environ import value_to_envval
 PIP9 = int(pip.__version__.split(".")[0]) < 10
 
 if PIP9:
-    from pip                 import get_installed_distributions
+    # from pip                 import get_installed_distributions
     from pip.req             import parse_requirements
     from pip.req.req_install import InstallRequirement
 else:
-    from pip._internal.utils.misc      import get_installed_distributions
+    # from pip._internal.utils.misc      import get_installed_distributions
     from pip._internal.req             import parse_requirements
     from pip._internal.req.req_install import InstallRequirement
 
@@ -44,12 +43,12 @@ def _get_pip_executable():
 
 _PIP_EXECUTABLE = _get_pip_executable()
 
-def install(*packages, **options):
-    pip_exec = options.pop("pip_exec", _PIP_EXECUTABLE)
+def call(*args, **kwargs):
+    pip_exec = kwargs.pop("pip_exec", _PIP_EXECUTABLE)
 
-    params   = [pip_exec, "install"]
-
-    for flag, value in iteritems(options):
+    params   = [pip_exec, *args]
+    
+    for flag, value in iteritems(kwargs):
         if value != False:
             flag  = "--%s" % kebab_case(flag, delimiter = "_")
             params.append(flag)
@@ -58,15 +57,4 @@ def install(*packages, **options):
                 value = value_to_envval(value)
                 params.append(value)
 
-    params += packages
-    
-    popen(*params)
-
-def list_(pip_exec = _PIP_EXECUTABLE):
-    pip       = which(pip_exec, raise_err = True)
-    params    = (pip, "list", "--format", "json")
-
-    _, out, _ = popen(*params, output = True)
-    packages  = json.loads(out)
-
-    return packages
+    return popen(*params, output = True)
