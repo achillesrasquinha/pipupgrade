@@ -139,6 +139,8 @@ def command(
 	git_username 		= None,
 	git_email    		= None,
 	github_access_token = None,
+	github_reponame     = None,
+	github_username     = None,
 	latest				= False,
 	self 		 		= False,
 	user		 		= False,
@@ -268,11 +270,13 @@ def command(
 				cli.echo("%s upto date." % cli_format(stitle, cli.CYAN))
 
 		if project and pull_request:
-			if not git_username:
-				raise ValueError('Git Username not found. Use --git-username or the environment variable "%s" to set value.' % getenvvar("GIT_USERNAME"))
-			if not git_email:
-				raise ValueError('Git Email not found. Use --git-email or the environment variable "%s" to set value.' % getenvvar("GIT_EMAIL"))
+			errstr = '%s not found. Use %s or the environment variable "%s" to set value.'
 
+			if not git_username:
+				raise ValueError(errstr % ("Git Username", "--git-username", getenvvar("GIT_USERNAME")))
+			if not git_email:
+				raise ValueError(errstr % ("Git Email",    "--git-email",    getenvvar("GIT_EMAIL")))
+			
 			for p in project:
 				popen("git config user.name  %s" % git_username, cwd = p.path)
 				popen("git config user.email %s" % git_email,    cwd = p.path)
@@ -288,3 +292,9 @@ def command(
 					popen("git commit -m 'fix(dependencies): Update dependencies to latest.'", cwd = p.path)
 
 					popen("git push origin %s" % branch, cwd = p.path)
+
+					if not github_reponame:
+						raise ValueError(errstr % ("GitHub Reponame", "--github-reponame", getenvvar("GITHUB_REPONAME")))
+					if not github_username:
+						raise ValueError(errstr % ("GitHub Username", "--github-username", getenvvar("GITHUB_USERNAME")))
+

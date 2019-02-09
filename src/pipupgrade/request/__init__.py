@@ -7,20 +7,35 @@ import json
 # imports - module imports
 from pipupgrade.request.response import Response
 
-def get(url):
-    response = Response()
-
+def get(*args, **kwargs):
     try:
-        http_response    = urlopen(url)
-        status_code      = http_response.getcode()
+        import requests as req
+        return req.get(*args, **kwargs)
+    except ImportError:
+        url      = kwargs.get("url")
+        response = Response()
 
-        response.content = http_response.read()
+        try:
+            http_response    = urlopen(url)
+            status_code      = http_response.getcode()
 
-        http_response.close()
-    except HTTPError as e:
-        status_code      = e.getcode()
+            response.content = http_response.read()
 
-    response.url         = url
-    response.status_code = status_code
+            http_response.close()
+        except HTTPError as e:
+            status_code      = e.getcode()
 
-    return response
+        response.url         = url
+        response.status_code = status_code
+
+        return response
+
+def post(*args, **kwargs):
+    try:
+        import requests as req
+        return req.post(*args, **kwargs)
+    except ImportError:
+        url      = kwargs.get("url")
+        response = Response()
+
+        return response

@@ -83,6 +83,14 @@ def get_parser():
         help    = "GitHub Access Token",
         default = getenv("GITHUB_ACCESS_TOKEN")
     )
+    parser.add_argument("--github-reponame",
+        help    = "Target GitHub Repository Name",
+        default = getenv("GITHUB_REPONAME")
+    )
+    parser.add_argument("--github-username",
+        help    = "Target GitHub Username",
+        default = getenv("GITHUB_USERNAME")
+    )
     parser.add_argument("-u", "--user",
         action  = "store_true",
         help    = "Install to the Python user install directory for environment \
