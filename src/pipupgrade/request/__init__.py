@@ -42,7 +42,7 @@ def post(*args, **kwargs):
         return req.post(*args, **kwargs)
     except ImportError:
         url      = kwargs.get("url")
-        params   = kwargs.get("params", { })
+        params   = kwargs.get("data", { })
 
         response = Response()
         

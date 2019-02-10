@@ -303,13 +303,13 @@ def command(
 						raise ValueError(errstr % ("GitHub Username", "--github-username", getenvvar("GITHUB_USERNAME")))
 
 					url       = "/".join(["https://api.github.com", "repos", github_username, github_reponame, "pulls"])
-					params    = dict(
+					data      = dict(
 						head  = "%s:branch" % git_username,
 						base  = target_branch,
 						title = title,
 						body  = body
 					)
-					response = req.post(url, params = params)
+					response = req.post(url, data = data)
 
 					if response.ok:
 						print("OK")
