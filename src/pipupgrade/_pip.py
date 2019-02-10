@@ -9,6 +9,7 @@ import json
 from pipupgrade.util.system  import which, popen
 from pipupgrade.util.string  import kebab_case
 from pipupgrade.util.environ import value_to_envval
+from pipupgrade.util.types   import sequencify
 
 PIP9 = int(pip.__version__.split(".")[0]) < 10
 
@@ -46,7 +47,7 @@ _PIP_EXECUTABLE = _get_pip_executable()
 def call(*args, **kwargs):
     pip_exec = kwargs.pop("pip_exec", _PIP_EXECUTABLE)
 
-    params   = [pip_exec] + args
+    params   = sequencify(pip_exec) + sequencify(args)
     
     for flag, value in iteritems(kwargs):
         if value != False:
