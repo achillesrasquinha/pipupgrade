@@ -50,7 +50,7 @@ def test_popen(tmpdir):
 
     string    = "Hello, World!"
 
-    code, out, err = popen("echo '%s'" % string,
+    code, out, err = popen("echo %s" % string,
         output = True)
     assert code == 0
     assert out  == string
