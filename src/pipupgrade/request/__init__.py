@@ -13,6 +13,8 @@ import json
 from pipupgrade.request.response import Response
 from pipupgrade.util.string      import safe_encode
 
+# YAGNI: This patched "requests" works only for pipupgrade's use-cases.
+
 def get(*args, **kwargs):
     try:
         import requests as req
@@ -42,12 +44,14 @@ def post(*args, **kwargs):
         return req.post(*args, **kwargs)
     except ImportError:
         url      = kwargs.get("url")
-        params   = kwargs.get("data", { })
+        data     = kwargs.get("data",    { })
+        headers  = kwargs.get("headers", { })
 
         response = Response()
         
         try:
-            request          = Request(url, safe_encode(urlencode(params)))
+            data             = safe_encode(urlencode(data))
+            request          = Request(url, data = data, headers = headers)
             http_response    = urlopen(request)
 
             response.content = http_response.read()

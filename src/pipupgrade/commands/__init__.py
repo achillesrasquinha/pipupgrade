@@ -286,16 +286,16 @@ def command(
 
 				if output:
 					branch   = get_timestamp_str(format_ = "%Y%m%d%H%M%S")
-					popen("git checkout -B %s" % branch)
+					popen("git checkout -B %s" % branch, quiet = True)
 
 					title    = "fix(dependencies): Update dependencies to latest"
 					body     = ""
 
 					# TODO: cross-check with "git add" ?
-					popen("git add %s" % " ".join(p.requirements), cwd = p.path)
-					popen("git commit -m '%s'" % title, cwd = p.path)
+					popen("git add %s" % " ".join(p.requirements), quiet = True, cwd = p.path)
+					popen("git commit -m '%s'" % title, quiet = True, cwd = p.path)
 
-					popen("git push origin %s" % branch, cwd = p.path)
+					popen("git push origin %s" % branch, quiet = True, cwd = p.path)
 
 					if not github_reponame:
 						raise ValueError(errstr % ("GitHub Reponame", "--github-reponame", getenvvar("GITHUB_REPONAME")))
@@ -303,16 +303,28 @@ def command(
 						raise ValueError(errstr % ("GitHub Username", "--github-username", getenvvar("GITHUB_USERNAME")))
 
 					url       = "/".join(["https://api.github.com", "repos", github_username, github_reponame, "pulls"])
-					headers   = { "Authorization": "token %s" % github_access_token }
+					headers   = dict({
+						 "Content-Type": "application/json",
+						"Authorization": "token %s" % github_access_token
+					})
 					data      = dict(
 						head  = "%s:%s" % (git_username, branch),
 						base  = target_branch,
 						title = title,
 						body  = body
 					)
-					response  = req.post(url, data = data, headers = headers)
+					# Although there's monkey patch support for the "requests"
+					# library, avoid using the "json" parameter which was
+					# added in requests 2.4.2+
+					response  = req.post(url, data = json.dumps(data), headers = headers)
 
 					if response.ok:
-						print("OK")
+						response = response.json()
+						number   = response["number"]
+
+						url      = "/".join(map(str, ["https://github.com", github_username, github_reponame, "pull", number]))
+						message  = "Created a Pull Request at %s" % url
+
+						cli.echo(cli_format(message, cli.GREEN))
 					else:
 						response.raise_for_status()

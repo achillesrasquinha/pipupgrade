@@ -31,6 +31,7 @@ def which(executable, raise_err = False):
 
 def popen(*args, **kwargs):
     output      = kwargs.get("output", False)
+    quiet       = kwargs.get("quiet" , False)
     directory   = kwargs.get("cwd")
     environment = kwargs.get("env")
     shell       = kwargs.get("shell", True)
@@ -44,6 +45,9 @@ def popen(*args, **kwargs):
         environ[k] = str(v)
 
     command     = " ".join([str(arg) for arg in args])
+
+    if quiet:
+        output  = True
     
     proc        = sp.Popen(command,
         stdin   = sp.PIPE if output else None,
@@ -70,6 +74,9 @@ def popen(*args, **kwargs):
             error  = error.decode("utf-8")
             error  = strip(error)
 
-        return code, output, error
+        if quiet:
+            return code
+        else:
+            return code, output, error
     else:
         return code
