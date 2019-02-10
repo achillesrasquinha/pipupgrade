@@ -7,11 +7,11 @@ import re
 import json
 
 # imports - module imports
-from pipupgrade.model         import Project
+from pipupgrade.model         import Project, Package
 from pipupgrade.commands.util import cli_format
 from pipupgrade.table      	  import Table
 from pipupgrade.util.string   import strip, pluralize
-from pipupgrade.util.system   import read, write, popen
+from pipupgrade.util.system   import read, write, popen, which
 from pipupgrade.util.environ  import getenvvar
 from pipupgrade.util.datetime import get_timestamp_str
 from pipupgrade 		      import _pip, request as req, cli, semver
@@ -44,41 +44,6 @@ def _cli_format_semver(version, type_):
 		pass
 
 	return version
-
-def _get_pypi_info(name, raise_err = True):
-	url  = "https://pypi.org/pypi/{}/json".format(name)
-	res  = req.get(url)
-
-	info = None
-
-	if res.ok:
-		data = res.json()
-		info = data["info"]
-	else:
-		if raise_err:
-			res.raise_for_status()
-
-	return info
-
-class PackageInfo:
-	def __init__(self, package):
-		if   isinstance(package, (_pip.Distribution, _pip.DistInfoDistribution, _pip.EggInfoDistribution)):
-			self.name            = package.project_name
-			self.current_version = package.version
-		elif isinstance(package, _pip.InstallRequirement):
-			self.name            = package.name
-			self.current_version = package.installed_version
-		elif isinstance(package, dict):
-			self.name            = package["name"]
-			self.current_version = package["version"]
-			self.latest_version  = package.get("version")
-
-		_pypi_info = _get_pypi_info(self.name, raise_err = False) or { }
-		
-		if not hasattr(self, "latest_version"):
-			self.latest_version = _pypi_info.get("version")
-			
-		self.home_page = _pypi_info.get("home_page")
 
 def _update_requirements(path, package):
 	path 	= osp.realpath(path)
@@ -163,10 +128,12 @@ def command(
 	else:
 		if project:
 			requirements = requirements or [ ]
+			pipfile      = pipfile      or [ ]
 
 			for i, p in enumerate(project):
 				project[i]    = Project(osp.abspath(p))
 				requirements += project[i].requirements
+				pipfile      += [project[i].pipfile]
 
 		if requirements:
 			for requirement in requirements:
@@ -197,7 +164,7 @@ def command(
 			dinfo = [ ] # Information DataFrame
 
 			for package in packages:
-				package = PackageInfo(package)
+				package = Package(package)
 				package.source = source
 
 				if package.latest_version and package.current_version != package.latest_version:
@@ -270,6 +237,16 @@ def command(
 			else:
 				cli.echo("%s upto date." % cli_format(stitle, cli.CYAN))
 
+		if pipfile:
+			for pipf in pipfile:
+				realpath = osp.realpath(pipf)
+				basepath = osp.dirname(realpath)
+
+				pipenv   = which("pipenv", raise_err = True)
+				popen("%s update" % pipenv, quiet = not verbose, cwd = basepath)
+
+				cli.echo("%s upto date." % cli_format(realpath, cli.CYAN))
+
 		if project and pull_request:
 			errstr = '%s not found. Use %s or the environment variable "%s" to set value.'
 
@@ -286,16 +263,16 @@ def command(
 
 				if output:
 					branch   = get_timestamp_str(format_ = "%Y%m%d%H%M%S")
-					popen("git checkout -B %s" % branch, quiet = True)
+					popen("git checkout -B %s" % branch, quiet = not verbose)
 
 					title    = "fix(dependencies): Update dependencies to latest"
 					body     = ""
 
 					# TODO: cross-check with "git add" ?
-					popen("git add %s" % " ".join(p.requirements), quiet = True, cwd = p.path)
-					popen("git commit -m '%s'" % title, quiet = True, cwd = p.path)
+					popen("git add %s" % " ".join([*p.requirements, p.pipfile]), quiet = not verbose, cwd = p.path)
+					popen("git commit -m '%s'" % title, quiet = not verbose, cwd = p.path)
 
-					popen("git push origin %s" % branch, quiet = True, cwd = p.path)
+					popen("git push origin %s" % branch, quiet = not verbose, cwd = p.path)
 
 					if not github_reponame:
 						raise ValueError(errstr % ("GitHub Reponame", "--github-reponame", getenvvar("GITHUB_REPONAME")))
