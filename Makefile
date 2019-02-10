@@ -9,6 +9,7 @@ PROJECT					= pipupgrade
 
 PROJDIR					= ${BASEDIR}/src/pipupgrade
 TESTDIR					= ${BASEDIR}/tests
+DOCSDIR					= ${BASEDIR}/docs
 
 PYTHONPATH		 	   ?= python
 
@@ -24,6 +25,7 @@ COVERALLS				= ${VENVBIN}/coveralls
 IPYTHON					= ${VENVBIN}/ipython
 SAFETY					= ${VENVBIN}/safety
 PRECOMMIT				= ${VENVBIN}/pre-commit
+SPHINXBUILD				= ${VENVBIN}/sphinx-build
 
 JOBS				   ?= $(shell $(PYTHON) -c "import multiprocessing as mp; print(mp.cpu_count())")
 PYTHON_ENVIRONMENT      = $(shell $(PYTHON) -c "import sys;v=sys.version_info;print('py%s%s'%(v.major,v.minor))")
@@ -139,6 +141,20 @@ build: clean ## Build the Distribution.
 
 pre-commit: ## Perform Pre-Commit Tasks.
 	$(PRECOMMIT) run
+
+docs: install ## Build Documentation
+ifneq (${VERBOSE},true)
+	$(eval OUT = > /dev/null)
+endif
+
+	$(call log,INFO,Building Documentation)
+	$(SPHINXBUILD) $(DOCSDIR)/source $(DOCSDIR)/build $(OUT)
+
+	$(call log,SUCCESS,Building Documentation Successful)
+
+ifeq (${launch},true)
+	$(call browse,file:///${DOCSDIR}/build/index.html)
+endif
 
 docker-build: clean pre-commit ## Build the Docker Image.
 	$(call log,INFO,Building Docker Image)

@@ -1,3 +1,5 @@
+sphinx
+recommonmark
 pylint
 autopep8
 pytest

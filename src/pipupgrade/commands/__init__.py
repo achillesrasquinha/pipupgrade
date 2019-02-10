@@ -290,6 +290,7 @@ def command(
 						title = title,
 						body  = body
 					)
+					
 					# Although there's monkey patch support for the "requests"
 					# library, avoid using the "json" parameter which was
 					# added in requests 2.4.2+
