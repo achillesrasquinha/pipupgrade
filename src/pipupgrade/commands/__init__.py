@@ -269,7 +269,8 @@ def command(
 					body     = ""
 
 					# TODO: cross-check with "git add" ?
-					popen("git add %s" % " ".join([*p.requirements, p.pipfile]), quiet = not verbose, cwd = p.path)
+					files    = p.requirements + [p.pipfile]
+					popen("git add %s" % " ".join(files), quiet = not verbose, cwd = p.path)
 					popen("git commit -m '%s'" % title, quiet = not verbose, cwd = p.path)
 
 					popen("git push origin %s" % branch, quiet = not verbose, cwd = p.path)

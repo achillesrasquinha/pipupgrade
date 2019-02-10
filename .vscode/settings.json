@@ -16,6 +16,6 @@
     "editor.rulers": [78],
     "editor.fontFamily": "Consolas",
     "editor.tabSize": 4,
-    "python.pythonPath": "${workspaceFolder}/.venv/bin/python",
+    "python.pythonPath": ".venv/bin/python",
     "python.linting.pylintPath": "${workspaceFolder}/.venv/bin/pylint"
 }

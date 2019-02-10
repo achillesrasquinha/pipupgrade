@@ -46,7 +46,7 @@ _PIP_EXECUTABLE = _get_pip_executable()
 def call(*args, **kwargs):
     pip_exec = kwargs.pop("pip_exec", _PIP_EXECUTABLE)
 
-    params   = [pip_exec, *args]
+    params   = [pip_exec] + args
     
     for flag, value in iteritems(kwargs):
         if value != False:

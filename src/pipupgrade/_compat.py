@@ -40,8 +40,9 @@ def iterkeys(dict_, **kwargs):
 
 if PY2:
     # moves
-    from urllib2 import urlopen, Request, urlencode
+    from urllib2 import urlopen, Request
     from urllib2 import HTTPError
+    from urllib  import urlencode
 
     from __builtin__ import raw_input as input
 
