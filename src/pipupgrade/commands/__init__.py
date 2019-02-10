@@ -302,7 +302,7 @@ def command(
 					if not github_username:
 						raise ValueError(errstr % ("GitHub Username", "--github-username", getenvvar("GITHUB_USERNAME")))
 
-					url       = "/".join(["https://api.github.com", "repos", github_username, github_reponame])
+					url       = "/".join(["https://api.github.com", "repos", github_username, github_reponame, "pulls"])
 					params    = dict(
 						head  = "%s:branch" % git_username,
 						base  = target_branch,
@@ -312,6 +312,6 @@ def command(
 					response = req.post(url, params = params)
 
 					if response.ok:
-						pass
+						print("OK")
 					else:
 						response.raise_for_status()
