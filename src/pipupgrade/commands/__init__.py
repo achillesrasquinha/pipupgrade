@@ -310,7 +310,7 @@ def command(
 						title = title,
 						body  = body
 					)
-					response = req.post(url, data = data, headers = headers)
+					response  = req.post(url, data = data, headers = headers)
 
 					if response.ok:
 						print("OK")
