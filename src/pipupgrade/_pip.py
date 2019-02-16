@@ -28,21 +28,25 @@ from pip._vendor.pkg_resources import (
     EggInfoDistribution
 )
 
-def _get_pip_executable():
-    execs = ("pip", "pip3", "pip2")
-    exec_ = None
+def _get_pip_executable(multiple = False):
+    pips  = ("pip", "pip3", "pip2")
+    execs = [ ]
 
-    for exec_ in execs:
-        exec_ = which(exec_)
-        if exec_:
+    for pip_ in pips:
+        exec_ = which(pip_)
+        if exec_ and not multiple:
             return exec_
+        else:
+            if exec_ not in execs:
+                execs.append(exec_)
 
-    if not exec_:
+    if not execs:
         raise ValueError("pip executable not found.")
 
-    return exec_
+    return execs
 
-_PIP_EXECUTABLE = _get_pip_executable()
+_PIP_EXECUTABLE  = _get_pip_executable()
+_PIP_EXECUTABLES = _get_pip_executable(multiple = True)
 
 def call(*args, **kwargs):
     pip_exec = kwargs.pop("pip_exec", _PIP_EXECUTABLE)

@@ -27,7 +27,7 @@ class Package:
 		elif isinstance(package, dict):
 			self.name            = package["name"]
 			self.current_version = package["version"]
-			self.latest_version  = package.get("version")
+			self.latest_version  = package.get("latest_version")
 
 		_pypi_info = _get_pypi_info(self.name, raise_err = False) or { }
 		

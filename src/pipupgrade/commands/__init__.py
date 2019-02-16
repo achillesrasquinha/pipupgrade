@@ -1,13 +1,10 @@
-# imports - compatibility imports
-from pipupgrade._compat import iteritems
-
 # imports - standard imports
 import sys, os, os.path as osp
 import re
 import json
 
 # imports - module imports
-from pipupgrade.model         import Project, Package
+from pipupgrade.model         import Project, Package, Registry
 from pipupgrade.commands.util import cli_format
 from pipupgrade.table      	  import Table
 from pipupgrade.util.string   import strip, pluralize
@@ -96,7 +93,7 @@ def _get_included_requirements(filename):
 
 @cli.command
 def command(
-	pip_path            = _pip._PIP_EXECUTABLE,
+	pip_path            = [ ],
 	requirements 		= [ ],
 	pipfile             = [ ],
 	project      		= None,
@@ -117,8 +114,9 @@ def command(
 	verbose		 		= False
 ):
 	cli.echo(cli_format("Checking...", cli.YELLOW))
-	
-	registry = dict()
+
+	pip_path    = [which(p) for p in pip_path] or _pip._PIP_EXECUTABLES
+	registries  = [ ]
 
 	if self:
 		package = __name__
@@ -152,24 +150,35 @@ def command(
 					cli.echo(cli_format("{} not found.".format(path), cli.RED))
 					sys.exit(os.EX_NOINPUT)
 				else:
-					registry[path] = _pip.parse_requirements(requirement, session = "hack")
-		else:
-			_, output, _ = _pip.call("list", outdated = True, \
-				format = "json", pip_exec = pip_path)
-			registry["__INSTALLED__"] = json.loads(output)
-			# _pip.get_installed_distributions() # https://github.com/achillesrasquinha/pipupgrade/issues/13
+					packages =  _pip.parse_requirements(requirement, session = "hack")
+					registry = Registry(source = path, packages = packages)
 
-		for source, packages in iteritems(registry):
-			table = Table(header = ["Name", "Current Version", "Latest Version", "Home Page"])
-			dinfo = [ ] # Information DataFrame
+					registries.append(registry)
+		else:
+			for pip_ in pip_path:
+				_, output, _ = _pip.call("list", outdated = True, \
+					format = "json", pip_exec = pip_)
+				packages     = json.loads(output)
+				registry     = Registry(source = pip_, packages = packages, installed = True)
+				
+				registries.append(registry)
+				# _pip.get_installed_distributions() # https://github.com/achillesrasquinha/pipupgrade/issues/13
+
+		for registry in registries:
+			source   = registry.source
+			packages = registry.packages
+
+			table 	 = Table(header = ["Name", "Current Version", "Latest Version", "Home Page"])
+			dinfo 	 = [ ] # Information DataFrame
 
 			for package in packages:
-				package = Package(package)
-				package.source = source
+				package 	 	  = Package(package)
+				package.source    = source
+				package.installed = registry.installed
 
 				if package.latest_version and package.current_version != package.latest_version:
 					diff_type = None
-
+					
 					try:
 						diff_type = semver.difference(package.current_version, package.latest_version)
 					except (TypeError, ValueError):
@@ -186,10 +195,10 @@ def command(
 
 					dinfo.append(package)
 
-				if package.source != "__INSTALLED__":
+				if not registry.installed:
 					_update_requirements(package.source, package)
 
-			stitle = "Installed Distributions" if source == "__INSTALLED__" else source
+			stitle = "Installed Distributions (%s)" % source if registry.installed else source
 
 			if not table.empty:
 				string = table.render()
@@ -230,9 +239,9 @@ def command(
 									)
 								, cli.BOLD))
 
-								_pip.call("install", package.name, pip_exec = pip_path, user = user, quiet = not verbose, no_cache_dir = True, upgrade = True)
+								_pip.call("install", package.name, pip_exec = package.source, user = user, quiet = not verbose, no_cache_dir = True, upgrade = True)
 
-								if package.source != "__INSTALLED__":
+								if not package.installed:
 									_update_requirements(package.source, package)
 			else:
 				cli.echo("%s upto date." % cli_format(stitle, cli.CYAN))

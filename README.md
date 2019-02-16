@@ -47,10 +47,13 @@
 
 #### Features
 * Updates system packages and local packages.
+* Discovers packages present within multiple Python Environments.
 * Updates packages mentioned within a `requirements.txt` file (Also pins upto-date versions if mentioned).
 * Smart `requirements.txt` detector.
+* [Pipfile](https://github.com/pypa/pipenv) support.
 * Detects semantic version to avoid updates that break changes.
 * Python 2.7+ and Python 3.4+ compatible. Also pip 9+, pip 10+, pip 18+ and [pip 19.0.1+](https://github.com/pypa/pip/issues/6158) compatible.
+* Automate your Dependencies by installing `pipupgrade` in your CI workflow.
 * Zero Dependencies!
 
 #### Installation

@@ -29,6 +29,11 @@ def which(executable, raise_err = False):
     
     return exec_
 
+def pardir(fname, level = 1):
+    for _ in range(level):
+        fname = osp.dirname(fname)
+    return fname
+
 def popen(*args, **kwargs):
     output      = kwargs.get("output", False)
     quiet       = kwargs.get("quiet" , False)

@@ -11,7 +11,7 @@ from pipupgrade.__attr__     import (
 from pipupgrade.util.environ  import getenv
 from pipupgrade.cli           import util as _cli
 from pipupgrade.cli.formatter import ArgumentParserFormatter
-from pipupgrade._pip          import _PIP_EXECUTABLE
+from pipupgrade._pip          import _PIP_EXECUTABLES
 
 _DESCRIPTION_JUMBOTRON = \
 """
@@ -32,7 +32,7 @@ def get_parser():
         formatter_class = ArgumentParserFormatter
     )
     parser.add_argument("--pip-path",
-        default = _PIP_EXECUTABLE,
+        action  = "append",
         help    = "Path to pip executable to be used."
     )
     parser.add_argument("-y", "--yes",
