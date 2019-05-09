@@ -73,21 +73,43 @@ That's basically it! Run the help for more details...
 ```
 $ pipupgrade --help
 usage: pipupgrade [--pip-path PIP_PATH] [-y] [-c] [-l] [-s] [-r REQUIREMENTS]
-                  [-i] [-u] [--no-color] [-V] [-v] [-h]
+                  [--pipfile PIPFILE] [-i] [-p PROJECT]
+                  [--git-username GIT_USERNAME] [--git-email GIT_EMAIL]
+                  [--pull-request] [--github-access-token GITHUB_ACCESS_TOKEN]
+                  [--github-reponame GITHUB_REPONAME]
+                  [--github-username GITHUB_USERNAME]
+                  [--target-branch TARGET_BRANCH] [-u] [--no-color] [-V] [-v]
+                  [-h]
 
-pipupgrade (v 1.4.0)
+pipupgrade (v VERSION)
 
 UPGRADE ALL THE PIP PACKAGES!
 
 optional arguments:
-  --pip-path PIP_PATH   Path to pip executable to be used. (default: pip)
+  --pip-path PIP_PATH   Path to pip executable to be used. (default: None)
   -y, --yes             Confirm for all dialogs. (default: False)
   -c, --check           Check for outdated packages. (default: False)
   -l, --latest          Update all packages to latest. (default: False)
   -s, --self            Update pipupgrade. (default: False)
   -r REQUIREMENTS, --requirements REQUIREMENTS
                         Path(s) to requirements.txt file. (default: None)
+  --pipfile PIPFILE     Path(s) to Pipfile (default: None)
   -i, --interactive     Interactive Mode (default: False)
+  -p PROJECT, --project PROJECT
+                        Path(s) to Project (default: None)
+  --git-username GIT_USERNAME
+                        Git Username (default: None)
+  --git-email GIT_EMAIL
+                        Git Email (default: None)
+  --pull-request        Perform a Pull Request (default: False)
+  --github-access-token GITHUB_ACCESS_TOKEN
+                        GitHub Access Token (default: None)
+  --github-reponame GITHUB_REPONAME
+                        Target GitHub Repository Name (default: None)
+  --github-username GITHUB_USERNAME
+                        Target GitHub Username (default: None)
+  --target-branch TARGET_BRANCH
+                        Target Branch (default: master)
   -u, --user            Install to the Python user install directory for
                         environment variables and user configuration.
                         (default: False)
