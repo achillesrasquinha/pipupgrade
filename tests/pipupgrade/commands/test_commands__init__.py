@@ -8,7 +8,7 @@ import pytest
 from pipupgrade.commands import command
 
 # imports - test imports
-from tests.util import mock_input
+from testutils import mock_input
 
 def test_command():
     with mock_input(StringIO("Y")):

@@ -2,7 +2,7 @@
 from pipupgrade._compat    import StringIO, input
 
 # imports - test imports
-from tests.util import mock_input, assert_input
+from testutils import mock_input, assert_input
 
 def test_mock_input(capfd):
     query = "foobar"
