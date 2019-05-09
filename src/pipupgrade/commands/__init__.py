@@ -115,7 +115,9 @@ def command(
 ):
 	cli.echo(cli_format("Checking...", cli.YELLOW))
 
+	pip_path    = pip_path or [ ]
 	pip_path    = [which(p) for p in pip_path] or _pip._PIP_EXECUTABLES
+
 	registries  = [ ]
 
 	if self:
