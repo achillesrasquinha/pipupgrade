@@ -2,6 +2,8 @@
 import sys, os, os.path as osp
 
 def pardir(fname, level = 1):
+    fname = osp.realpath(fname)
+
     for _ in range(level):
         fname = osp.dirname(fname)
     return fname
