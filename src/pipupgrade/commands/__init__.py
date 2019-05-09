@@ -113,6 +113,8 @@ def command(
 	no_color 	 		= True,
 	verbose		 		= False
 ):
+	print(yes)
+	
 	cli.echo(cli_format("Checking...", cli.YELLOW))
 
 	pip_path    = pip_path or [ ]

@@ -6,13 +6,24 @@ from testutils import assert_input, assert_stdout
 
 def test_confirm(capfd):
     query  = "foobar"
+    stdout = "{} [Y/n/q]: ".format(query)
+
+    def _assert_confirm(stdout):
+        assert_input(capfd, query, "Y", expected = True,  input_ = cli.confirm, stdout = stdout)
+        assert_input(capfd, query, "y", expected = True,  input_ = cli.confirm, stdout = stdout)
+        assert_input(capfd, query,"\n", expected = True,  input_ = cli.confirm, stdout = stdout)
+        assert_input(capfd, query, "n", expected = False, input_ = cli.confirm, stdout = stdout)
+        assert_input(capfd, query, "1", expected = False, input_ = cli.confirm, stdout = stdout)
+
+    _assert_confirm(stdout)
+
     stdout = "{} [Y/n]: ".format(query)
 
-    assert_input(capfd, query, "Y", expected = True,  input_ = cli.confirm, stdout = stdout)
-    assert_input(capfd, query, "y", expected = True,  input_ = cli.confirm, stdout = stdout)
-    assert_input(capfd, query,"\n", expected = True,  input_ = cli.confirm, stdout = stdout)
-    assert_input(capfd, query, "n", expected = False, input_ = cli.confirm, stdout = stdout)
-    assert_input(capfd, query, "1", expected = False, input_ = cli.confirm, stdout = stdout)
+    # assert_input(capfd, query, "Y", expected = True,  input_ = cli.confirm, stdout = stdout, input_args = { 'quit_': False })
+    # assert_input(capfd, query, "y", expected = True,  input_ = cli.confirm, stdout = stdout, input_args = { 'quit_': False })
+    # assert_input(capfd, query,"\n", expected = True,  input_ = cli.confirm, stdout = stdout, input_args = { 'quit_': False })
+    # assert_input(capfd, query, "n", expected = False, input_ = cli.confirm, stdout = stdout, input_args = { 'quit_': False })
+    # assert_input(capfd, query, "1", expected = False, input_ = cli.confirm, stdout = stdout, input_args = { 'quit_': False })
 
 def test_format():
     string = "foobar"
