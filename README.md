@@ -161,7 +161,7 @@ optional arguments:
 
 #### Known Issues
 
-* 
+* [I'm stuck at "Checking..." forever.](https://github.com/achillesrasquinha/pipupgrade/issues/30)
 
 #### License
 
