@@ -68,6 +68,44 @@ $ pip install pipupgrade
     <img src=".github/assets/demo.gif">
 </div>
 
+##### Basic Usage
+
+* [**`pipupgrade`**](https://git.io/pipupgrade)
+
+*Upgrades all the packages across all detected pip environments.*
+
+* [**`pipupgrade --self`**](https://git.io/pipupgrade)
+
+*Upgrades `pipupgrade`.*
+
+* [**`pipupgrade --pip-path PIP_PATH`**](https://git.io/pipupgrade)
+
+*Upgrades all the packages within the defined pip environment.*
+
+* [**`pipupgrade --check`**](https://git.io/pipupgrade)
+
+*Checks and pretty prints outdated packages (Does not perform upgrades).*
+
+* [**`pipupgrade --latest`**](https://git.io/pipupgrade)
+
+*WARNING: Upgrades all packages (including the ones that break change).*
+
+* [**`pipupgrade --interactive`**](https://git.io/pipupgrade)
+
+*Prompts confirmation dialog for each package to be upgraded.*
+
+* [**`pipupgrade --requirements REQUIREMENTS`**](https://git.io/pipupgrade)
+
+*Upgrades the requirements file (if required).*
+
+* [**`pipupgrade --pipfile PIPFILE`**](https://git.io/pipupgrade)
+
+*Upgrades the Pipfile and Pipfile.lock file (if required).*
+
+* [**`pipupgrade --project PROJECT`**](https://git.io/pipupgrade)
+
+*Upgrades all the requirements file and/or Pipfile/Pipfile.lock within a project directory.*
+
 That's basically it! Run the help for more details...
 
 ```
@@ -113,6 +151,8 @@ optional arguments:
   -u, --user            Install to the Python user install directory for
                         environment variables and user configuration.
                         (default: False)
+  --no-cache            Avoid fetching latest updates from PyPI server.
+                        (default: False)
   --no-color            Avoid colored output. (default: False)
   -V, --verbose         Display verbose output. (default: False)
   -v, --version         Show pipupgrade's version number and exit.
@@ -121,7 +161,7 @@ optional arguments:
 
 #### Known Issues
 
-* 
+* [I'm stuck at "Checking..." forever.](https://github.com/achillesrasquinha/pipupgrade/issues/30)
 
 #### License
 
