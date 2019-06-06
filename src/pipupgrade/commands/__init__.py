@@ -7,7 +7,8 @@ from   functools import partial
 
 # imports - module imports
 from pipupgrade.helper 			import (
-	get_registry_from_requirements
+	get_registry_from_requirements,
+	get_registry_from_pip
 )
 from pipupgrade.model         	import Project, Package, Registry
 from pipupgrade.model.project 	import get as get_project, get_included_requirements
@@ -163,15 +164,15 @@ def command(
 				)
 				registries    += results
 		else:
-			for pip_ in pip_path:
-				_, output, _ = _pip.call("list", outdated = True, \
-					format = "json", pip_exec = pip_)
-				packages     = json.loads(output)
-				registry     = Registry(source = pip_, packages = packages, installed = True, sync = no_cache)
-				logger.info("Packages within `pip` %s found: %s..." % (pip_, registry.packages))
-				
-				registries.append(registry)
-				# _pip.get_installed_distributions() # https://github.com/achillesrasquinha/pipupgrade/issues/13
+			with parallel.pool(processes = jobs) as pool:
+				results       = pool.map(
+					partial(
+						get_registry_from_pip,
+						**{ "sync": no_cache, "verbose": verbose }
+					),
+					pip_path
+				)
+				registries    += results
 
 		for registry in registries:
 			source   = registry.source

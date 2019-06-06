@@ -172,5 +172,15 @@ docker-tox: clean ## Test using Docker Tox Image.
 
 	@rm -rf  $(TMPDIR)
 
+release: ## Create a Release
+	$(PYTHON) setup.py sdist bdist_wheel
+
+ifeq (${ENVIRONMENT},development)
+	$(call log,WARN,Ensure your environment is in production mode.)
+	$(TWINE) upload --repository-url https://test.pypi.org/legacy/   $(BASEDIR)/dist/* 
+else
+	$(TWINE) upload --repository-url https://upload.pypi.org/legacy/ $(BASEDIR)/dist/* 
+endif
+
 help: ## Show help and exit.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
