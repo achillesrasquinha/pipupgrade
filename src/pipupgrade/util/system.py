@@ -3,6 +3,7 @@ from pipupgrade._compat import iteritems
 
 # imports - standard imports
 import os, os.path as osp
+import errno
 import subprocess  as sp
 from   distutils.spawn import find_executable
 
@@ -85,3 +86,10 @@ def popen(*args, **kwargs):
             return code, output, error
     else:
         return code
+
+def makedirs(dirs, exist_ok = False):
+    try:
+        os.makedirs(dirs)
+    except OSError as e:
+        if not exist_ok or e.errno != errno.EEXIST:
+            raise

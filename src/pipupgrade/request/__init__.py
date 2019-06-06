@@ -3,7 +3,8 @@ from pipupgrade._compat import (
     urlopen,
     Request,
     urlencode,
-    HTTPError
+    HTTPError,
+    ModuleNotFoundError
 )
 
 # imports - standard imports
@@ -19,8 +20,8 @@ def get(*args, **kwargs):
     try:
         import requests as req
         return req.get(*args, **kwargs)
-    except ImportError:
-        url      = kwargs.get("url")
+    except (ImportError, ModuleNotFoundError):
+        url      = args[0]
         response = Response()
 
         try:
@@ -42,8 +43,8 @@ def post(*args, **kwargs):
     try:
         import requests as req
         return req.post(*args, **kwargs)
-    except ImportError:
-        url      = kwargs.get("url")
+    except (ImportError, ModuleNotFoundError):
+        url      = args[0]
         data     = kwargs.get("data",    { })
         headers  = kwargs.get("headers", { })
 

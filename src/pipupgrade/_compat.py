@@ -38,6 +38,12 @@ def iterkeys(dict_, **kwargs):
         iterator = iter(dict_.keys(), **kwargs)
     return iterator
 
+if PYTHON_VERSION <= (3,5):
+    class ModuleNotFoundError(ImportError):
+        pass
+else:
+    ModuleNotFoundError = ModuleNotFoundError
+
 if PY2:
     # moves
     from urllib2 import urlopen, Request
@@ -59,10 +65,10 @@ else:
     # moves
     from urllib.request import urlopen, Request
     from urllib.parse   import urlencode
-    
+
     try:
         from requests.exceptions import HTTPError
-    except ImportError:
+    except (ImportError, ModuleNotFoundError):
         from urllib.error   import HTTPError
 
     from builtins import input

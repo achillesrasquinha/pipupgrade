@@ -7,6 +7,7 @@ from pipupgrade._compat import zip
 # imports - standard imports
 import sys
 import inspect
+import collections
 
 def merge_dict(*args):
     merged = dict()
@@ -67,3 +68,7 @@ def sequencify(value, type_ = list):
     value = type_(value)
         
     return value
+
+def autodict():
+    _autodict = collections.defaultdict(autodict)
+    return _autodict

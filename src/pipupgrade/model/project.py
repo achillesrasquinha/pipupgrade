@@ -2,6 +2,10 @@
 import os.path as osp
 import glob
 
+from pipupgrade import log
+
+logger = log.get_logger()
+
 class Project:
     def __init__(self, path):
         path         = osp.realpath(path)
@@ -36,3 +40,7 @@ class Project:
         pipfile = osp.join(path, "Pipfile")
         
         return pipfile if osp.exists(pipfile) else None
+
+    def __repr__(self):
+        repr_ = "<Project %s>" % self.path
+        return repr_

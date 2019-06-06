@@ -2,7 +2,7 @@
 import logging
 
 # imports - module imports
-from pipupgrade.__attr__ import __name__ as NAME
+from pipupgrade.__attr__   import __name__ as NAME
 
 NOTSET      = logging.NOTSET
 DEBUG       = logging.DEBUG
@@ -25,6 +25,7 @@ def get_logger(name = NAME, level = DEBUG, format_ = _FORMAT):
 
         logger    = logging.getLogger(name)
         logger.setLevel(level)
+
         logger.addHandler(handler)
         
         _LOGGER   = logger

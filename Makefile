@@ -159,7 +159,7 @@ endif
 docker-build: clean pre-commit ## Build the Docker Image.
 	$(call log,INFO,Building Docker Image)
 
-	@docker build $(BASEDIR) --tag $(DOCKER_HUB_USERNAME)/$(PROJECT)
+	@docker build $(BASEDIR) --tag $(DOCKER_HUB_USERNAME)/$(PROJECT) $(DOCKER_BUILD_ARGS)
 
 docker-tox: clean ## Test using Docker Tox Image.
 	$(call log,INFO,Running Tests using Docker Tox)

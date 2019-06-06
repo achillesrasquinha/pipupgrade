@@ -112,12 +112,10 @@ def command(
 	check		 		= False,
 	interactive  		= False,
 	yes			 		= False,
+	no_cache            = False,
 	no_color 	 		= True,
 	verbose		 		= False
 ):
-	if not verbose:
-		logger.setLevel(log.NOTSET)
-
 	cli.echo(cli_format("Checking...", cli.YELLOW))
 	logger.info("Arguments Passed: %s" % locals())
 
@@ -130,6 +128,7 @@ def command(
 
 	if self:
 		package = __name__
+		logger.info("Updating %s..." % package)
 
 		_pip.call("install", package, user = user, quiet = not verbose, no_cache = True, upgrade = True)
 		cli.echo("%s upto date." % cli_format(package, cli.CYAN))
@@ -140,8 +139,11 @@ def command(
 
 			for i, p in enumerate(project):
 				project[i]    = Project(osp.abspath(p))
+
 				requirements += project[i].requirements
 				pipfile      += [project[i].pipfile]
+			
+			logger.info("Updating projects %s..." % project)
 
 		if requirements:
 			for requirement in requirements:
@@ -153,6 +155,8 @@ def command(
 				else:
 					requirements += _get_included_requirements(requirement)
 
+			logger.info("Requirements found: %s..." % requirements)
+
 			for requirement in requirements:
 				path = osp.realpath(requirement)
 
@@ -161,7 +165,8 @@ def command(
 					sys.exit(os.EX_NOINPUT)
 				else:
 					packages =  _pip.parse_requirements(requirement, session = "hack")
-					registry = Registry(source = path, packages = packages)
+					registry = Registry(source = path, packages = packages, sync = no_cache)
+					logger.info("Packages within requirements %s found: %s..." % (requirement, registry.packages))
 
 					registries.append(registry)
 		else:
@@ -169,7 +174,8 @@ def command(
 				_, output, _ = _pip.call("list", outdated = True, \
 					format = "json", pip_exec = pip_)
 				packages     = json.loads(output)
-				registry     = Registry(source = pip_, packages = packages, installed = True)
+				registry     = Registry(source = pip_, packages = packages, installed = True, sync = no_cache)
+				logger.info("Packages within `pip` %s found: %s..." % (pip_, registry.packages))
 				
 				registries.append(registry)
 				# _pip.get_installed_distributions() # https://github.com/achillesrasquinha/pipupgrade/issues/13
@@ -182,7 +188,6 @@ def command(
 			dinfo 	 = [ ] # Information DataFrame
 
 			for package in packages:
-				package 	 	  = Package(package)
 				package.source    = source
 				package.installed = registry.installed
 
@@ -257,11 +262,16 @@ def command(
 				cli.echo("%s upto date." % cli_format(stitle, cli.CYAN))
 
 		if pipfile:
+			logger.info("Updating Pipfiles: %s..." % pipfile)
+
 			for pipf in pipfile:
 				realpath = osp.realpath(pipf)
 				basepath = osp.dirname(realpath)
 
+				logger.info("Searching for `pipenv`...")
 				pipenv   = which("pipenv", raise_err = True)
+				logger.info("`pipenv` found.")
+
 				popen("%s update" % pipenv, quiet = not verbose, cwd = basepath)
 
 				cli.echo("%s upto date." % cli_format(realpath, cli.CYAN))

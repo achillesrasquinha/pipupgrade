@@ -100,6 +100,10 @@ def get_parser():
         help    = "Install to the Python user install directory for environment \
                     variables and user configuration."
     )
+    parser.add_argument("--no-cache",
+        action  = "store_true",
+        help    = "Avoid fetching latest updates from PyPI server."
+    )
     parser.add_argument("--no-color",
         action  = "store_true",
         help    = "Avoid colored output."
