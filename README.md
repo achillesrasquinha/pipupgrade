@@ -68,6 +68,35 @@ $ pip install pipupgrade
     <img src=".github/assets/demo.gif">
 </div>
 
+##### Basic Usage
+
+* `pipupgrade`
+Upgrades all the packages across all detected pip environments.
+
+* `pipupgrade --self`
+Upgrades `pipupgrade`.
+
+* `pipupgrade --pip-path PIP_PATH`
+Upgrades all the packages within the defined pip environment.
+
+* `pipupgrade --check`
+Checks and pretty prints outdated packages (Does not perform upgrades).
+
+* `pipupgrade --latest`
+WARNING: Upgrades all packages (including the ones that break change).
+
+* `pipupgrade --interactive`
+Prompts confirmation dialog for each package to be upgraded.
+
+* `pipupgrade --requirements REQUIREMENTS`
+Upgrades the requirements file (if required).
+
+* `pipupgrade --pipfile PIPFILE`
+Upgrades the Pipfile and Pipfile.lock file (if required).
+
+* `pipupgrade --project PROJECT`
+Upgrades all the requirements file and/or Pipfile/Pipfile.lock within a project directory.
+
 That's basically it! Run the help for more details...
 
 ```
