@@ -2,17 +2,26 @@
 import sys, os, os.path as osp
 import re
 import json
+import multiprocessing as mp
+from   functools import partial
 
 # imports - module imports
-from pipupgrade.model         import Project, Package, Registry
-from pipupgrade.commands.util import cli_format
-from pipupgrade.table      	  import Table
-from pipupgrade.util.string   import strip, pluralize
-from pipupgrade.util.system   import read, write, popen, which
-from pipupgrade.util.environ  import getenvvar
-from pipupgrade.util.datetime import get_timestamp_str
-from pipupgrade 		      import _pip, request as req, cli, semver, log
-from pipupgrade.__attr__      import __name__
+from pipupgrade.helper 			import (
+	get_registry_from_requirements
+)
+from pipupgrade.model         	import Project, Package, Registry
+from pipupgrade.model.project 	import get as get_project, get_included_requirements
+from pipupgrade.commands.util 	import cli_format
+from pipupgrade.table      	  	import Table
+from pipupgrade.util.types    	import flatten
+from pipupgrade.util.string   	import strip, pluralize
+from pipupgrade.util.system   	import read, write, popen, which
+from pipupgrade.util.environ  	import getenvvar
+from pipupgrade.util.datetime 	import get_timestamp_str
+from pipupgrade 		      	import (_pip, request as req, cli, semver,
+	log, parallel
+)
+from pipupgrade.__attr__      	import __name__
 
 logger = log.get_logger(level = log.DEBUG)
 
@@ -73,26 +82,6 @@ def _update_requirements(path, package):
 		# In case we fucked up!
 		write(path, content, force = True)
 
-def _get_included_requirements(filename):
-	path         = osp.realpath(filename)
-	basepath     = osp.dirname(path)
-	requirements = [ ]
-
-	with open(path) as f:
-		content = f.readlines()
-
-		for line in content:
-			line = strip(line)
-
-			if line.startswith("-r "):
-				filename = line.split("-r ")[1]
-				realpath = osp.join(basepath, filename)
-				requirements.append(realpath)
-
-				requirements += _get_included_requirements(realpath)
-
-	return requirements
-
 @cli.command
 def command(
 	pip_path            = [ ],
@@ -108,6 +97,7 @@ def command(
 	target_branch       = "master",
 	latest				= False,
 	self 		 		= False,
+	jobs				= 1,
 	user		 		= False,
 	check		 		= False,
 	interactive  		= False,
@@ -129,6 +119,8 @@ def command(
 
 	registries  = [ ]
 
+	logger.info("Using %s jobs..." % jobs)
+
 	if self:
 		package = __name__
 		logger.info("Updating %s..." % package)
@@ -140,38 +132,36 @@ def command(
 			requirements = requirements or [ ]
 			pipfile      = pipfile      or [ ]
 
-			for i, p in enumerate(project):
-				project[i]    = Project(osp.abspath(p))
-
-				requirements += project[i].requirements
-				pipfile      += [project[i].pipfile]
+			logger.info("Detecting Projects and its dependencies...")
+			
+			with parallel.pool(processes = jobs) as pool:
+				project       = pool.map(get_project, project)
+				requirements += flatten(map(lambda p: p.requirements, project))
+				pipfile      += flatten(map(lambda p: [p.pipfile], project))
 			
 			logger.info("Updating projects %s..." % project)
 
 		if requirements:
-			for requirement in requirements:
-				path = osp.realpath(requirement)
+			logger.info("Detecting requirements...")
+			
+			with parallel.pool(processes = jobs) as pool:
+				results       = pool.map(get_included_requirements, requirements)
+				requirements += flatten(results)
 
-				if not osp.exists(path):
-					cli.echo(cli_format("{} not found.".format(path), cli.RED))
-					sys.exit(os.EX_NOINPUT)
-				else:
-					requirements += _get_included_requirements(requirement)
+			# cli.echo(cli_format("{} not found.".format(path), cli.RED))
+			# sys.exit(os.EX_NOINPUT)
 
 			logger.info("Requirements found: %s..." % requirements)
-
-			for requirement in requirements:
-				path = osp.realpath(requirement)
-
-				if not osp.exists(path):
-					cli.echo(cli_format("{} not found.".format(path), cli.RED))
-					sys.exit(os.EX_NOINPUT)
-				else:
-					packages =  _pip.parse_requirements(requirement, session = "hack")
-					registry = Registry(source = path, packages = packages, sync = no_cache)
-					logger.info("Packages within requirements %s found: %s..." % (requirement, registry.packages))
-
-					registries.append(registry)
+			
+			with parallel.pool(processes = jobs) as pool:
+				results       = pool.map(
+					partial(
+						get_registry_from_requirements,
+						**{ "sync": no_cache, "verbose": verbose }
+					),
+					requirements
+				)
+				registries    += results
 		else:
 			for pip_ in pip_path:
 				_, output, _ = _pip.call("list", outdated = True, \

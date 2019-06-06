@@ -2,7 +2,9 @@
 import os.path as osp
 import glob
 
+# imports - module imports
 from pipupgrade import log
+from pipupgrade.util.string import strip
 
 logger = log.get_logger()
 
@@ -44,3 +46,27 @@ class Project:
     def __repr__(self):
         repr_ = "<Project %s>" % self.path
         return repr_
+
+def get(path):
+    project = Project(path)
+    return project
+
+def get_included_requirements(filename):
+	path         = osp.realpath(filename)
+	basepath     = osp.dirname(path)
+	requirements = [ ]
+
+	with open(path) as f:
+		content = f.readlines()
+
+		for line in content:
+			line = strip(line)
+
+			if line.startswith("-r "):
+				filename = line.split("-r ")[1]
+				realpath = osp.join(basepath, filename)
+				requirements.append(realpath)
+
+				requirements += get_included_requirements(realpath)
+
+	return requirements

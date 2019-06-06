@@ -2,12 +2,13 @@
 
 # imports - compatibility imports
 from pipupgrade         import _compat
-from pipupgrade._compat import zip
+from pipupgrade._compat import zip, _is_python_version
 
 # imports - standard imports
 import sys
 import inspect
 import collections
+import itertools
 
 def merge_dict(*args):
     merged = dict()
@@ -72,3 +73,13 @@ def sequencify(value, type_ = list):
 def autodict():
     _autodict = collections.defaultdict(autodict)
     return _autodict
+
+def flatten(arr):
+    if _is_python_version(major = 2, minor = 6):
+        chainer = itertools.chain.from_iterable
+    else:
+        chainer = itertools.chain
+
+    flattened = list(chainer(*arr))
+
+    return flattened
