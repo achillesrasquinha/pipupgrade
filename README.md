@@ -151,6 +151,8 @@ optional arguments:
   -u, --user            Install to the Python user install directory for
                         environment variables and user configuration.
                         (default: False)
+  --no-cache            Avoid fetching latest updates from PyPI server.
+                        (default: False)
   --no-color            Avoid colored output. (default: False)
   -V, --verbose         Display verbose output. (default: False)
   -v, --version         Show pipupgrade's version number and exit.
