@@ -4,8 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-
-[packages]
+pyyaml = ">=4.2b1"
 pylint = "*"
 autopep8 = "*"
 pytest = "*"
@@ -20,6 +19,7 @@ ipython = "*"
 vulture = "*"
 safety = "*"
 pre-commit = "*"
+urllib3 = ">=1.24.2"
 
 [requires]
 python_version = "3.7"
