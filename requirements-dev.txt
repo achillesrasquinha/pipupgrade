@@ -14,3 +14,4 @@ ipython
 vulture
 safety
 pre-commit
+twine
