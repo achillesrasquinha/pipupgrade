@@ -11,8 +11,10 @@ from pipupgrade.util.string   import strip, pluralize
 from pipupgrade.util.system   import read, write, popen, which
 from pipupgrade.util.environ  import getenvvar
 from pipupgrade.util.datetime import get_timestamp_str
-from pipupgrade 		      import _pip, request as req, cli, semver
+from pipupgrade 		      import _pip, request as req, cli, semver, log
 from pipupgrade.__attr__      import __name__
+
+logger = log.get_logger(level = log.DEBUG)
 
 _SEMVER_COLOR_MAP = dict(
 	major = cli.RED,
@@ -114,9 +116,12 @@ def command(
 	verbose		 		= False
 ):	
 	cli.echo(cli_format("Checking...", cli.YELLOW))
+	logger.info("Arguments Passed: %s" % locals())
 
 	pip_path    = pip_path or [ ]
 	pip_path    = [which(p) for p in pip_path] or _pip._PIP_EXECUTABLES
+
+	logger.info("pip_path: %s" % pip_path)
 
 	registries  = [ ]
 

@@ -10,6 +10,9 @@ from pipupgrade.util.system  import which, popen
 from pipupgrade.util.string  import kebab_case
 from pipupgrade.util.environ import value_to_envval
 from pipupgrade.util.types   import sequencify
+from pipupgrade              import log
+
+logger = log.get_logger()
 
 PIP9 = int(pip.__version__.split(".")[0]) < 10
 
@@ -34,11 +37,12 @@ def _get_pip_executable(multiple = False):
 
     for pip_ in pips:
         exec_ = which(pip_)
-        if exec_ and not multiple:
-            return exec_
-        else:
-            if exec_ not in execs:
-                execs.append(exec_)
+        if exec_:
+            if not multiple:
+                return exec_
+            else:
+                if exec_ not in execs:
+                    execs.append(exec_)
 
     if not execs:
         raise ValueError("pip executable not found.")
@@ -47,6 +51,8 @@ def _get_pip_executable(multiple = False):
 
 _PIP_EXECUTABLE  = _get_pip_executable()
 _PIP_EXECUTABLES = _get_pip_executable(multiple = True)
+
+logger.info("`pip` executables found: %s" % _PIP_EXECUTABLES)
 
 def call(*args, **kwargs):
     pip_exec = kwargs.pop("pip_exec", _PIP_EXECUTABLE)
