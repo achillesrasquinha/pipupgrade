@@ -1,8 +1,11 @@
 # imports - standard imports
-from datetime import datetime
+from   datetime import datetime
+import threading
 
 # imports - module imports
-from pipupgrade import _pip, request as req, db
+from pipupgrade import _pip, request as req, db, log
+
+logger = log.get_logger()
 
 def _get_pypi_info(name, raise_err = True):
 	url  = "https://pypi.org/pypi/{}/json".format(name)
@@ -20,7 +23,10 @@ def _get_pypi_info(name, raise_err = True):
 	return info
 
 class Package:
-	def __init__(self, package, sync = False):
+	def __init__(self, package, sync = False, verbose = False):
+		if not verbose:
+			logger.setLevel(log.NOTSET)
+
 		if   isinstance(package, (_pip.Distribution, _pip.DistInfoDistribution, _pip.EggInfoDistribution)):
 			self.name            = package.project_name
 			self.current_version = package.version
@@ -48,14 +54,21 @@ class Package:
 			self.home_page = _pypi_info.get("home_page")
 
 		if not res:
-			_db.query("""
-				INSERT INTO `tabPackage`
-					(name, latest_version, home_page, _created_at)
-				VALUES
-					('%s', '%s', '%s', '%s')
-			""" % (self.name, self.latest_version, self.home_page, datetime.now()))
+			try:
+				logger.info("Attempting to INSERT package %s into database." % self)
+
+				_db.query("""
+					INSERT INTO `tabPackage`
+						(name, latest_version, home_page, _created_at)
+					VALUES
+						('%s', '%s', '%s', '%s')
+				""" % (self.name, self.latest_version, self.home_page, datetime.now()))
+			except db.IntegrityError as e:
+				logger.warn("Unable to save package name. %s" % e)
 		else:
 			if sync:
+				logger.info("Attempting to UPDATE package %s within database." % self)
+
 				_db.query("""
 					UPDATE `tabPackage`
 						SET latest_version = '%s', home_page = '%s', _updated_at = '%s'

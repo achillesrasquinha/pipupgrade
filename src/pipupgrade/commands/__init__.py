@@ -8,7 +8,8 @@ from   functools import partial
 # imports - module imports
 from pipupgrade.helper 			import (
 	get_registry_from_requirements,
-	get_registry_from_pip
+	get_registry_from_pip,
+	update_pipfile
 )
 from pipupgrade.model         	import Project, Package, Registry
 from pipupgrade.model.project 	import get as get_project, get_included_requirements
@@ -258,17 +259,17 @@ def command(
 		if pipfile:
 			logger.info("Updating Pipfiles: %s..." % pipfile)
 
-			for pipf in pipfile:
-				realpath = osp.realpath(pipf)
-				basepath = osp.dirname(realpath)
+			with parallel.pool(processes = jobs) as pool:
+				results = pool.map(
+					partial(
+						update_pipfile,
+						**{ "verbose": verbose }
+					),
+					pipfile
+				)
 
-				logger.info("Searching for `pipenv`...")
-				pipenv   = which("pipenv", raise_err = True)
-				logger.info("`pipenv` found.")
-
-				popen("%s update" % pipenv, quiet = not verbose, cwd = basepath)
-
-				cli.echo("%s upto date." % cli_format(realpath, cli.CYAN))
+				if all(results):
+					cli.echo("Pipfiles upto date.", cli.CYAN)
 
 		if project and pull_request:
 			errstr = '%s not found. Use %s or the environment variable "%s" to set value.'

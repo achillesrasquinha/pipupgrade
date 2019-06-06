@@ -8,6 +8,8 @@ from pipupgrade.util.string import strip
 from pipupgrade.util.system import makedirs, read
 from pipupgrade             import config
 
+IntegrityError = sqlite3.IntegrityError
+
 def _get_queries(buffer):
     queries = [ ]
     lines   = buffer.split(";")
@@ -19,9 +21,10 @@ def _get_queries(buffer):
     return queries
 
 class DB:
-    def __init__(self, path):
+    def __init__(self, path, timeout = 10):
         self.path        = path
         self._connection = None
+        self.timeout     = timeout
 
     @property
     def connected(self):
@@ -30,7 +33,9 @@ class DB:
 
     def connect(self, bootstrap = True):
         if not self._connection:
-            self._connection = sqlite3.connect(self.path)
+            self._connection = sqlite3.connect(self.path,
+                timeout = self.timeout
+            )
             self._connection.row_factory = sqlite3.Row
 
     def query(self, *args, **kwargs):

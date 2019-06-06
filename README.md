@@ -148,6 +148,7 @@ optional arguments:
                         Target GitHub Username (default: None)
   --target-branch TARGET_BRANCH
                         Target Branch (default: master)
+  -j JOBS, --jobs JOBS
   -u, --user            Install to the Python user install directory for
                         environment variables and user configuration.
                         (default: False)
@@ -158,6 +159,15 @@ optional arguments:
   -v, --version         Show pipupgrade's version number and exit.
   -h, --help            Show this help message and exit.
 ```
+
+#### Similar Packages
+
+`pipupgrade` attempts to provide an all-in-one solution as compared to the following packages:
+
+* [pur](https://github.com/alanhamlett/pip-update-requirements)
+* [pip_upgrade_outdated](https://github.com/defjaf/pip_upgrade_outdated)
+* [pipdate](https://github.com/nschloe/pipdate)
+* [pip-review](https://github.com/jgonggrijp/pip-review)
 
 #### Known Issues
 

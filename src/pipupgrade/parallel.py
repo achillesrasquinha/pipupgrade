@@ -1,5 +1,5 @@
 # imports - standard imports
-from   contextlib import contextmanager
+from   contextlib      import contextmanager
 import multiprocessing as mp
 
 @contextmanager
