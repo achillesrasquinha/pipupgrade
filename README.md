@@ -70,39 +70,39 @@ $ pip install pipupgrade
 
 ##### Basic Usage
 
-* [**`pipupgrade`**]()
+* [**`pipupgrade`**](https://git.io/pipupgrade)
 
 *Upgrades all the packages across all detected pip environments.*
 
-* [**`pipupgrade --self`**]()
+* [**`pipupgrade --self`**](https://git.io/pipupgrade)
 
 *Upgrades `pipupgrade`.*
 
-* [**`pipupgrade --pip-path PIP_PATH`**]()
+* [**`pipupgrade --pip-path PIP_PATH`**](https://git.io/pipupgrade)
 
 *Upgrades all the packages within the defined pip environment.*
 
-* [**`pipupgrade --check`**]()
+* [**`pipupgrade --check`**](https://git.io/pipupgrade)
 
 *Checks and pretty prints outdated packages (Does not perform upgrades).*
 
-* [**`pipupgrade --latest`**]()
+* [**`pipupgrade --latest`**](https://git.io/pipupgrade)
 
 *WARNING: Upgrades all packages (including the ones that break change).*
 
-* [**`pipupgrade --interactive`**]()
+* [**`pipupgrade --interactive`**](https://git.io/pipupgrade)
 
 *Prompts confirmation dialog for each package to be upgraded.*
 
-* [**`pipupgrade --requirements REQUIREMENTS`**]()
+* [**`pipupgrade --requirements REQUIREMENTS`**](https://git.io/pipupgrade)
 
 *Upgrades the requirements file (if required).*
 
-* [**`pipupgrade --pipfile PIPFILE`**]()
+* [**`pipupgrade --pipfile PIPFILE`**](https://git.io/pipupgrade)
 
 *Upgrades the Pipfile and Pipfile.lock file (if required).*
 
-* [**`pipupgrade --project PROJECT`**]()
+* [**`pipupgrade --project PROJECT`**](https://git.io/pipupgrade)
 
 *Upgrades all the requirements file and/or Pipfile/Pipfile.lock within a project directory.*
 
