@@ -116,6 +116,9 @@ def command(
 	no_color 	 		= True,
 	verbose		 		= False
 ):
+	if not verbose:
+		logger.setLevel(log.NOTSET)
+		
 	cli.echo(cli_format("Checking...", cli.YELLOW))
 	logger.info("Arguments Passed: %s" % locals())
 
