@@ -124,7 +124,7 @@ def command(
 	pip_path    = pip_path or [ ]
 	pip_path    = [which(p) for p in pip_path] or _pip._PIP_EXECUTABLES
 
-	logger.info("pip_path: %s" % pip_path)
+	logger.info("`pip` executables found: %s" % pip_path)
 
 	registries  = [ ]
 

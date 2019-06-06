@@ -12,15 +12,21 @@ ERROR       = logging.ERROR
 CRITICAL    = logging.CRITICAL
 
 _FORMAT     = '%(asctime)s | %(levelname)s | %(message)s'
+_LOGGER     = None
 
 def get_logger(name = NAME, level = DEBUG, format_ = _FORMAT):
-    formatter = logging.Formatter(format_)
+    global _LOGGER
 
-    handler   = logging.StreamHandler()
-    handler.setFormatter(formatter)
+    if not _LOGGER:
+        formatter = logging.Formatter(format_)
 
-    logger    = logging.getLogger(name)
-    logger.setLevel(level)
-    logger.addHandler(handler)
+        handler   = logging.StreamHandler()
+        handler.setFormatter(formatter)
+
+        logger    = logging.getLogger(name)
+        logger.setLevel(level)
+        logger.addHandler(handler)
+        
+        _LOGGER   = logger
     
-    return logger
+    return _LOGGER
