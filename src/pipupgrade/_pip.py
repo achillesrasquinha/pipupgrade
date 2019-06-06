@@ -52,8 +52,6 @@ def _get_pip_executable(multiple = False):
 _PIP_EXECUTABLE  = _get_pip_executable()
 _PIP_EXECUTABLES = _get_pip_executable(multiple = True)
 
-logger.info("`pip` executables found: %s" % _PIP_EXECUTABLES)
-
 def call(*args, **kwargs):
     pip_exec = kwargs.pop("pip_exec", _PIP_EXECUTABLE)
 
