@@ -149,7 +149,7 @@ optional arguments:
                         Target GitHub Username (default: None)
   --target-branch TARGET_BRANCH
                         Target Branch (default: master)
-  -j JOBS, --jobs JOBS  Number of Jobs to be used. (default: 4)
+  -j JOBS, --jobs JOBS  Number of Jobs to be used. (default: NUMBER_OF_CPUS)
   -u, --user            Install to the Python user install directory for
                         environment variables and user configuration.
                         (default: False)
