@@ -105,6 +105,10 @@ def get_parser():
         help    = "Install to the Python user install directory for environment \
                     variables and user configuration."
     )
+    parser.add_argument("--no-included-requirements",
+        action  = "store_true",
+        help    = "Avoid updating included requirements"
+    )
     parser.add_argument("--no-cache",
         action  = "store_true",
         help    = "Avoid fetching latest updates from PyPI server."

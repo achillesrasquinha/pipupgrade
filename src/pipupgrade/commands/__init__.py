@@ -12,7 +12,8 @@ from pipupgrade.commands.helper import (
 	update_pipfile,
 	update_registry
 )
-from pipupgrade.model.project 	import get as get_project, get_included_requirements
+from pipupgrade.model           import Project
+from pipupgrade.model.project 	import get_included_requirements
 from pipupgrade.commands.util 	import cli_format
 from pipupgrade.util.types    	import flatten
 from pipupgrade.util.system   	import read, write, popen, which
@@ -27,27 +28,28 @@ logger = log.get_logger(level = log.DEBUG)
 
 @cli.command
 def command(
-	pip_path            = [ ],
-	requirements 		= [ ],
-	pipfile             = [ ],
-	project      		= None,
-	pull_request 		= False,
-	git_username 		= None,
-	git_email    		= None,
-	github_access_token = None,
-	github_reponame     = None,
-	github_username     = None,
-	target_branch       = "master",
-	latest				= False,
-	self 		 		= False,
-	jobs				= 1,
-	user		 		= False,
-	check		 		= False,
-	interactive  		= False,
-	yes			 		= False,
-	no_cache            = False,
-	no_color 	 		= True,
-	verbose		 		= False
+	pip_path          		 	= [ ],
+	requirements 				= [ ],
+	pipfile            			= [ ],
+	project      				= None,
+	pull_request 				= False,
+	git_username 				= None,
+	git_email    				= None,
+	github_access_token			= None,
+	github_reponame   		 	= None,
+	github_username   			= None,
+	target_branch    			= "master",
+	latest						= False,
+	self 		 				= False,
+	jobs						= 1,
+	user		 				= False,
+	check		 				= False,
+	interactive  				= False,
+	yes			 				= False,
+	no_included_requirements 	= False,
+	no_cache		            = False,
+	no_color 	 				= True,
+	verbose		 				= False
 ):
 	if not verbose:
 		logger.setLevel(log.NOTSET)
@@ -68,6 +70,8 @@ def command(
 		package = __name__
 		logger.info("Updating %s..." % package)
 
+		cli.echo(cli_format("Updating %s..." % package, cli.YELLOW))
+
 		_pip.call("install", package, user = user, quiet = not verbose, no_cache = True, upgrade = True)
 		cli.echo("%s upto date." % cli_format(package, cli.CYAN))
 	else:
@@ -75,10 +79,10 @@ def command(
 			requirements = requirements or [ ]
 			pipfile      = pipfile      or [ ]
 
-			logger.info("Detecting Projects and its dependencies...")
+			logger.info("Detecting projects and its dependencies...")
 			
 			with parallel.pool(processes = jobs) as pool:
-				project       = pool.map(get_project, project)
+				project       = pool.map(Project.from_path, project)
 				requirements += flatten(map(lambda p: p.requirements, project))
 				pipfile      += flatten(map(lambda p: [p.pipfile], project))
 			
@@ -86,18 +90,19 @@ def command(
 
 		if requirements:
 			logger.info("Detecting requirements...")
-			
-			with parallel.pool(processes = jobs) as pool:
-				results       = pool.map(get_included_requirements, requirements)
-				requirements += flatten(results)
 
-			logger.info("Requirements found: %s..." % requirements)
+			if not no_included_requirements:
+				with parallel.pool(processes = jobs) as pool:
+					results       = pool.map(get_included_requirements, requirements)
+					requirements += flatten(results)
+
+			logger.info("Requirements found: %s" % requirements)
 			
 			with parallel.pool(processes = jobs) as pool:
 				results       = pool.map(
 					partial(
 						get_registry_from_requirements,
-						**{ "sync": no_cache, "verbose": verbose }
+						**{ "sync": no_cache }
 					),
 					requirements
 				)

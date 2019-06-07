@@ -6,11 +6,10 @@ class Registry:
         source,
         packages  = [ ],
         installed = False,
-        sync      = False,
-        verbose   = False
+        sync      = False
     ):
         self.source    = source
-        self.packages  = [Package(p, sync = sync, verbose = verbose)
+        self.packages  = [Package(p, sync = sync)
             for p in packages
         ]
 

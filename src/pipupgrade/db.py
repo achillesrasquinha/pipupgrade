@@ -6,7 +6,9 @@ import sqlite3
 from pipupgrade.__attr__    import __name__ as NAME
 from pipupgrade.util.string import strip
 from pipupgrade.util.system import makedirs, read
-from pipupgrade             import config
+from pipupgrade             import config, log
+
+logger = log.get_logger()
 
 IntegrityError = sqlite3.IntegrityError
 
@@ -32,7 +34,7 @@ class DB:
         return _connected
 
     def connect(self, bootstrap = True):
-        if not self._connection:
+        if not self.connected:
             self._connection = sqlite3.connect(self.path,
                 timeout = self.timeout
             )
@@ -62,6 +64,8 @@ def get_connection(bootstrap = True):
     global _CONNECTION
 
     if not _CONNECTION:
+        logger.info("Establishing a DataBase connection...")
+
         basepath    = osp.join(osp.expanduser("~"), ".%s" % NAME)
         makedirs(basepath, exist_ok = True)
 
@@ -71,6 +75,8 @@ def get_connection(bootstrap = True):
         _CONNECTION.connect()
 
         if bootstrap:
+            logger.info("Bootstrapping DataBase...")
+
             abspath = osp.join(config.PATH["DATA"], "bootstrap.sql")
             buffer  = read(abspath)
 

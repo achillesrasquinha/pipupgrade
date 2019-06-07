@@ -23,9 +23,8 @@ def _get_pypi_info(name, raise_err = True):
 	return info
 
 class Package:
-	def __init__(self, package, sync = False, verbose = False):
-		if not verbose:
-			logger.setLevel(log.NOTSET)
+	def __init__(self, package, sync = False):
+		logger.info("Initializing Package %s of type %s..." % (package, type(package)))
 
 		if   isinstance(package, (_pip.Distribution, _pip.DistInfoDistribution, _pip.EggInfoDistribution)):
 			self.name            = package.project_name
@@ -46,11 +45,12 @@ class Package:
 		""" % self.name)
 
 		if not res or sync:
+			logger.info("Fetching PyPI info for package %s..." % self)
 			_pypi_info = _get_pypi_info(self.name, raise_err = False) or { }
 		
 			if not hasattr(self, "latest_version"):
 				self.latest_version = _pypi_info.get("version")
-				
+
 			self.home_page = _pypi_info.get("home_page")
 
 		if not res:
@@ -76,6 +76,8 @@ class Package:
 						name = '%s'
 				""" % (self.latest_version, self.home_page, datetime.now(), self.name))
 			else:
+				logger.info("Using cached info for package %s." % self)
+
 				self.latest_version = res["latest_version"]
 				self.home_page      = res["home_page"]
 

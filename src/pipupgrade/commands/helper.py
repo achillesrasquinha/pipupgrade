@@ -72,24 +72,6 @@ def _update_requirements(path, package):
 		# In case we fucked up!
 		write(path, content, force = True)
 
-def get_registry_from_requirements(requirements, sync = False, verbose = False):
-	if not verbose:
-		logger.setLevel(log.NOTSET)
-
-	path = osp.realpath(requirements)
-
-	if not osp.exists(path):
-		cli.echo(cli_format("{} not found.".format(path), cli.RED))
-		sys.exit(os.EX_NOINPUT)
-	else:
-		packages =  _pip.parse_requirements(requirements, session = "hack")
-		registry = Registry(source = path, packages = packages, sync = sync,
-			verbose = verbose)
-
-	logger.info("Packages within requirements %s found: %s..." % (requirements, registry.packages))
-
-	return registry
-
 def get_registry_from_pip(pip_path, sync = False, verbose = False):
 	if not verbose:
 		logger.setLevel(log.NOTSET)
@@ -206,3 +188,17 @@ def update_registry(registry,
 							_update_requirements(package.source, package)
 	else:
 		cli.echo("%s upto date." % cli_format(stitle, cli.CYAN))
+
+def get_registry_from_requirements(requirements, sync = False):
+	path = osp.realpath(requirements)
+
+	if not osp.exists(path):
+		cli.echo(cli_format("{} not found.".format(path), cli.RED))
+		sys.exit(os.EX_NOINPUT)
+	else:
+		packages =  _pip.parse_requirements(requirements, session = "hack")
+		registry = Registry(source = path, packages = packages, sync = sync)
+
+	logger.info("Packages within requirements %s found: %s..." % (requirements, registry.packages))
+
+	return registry
