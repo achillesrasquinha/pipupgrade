@@ -10,7 +10,8 @@ from pipupgrade             import config, log
 
 logger = log.get_logger()
 
-IntegrityError = sqlite3.IntegrityError
+IntegrityError      = sqlite3.IntegrityError
+OperationalError    = sqlite3.OperationalError
 
 def _get_queries(buffer):
     queries = [ ]

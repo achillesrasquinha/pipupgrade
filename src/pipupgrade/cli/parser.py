@@ -98,6 +98,7 @@ def get_parser():
     )
     parser.add_argument("-j", "--jobs",
         type    = int,
+        help    = "Number of Jobs to be used.",
         default = getenv("JOBS", mp.cpu_count())
     )
     parser.add_argument("-u", "--user",

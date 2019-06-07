@@ -38,11 +38,14 @@ class Package:
 			self.latest_version  = package.get("latest_version")
 
 		_db = db.get_connection()
-		res = _db.query("""
-			SELECT *
-			FROM `tabPackage`
-			WHERE name = '%s'
-		""" % self.name)
+		try:
+			res = _db.query("""
+				SELECT *
+				FROM `tabPackage`
+				WHERE name = '%s'
+			""" % self.name)
+		except db.OperationalError as e:
+			logger.warn("Unable to fetch package name. %s" % e)
 
 		if not res or sync:
 			logger.info("Fetching PyPI info for package %s..." % self)
@@ -63,18 +66,21 @@ class Package:
 					VALUES
 						('%s', '%s', '%s', '%s')
 				""" % (self.name, self.latest_version, self.home_page, datetime.now()))
-			except db.IntegrityError as e:
+			except (db.IntegrityError, db.OperationalError) as e:
 				logger.warn("Unable to save package name. %s" % e)
 		else:
 			if sync:
 				logger.info("Attempting to UPDATE package %s within database." % self)
 
-				_db.query("""
-					UPDATE `tabPackage`
-						SET latest_version = '%s', home_page = '%s', _updated_at = '%s'
-					WHERE
-						name = '%s'
-				""" % (self.latest_version, self.home_page, datetime.now(), self.name))
+				try:
+					_db.query("""
+						UPDATE `tabPackage`
+							SET latest_version = '%s', home_page = '%s', _updated_at = '%s'
+						WHERE
+							name = '%s'
+					""" % (self.latest_version, self.home_page, datetime.now(), self.name))
+				except db.OperationalError as e:
+					logger.warn("Unable to update package name. %s" % e)
 			else:
 				logger.info("Using cached info for package %s." % self)
 

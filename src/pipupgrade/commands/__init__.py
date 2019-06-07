@@ -112,7 +112,7 @@ def command(
 				results       = pool.map(
 					partial(
 						get_registry_from_pip,
-						**{ "sync": no_cache, "verbose": verbose }
+						**{ "sync": no_cache }
 					),
 					pip_path
 				)
@@ -138,6 +138,8 @@ def command(
 		if pipfile:
 			logger.info("Updating Pipfiles: %s..." % pipfile)
 
+			cli.echo(cli_format("Updating Pipfiles: %s..." % ", ".join(pipfile), cli.YELLOW))
+
 			with parallel.pool(processes = jobs) as pool:
 				results = pool.map(
 					partial(
@@ -148,7 +150,7 @@ def command(
 				)
 
 				if all(results):
-					cli.echo("Pipfiles upto date.", cli.CYAN)
+					cli.echo(cli_format("Pipfiles upto date.", cli.GREEN))
 
 		if project and pull_request:
 			errstr = '%s not found. Use %s or the environment variable "%s" to set value.'

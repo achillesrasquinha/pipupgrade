@@ -54,7 +54,8 @@ _PIP_EXECUTABLES = _get_pip_executable(multiple = True)
 
 def call(*args, **kwargs):
     pip_exec = kwargs.pop("pip_exec", _PIP_EXECUTABLE)
-    quiet    = kwargs.pop("verbose",  False)
+    quiet    = kwargs.pop("quiet",  False)
+    output   = kwargs.pop("output", False)
 
     params   = sequencify(pip_exec) + sequencify(args)
     
@@ -67,6 +68,6 @@ def call(*args, **kwargs):
                 value = value_to_envval(value)
                 params.append(value)
 
-    output   = quiet
+    output   = output or quiet
 
     return popen(*params, output = output)
