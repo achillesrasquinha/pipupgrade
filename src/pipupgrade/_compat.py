@@ -1,5 +1,8 @@
 # imports - standard imports
-import sys
+import sys, os
+
+# imports - module imports
+import platform
 
 PYTHON_VERSION = sys.version_info
 
@@ -78,3 +81,8 @@ else:
     from itertools import zip_longest
 
     zip = zip
+
+if platform.system() in ['Linux', 'Darwin']:
+    EX_OK = os.EX_OK
+else:
+    EX_OK = 0

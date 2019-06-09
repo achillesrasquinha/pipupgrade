@@ -3,8 +3,11 @@ from __future__ import print_function
 from pipupgrade._compat import input
 
 # imports - standard imports
-import sys, os
+import sys
 import inspect
+
+# imports - module imports
+from pipupgrade._compat import EX_OK
 
 _ACCEPTABLE_INPUTS_YES  = ("", "y", "Y")
 _ACCEPTABLE_INPUTS_QUIT = ("q", "Q")
@@ -26,7 +29,7 @@ def confirm(query, quit_ = True):
     output  = input(query)
 
     if output in _ACCEPTABLE_INPUTS_QUIT:
-        sys.exit(os.EX_OK)
+        sys.exit(EX_OK)
     
     return output in _ACCEPTABLE_INPUTS_YES
 
