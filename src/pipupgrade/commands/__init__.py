@@ -13,6 +13,7 @@ from pipupgrade.util.environ  import getenvvar
 from pipupgrade.util.datetime import get_timestamp_str
 from pipupgrade 		      import _pip, request as req, cli, semver, log
 from pipupgrade.__attr__      import __name__
+from pipupgrade._compat		  import EX_NOINPUT
 
 logger = log.get_logger(level = log.DEBUG)
 
@@ -154,7 +155,7 @@ def command(
 
 				if not osp.exists(path):
 					cli.echo(cli_format("{} not found.".format(path), cli.RED))
-					sys.exit(os.EX_NOINPUT)
+					sys.exit(EX_NOINPUT)
 				else:
 					requirements += _get_included_requirements(requirement)
 
@@ -165,7 +166,7 @@ def command(
 
 				if not osp.exists(path):
 					cli.echo(cli_format("{} not found.".format(path), cli.RED))
-					sys.exit(os.EX_NOINPUT)
+					sys.exit(EX_NOINPUT)
 				else:
 					packages =  _pip.parse_requirements(requirement, session = "hack")
 					registry = Registry(source = path, packages = packages, sync = no_cache)

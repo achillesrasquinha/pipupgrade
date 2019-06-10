@@ -83,6 +83,8 @@ else:
     zip = zip
 
 if platform.system() in ['Linux', 'Darwin']:
-    EX_OK = os.EX_OK
+    EX_OK      = os.EX_OK
+    EX_NOINPUT = os.EX_NOINPUT
 else:
-    EX_OK = 0
+    EX_OK      = 0
+    EX_NOINPUT = 66
