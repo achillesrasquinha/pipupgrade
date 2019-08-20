@@ -135,7 +135,7 @@ def command(
 		logger.info("Updating %s..." % package)
 
 		_pip.call("install", package, user = user, quiet = not verbose, no_cache = True, upgrade = True)
-		cli.echo("%s upto date." % cli_format(package, cli.CYAN))
+		cli.echo("%s up to date." % cli_format(package, cli.CYAN))
 	else:
 		if project:
 			requirements = requirements or [ ]
@@ -263,7 +263,7 @@ def command(
 								if not package.installed:
 									_update_requirements(package.source, package)
 			else:
-				cli.echo("%s upto date." % cli_format(stitle, cli.CYAN))
+				cli.echo("%s up to date." % cli_format(stitle, cli.CYAN))
 
 		if pipfile:
 			logger.info("Updating Pipfiles: %s..." % pipfile)
