@@ -48,7 +48,7 @@
 #### Features
 * Updates system packages and local packages.
 * Discovers packages present within multiple Python Environments.
-* Updates packages mentioned within a `requirements.txt` file (Also pins upto-date versions if mentioned).
+* Updates packages mentioned within a `requirements.txt` file (Also pins up-to-date versions if mentioned).
 * Smart `requirements.txt` detector.
 * [Pipfile](https://github.com/pypa/pipenv) support.
 * Detects semantic version to avoid updates that break changes.
