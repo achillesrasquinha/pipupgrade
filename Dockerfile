@@ -1,4 +1,5 @@
 FROM  python:alpine
+
 LABEL maintainer=achillesrasquinha@gmail.com
 
 ENV PIPUPGRADEPATH=/usr/local/src/pipupgrade

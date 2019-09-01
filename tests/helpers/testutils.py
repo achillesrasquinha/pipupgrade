@@ -1,6 +1,6 @@
 # imports - compatibility imports
 from pipupgrade._compat     import StringIO, input
-from pipupgrade.util.string import safe_encode
+from pipupgrade.util.string import safe_decode
 
 # imports - standard imports
 import sys
@@ -17,7 +17,7 @@ def mock_input(args):
 
 def assert_stdout(capfd, output):
     stdout, _ = capfd.readouterr()
-    assert output == safe_encode(stdout)
+    assert safe_decode(output) == safe_decode(stdout)
 
 def assert_input(capfd, text, output, expected = None, input_ = None, stdout = None, input_args = { }):
     if expected == None:

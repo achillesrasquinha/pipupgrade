@@ -13,11 +13,20 @@ def test_imports():
         StringIO    as _,
 
         urlopen     as _,
-        HTTPError   as _,
+        Request     as _,
+        urlencode   as _,
         
+        HTTPError   as _,
+
+        zip         as _,
         zip_longest as _,
         
-        input       as _
+        input       as _,
+
+        EX_OK       as _,
+        EX_NOINPUT  as _,
+
+        ModuleNotFoundError as _
     )
 
 def test__is_python_version():

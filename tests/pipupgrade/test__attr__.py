@@ -11,6 +11,7 @@ from pipupgrade.__attr__ import (
     pardir,
     strip,
     safe_decode,
+    sequence_filter,
     get_revision
 )
 
@@ -57,6 +58,10 @@ def test_safe_decode():
     assert safe_decode( "foobar") == "foobar"
     
     assert safe_decode(123456789) == 123456789
+
+def test_sequence_filter():
+    assert sequence_filter([0,1,2,3,4,5], filter_ = lambda x: x % 2 == 0)                == [0,2,4]
+    assert sequence_filter([0,1,2,3,4,5], filter_ = lambda x: x % 2 != 0, type_ = tuple) == (1,3,5)
 
 def test_get_revision(tmpdir):
     directory = tmpdir.mkdir("tmp")

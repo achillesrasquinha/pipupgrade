@@ -8,7 +8,7 @@
         "*.coverage.*": true,
         "requirements*.txt": true,
         "**/.tox": true,
-        ".venv": true,
+        ".venv*": true,
         "**/build": true,
         "dist": true,
         "htmlcov": true,

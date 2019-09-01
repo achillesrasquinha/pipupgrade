@@ -34,3 +34,11 @@ def safe_encode(obj, encoding = "utf-8"):
         pass
     
     return obj
+
+def safe_decode(obj, encoding = "utf-8"):
+    try:
+        obj = obj.decode(encoding)
+    except (AttributeError, UnicodeEncodeError):
+        pass
+    
+    return obj
