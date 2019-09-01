@@ -1,4 +1,5 @@
 # imports - standard imports
+import os
 import argparse
 import multiprocessing as mp
 
@@ -114,10 +115,13 @@ def get_parser():
         action  = "store_true",
         help    = "Avoid fetching latest updates from PyPI server."
     )
-    parser.add_argument("--no-color",
-        action  = "store_true",
-        help    = "Avoid colored output."
-    )
+
+    if os.name != "nt":
+        parser.add_argument("--no-color",
+            action  = "store_true",
+            help    = "Avoid colored output."
+        )
+
     parser.add_argument("-V", "--verbose",
         action  = "store_true",
         help    = "Display verbose output."

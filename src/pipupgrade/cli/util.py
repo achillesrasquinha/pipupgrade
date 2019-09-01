@@ -3,7 +3,7 @@ from __future__ import print_function
 from pipupgrade._compat import input
 
 # imports - standard imports
-import sys
+import sys, os
 import inspect
 
 # imports - module imports
@@ -34,7 +34,9 @@ def confirm(query, quit_ = True):
     return output in _ACCEPTABLE_INPUTS_YES
 
 def format(string, type_):
-    string = "{}{}{}".format(type_, string, CLEAR)
+    if os.name != "nt":
+        string = "{}{}{}".format(type_, string, CLEAR)
+
     return string
 
 def echo(string = "", nl = True):

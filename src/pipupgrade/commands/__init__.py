@@ -72,7 +72,8 @@ def command(
 
 		cli.echo(cli_format("Updating %s..." % package, cli.YELLOW))
 
-		_pip.call("install", package, user = user, quiet = not verbose, no_cache = True, upgrade = True)
+		_pip.call("install", package, user = user, quiet = not verbose,
+			no_cache = True, upgrade = True)
 		cli.echo("%s upto date." % cli_format(package, cli.CYAN))
 	else:
 		if project:
