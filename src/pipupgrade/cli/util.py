@@ -4,10 +4,12 @@ from pipupgrade._compat import input
 
 # imports - standard imports
 import sys, os
+import platform
 import inspect
 
 # imports - module imports
-from pipupgrade._compat import EX_OK
+from pipupgrade._compat      import EX_OK
+from pipupgrade.util.imports import import_handler
 
 _ACCEPTABLE_INPUTS_YES  = ("", "y", "Y")
 _ACCEPTABLE_INPUTS_QUIT = ("q", "Q")
@@ -34,7 +36,28 @@ def confirm(query, quit_ = True):
     return output in _ACCEPTABLE_INPUTS_YES
 
 def format(string, type_):
-    if os.name != "nt":
+    fixwin  = (
+        os.name == "nt" \
+            and platform.release() == "10" \
+            and platform.version() >= "10.0.14393"
+    )
+
+    format_ = True
+    format_ = format_ and (
+        (
+            # check if output is a terminal
+            sys.stdout.isatty() \
+                # check if stdin and stdout are the same
+                or os.fstat(0) == os.fstat(1)
+        )
+        or fixwin
+    )
+
+    if fixwin:
+        kernel32 = import_handler("ctypes.windll.kernel32")
+        kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
+
+    if format_:
         string = "{}{}{}".format(type_, string, CLEAR)
 
     return string
