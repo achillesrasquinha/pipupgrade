@@ -13,6 +13,7 @@ from pipupgrade.__attr__     import (
 from pipupgrade.util.environ  import getenv
 from pipupgrade.cli           import util as _cli
 from pipupgrade.cli.formatter import ArgumentParserFormatter
+from pipupgrade.cli.util      import _CAN_ANSI_FORMAT
 from pipupgrade._pip          import _PIP_EXECUTABLES
 
 _DESCRIPTION_JUMBOTRON = \
@@ -116,7 +117,7 @@ def get_parser():
         help    = "Avoid fetching latest updates from PyPI server."
     )
 
-    if os.name != "nt":
+    if _CAN_ANSI_FORMAT:
         parser.add_argument("--no-color",
             action  = "store_true",
             help    = "Avoid colored output."

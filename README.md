@@ -1,9 +1,11 @@
 <div align="center">
-    <img src=".github/assets/meme.jpg" width="250">
     <h1>
         pipupgrade
     </h1>
     <h4>The missing command for <code>pip</code></h4>
+    <div align="center">
+        <img src=".github/assets/demo.gif">
+    </div>
 </div>
 
 <p align="center">
@@ -65,10 +67,6 @@ $ pip install pipupgrade
 
 #### Usage
 
-<div align="center">
-    <img src=".github/assets/demo.gif">
-</div>
-
 ##### Basic Usage
 
 * [**`pipupgrade`**](https://git.io/pipupgrade)
@@ -117,10 +115,11 @@ usage: pipupgrade [--pip-path PIP_PATH] [-y] [-c] [-l] [-s] [-r REQUIREMENTS]
                   [--pull-request] [--github-access-token GITHUB_ACCESS_TOKEN]
                   [--github-reponame GITHUB_REPONAME]
                   [--github-username GITHUB_USERNAME]
-                  [--target-branch TARGET_BRANCH] [-u] [--no-color] [-V] [-v]
-                  [-h]
+                  [--target-branch TARGET_BRANCH] [-j JOBS] [-u]
+                  [--no-included-requirements] [--no-cache] [--no-color] [-V]
+                  [-v] [-h]
 
-pipupgrade (v VERSION)
+pipupgrade (v 1.5.1)
 
 UPGRADE ALL THE PIP PACKAGES!
 
@@ -149,7 +148,7 @@ optional arguments:
                         Target GitHub Username (default: None)
   --target-branch TARGET_BRANCH
                         Target Branch (default: master)
-  -j JOBS, --jobs JOBS  Number of Jobs to be used. (default: NUMBER_OF_CPUS)
+  -j JOBS, --jobs JOBS  Number of Jobs to be used. (default: 4)
   -u, --user            Install to the Python user install directory for
                         environment variables and user configuration.
                         (default: False)
