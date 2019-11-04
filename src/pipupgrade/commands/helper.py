@@ -101,8 +101,8 @@ def get_registry_from_requirements(requirements, sync = False):
 
 	return registry
 
-def get_registry_from_pip(pip_path, sync = False):
-	_, output, _ = _pip.call("list", outdated = True, \
+def get_registry_from_pip(pip_path, user = False, sync = False):
+	_, output, _ = _pip.call("list", user = user, outdated = True, \
 		format = "json", pip_exec = pip_path, output = True)
 	packages     = json.loads(output)
 	registry     = Registry(source = pip_path, packages = packages,

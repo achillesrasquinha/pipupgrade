@@ -113,7 +113,7 @@ def command(
 				results       = pool.map(
 					partial(
 						get_registry_from_pip,
-						**{ "sync": no_cache }
+						**{ "user": user, "sync": no_cache }
 					),
 					pip_path
 				)
