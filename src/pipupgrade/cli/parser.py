@@ -50,6 +50,10 @@ def get_parser():
         action  = "store_true",
         help    = "Update all packages to latest."
     )
+    parser.add_argument("--pip",
+        action  = "store_true",
+        help    = "Update pip"
+    )
     parser.add_argument("-s", "--self",
         action  = "store_true",
         help    = "Update %s." % __name__

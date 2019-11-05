@@ -40,6 +40,7 @@ def command(
 	github_username   			= None,
 	target_branch    			= "master",
 	latest						= False,
+	pip							= False,
 	self 		 				= False,
 	jobs						= 1,
 	user		 				= False,
@@ -65,6 +66,13 @@ def command(
 	registries  = [ ]
 
 	logger.info("Using %s jobs..." % jobs)
+
+	if pip:
+		logger.info("Updating pip executables: %s" % " ".join(pip_path))
+
+		for pip_exec in pip_path:
+			_pip.call("install", "pip", pip_exec = pip_exec, user = user, 
+				quiet = not verbose, no_cache_dir = True, upgrade = True)
 
 	if self:
 		package = __name__
