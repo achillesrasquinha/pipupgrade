@@ -7,6 +7,7 @@ import json
 from pipupgrade.model         	import Registry
 from pipupgrade.commands.util 	import cli_format
 from pipupgrade.table      	  	import Table
+from pipupgrade.tree			import Node as TreeNode
 from pipupgrade.util.string     import pluralize
 from pipupgrade.util.system   	import read, write, popen, which
 from pipupgrade 		      	import (_pip, cli, semver,
@@ -101,8 +102,8 @@ def get_registry_from_requirements(requirements, sync = False):
 
 	return registry
 
-def get_registry_from_pip(pip_path, user = False, sync = False):
-	_, output, _ = _pip.call("list", user = user, outdated = True, \
+def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True):
+	_, output, _ = _pip.call("list", user = user, outdated = outdated, \
 		format = "json", pip_exec = pip_path, output = True)
 	packages     = json.loads(output)
 	registry     = Registry(source = pip_path, packages = packages,
@@ -124,6 +125,7 @@ def update_registry(registry,
 	packages = registry.packages
 
 	table 	 = Table(header = ["Name", "Current Version", "Latest Version", "Home Page"])
+	tree	 = TreeNode("Dependencies")
 	dinfo 	 = [ ] # Information DataFrame
 
 	for package in packages:
@@ -132,7 +134,7 @@ def update_registry(registry,
 
 		if package.latest_version and package.current_version != package.latest_version:
 			diff_type = None
-			
+
 			try:
 				diff_type = semver.difference(package.current_version, package.latest_version)
 			except (TypeError, ValueError):

@@ -58,7 +58,9 @@ if PY2:
 
     from urllib  import urlencode
 
-    from __builtin__ import raw_input as input
+    import __builtin__ as builtins
+
+    from builtins import raw_input as input
 
     from StringIO import StringIO
 
@@ -73,6 +75,8 @@ else:
         from requests.exceptions import HTTPError
     except (ImportError, ModuleNotFoundError):
         from urllib.error   import HTTPError
+
+    import builtins
 
     from builtins import input
 

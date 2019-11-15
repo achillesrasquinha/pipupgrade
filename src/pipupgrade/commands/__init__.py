@@ -22,6 +22,7 @@ from pipupgrade.util.datetime 	import get_timestamp_str
 from pipupgrade 		      	import (_pip, request as req, cli,
 	log, parallel
 )
+from pipupgrade._compat			import builtins
 from pipupgrade.__attr__      	import __name__
 
 logger = log.get_logger(level = log.DEBUG)
@@ -40,6 +41,8 @@ def command(
 	github_username   			= None,
 	target_branch    			= "master",
 	latest						= False,
+	format						= "list",
+	all							= False,
 	pip							= False,
 	self 		 				= False,
 	jobs						= 1,
@@ -121,7 +124,9 @@ def command(
 				results       = pool.map(
 					partial(
 						get_registry_from_pip,
-						**{ "user": user, "sync": no_cache }
+						**{ "user": user, "sync": no_cache,
+							"outdated": not all,
+						}
 					),
 					pip_path
 				)
@@ -158,7 +163,7 @@ def command(
 					pipfile
 				)
 
-				if all(results):
+				if builtins.all(results):
 					cli.echo(cli_format("Pipfiles upto date.", cli.GREEN))
 
 		if project and pull_request:

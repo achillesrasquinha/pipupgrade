@@ -8,8 +8,14 @@ class Registry:
         installed = False,
         sync      = False
     ):
-        self.source    = source
-        self.packages  = [Package(p, sync = sync)
+        self.source = source
+
+        args = { "sync": sync }
+
+        if installed:
+            args.update({ "pip_exec": source })
+
+        self.packages  = [Package(p, **args)
             for p in packages
         ]
 

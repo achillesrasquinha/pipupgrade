@@ -53,11 +53,12 @@ _PIP_EXECUTABLE  = _get_pip_executable()
 _PIP_EXECUTABLES = _get_pip_executable(multiple = True)
 
 def call(*args, **kwargs):
-    pip_exec = kwargs.pop("pip_exec", _PIP_EXECUTABLE)
-    quiet    = kwargs.pop("quiet",  False)
-    output   = kwargs.pop("output", False)
+    pip_exec  = kwargs.pop("pip_exec", _PIP_EXECUTABLE)
+    quiet     = kwargs.pop("quiet",  False)
+    output    = kwargs.pop("output", False)
+    raise_err = kwargs.pop("raise_err", True)
 
-    params   = sequencify(pip_exec) + sequencify(args)
+    params    = sequencify(pip_exec) + sequencify(args)
     
     for flag, value in iteritems(kwargs):
         if value != False:
@@ -70,4 +71,4 @@ def call(*args, **kwargs):
 
     output   = output or quiet
 
-    return popen(*params, output = output)
+    return popen(*params, output = output, raise_err = raise_err)

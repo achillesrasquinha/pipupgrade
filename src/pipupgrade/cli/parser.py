@@ -50,6 +50,15 @@ def get_parser():
         action  = "store_true",
         help    = "Update all packages to latest."
     )
+    parser.add_argument("-f", "--format",
+        choices = ["list", "tree"],
+        help    = "Display packages format.",
+        default = "list"
+    )
+    parser.add_argument("-a", "--all",
+        action  = "store_true",
+        help    = "List all packages."
+    )
     parser.add_argument("--pip",
         action  = "store_true",
         help    = "Update pip"

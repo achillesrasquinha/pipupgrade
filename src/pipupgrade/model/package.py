@@ -3,7 +3,11 @@ from   datetime import datetime
 import threading
 
 # imports - module imports
-from pipupgrade import _pip, request as req, db, log
+from pipupgrade 	 import _pip, request as req, db, log
+from pipupgrade.tree import Node as TreeNode
+from pipupgrade.util.array  import compact
+from pipupgrade.util.string import kebab_case
+from pipupgrade._compat		import iteritems
 
 logger = log.get_logger()
 
@@ -22,8 +26,45 @@ def _get_pypi_info(name, raise_err = True):
 
 	return info
 
+def _get_package_info(package, pip_exec = _pip._PIP_EXECUTABLE):
+	logger.info("Fetching Package Information %s..." % package)
+	_, out, err	= _pip.call("show", package, pip_exec = pip_exec,
+		output = True)
+	info		= dict((kebab_case(k), v) \
+		for k, v in \
+			iteritems(
+				dict([(s + [""]) if len(s) == 1 else s
+					for s in [o.split(": ") for o in out.split("\n")]]
+				)
+			)
+	)
+
+	return info
+
+def _get_dependency_tree(package, pip_exec = _pip._PIP_EXECUTABLE):
+	logger.info("Fetching Dependencies for %s..." % package)
+
+	tree 		= TreeNode(package)
+	info		= _get_package_info(package.name,
+		pip_exec = pip_exec)
+
+	dependencies = compact(info["requires"].split(", "))
+	logger.info("Dependencies found: %s..." % dependencies)
+
+	for dependency in dependencies:
+		child = _get_dependency_tree(Package(dependency, pip_exec = pip_exec),
+			pip_exec = pip_exec)
+		tree.add_child(child)
+
+	return tree
+
+def _get_current_package_version(package, pip_exec = _pip._PIP_EXECUTABLE):
+	info = _get_package_info(package,
+		pip_exec = pip_exec)
+	return info["version"]
+
 class Package:
-	def __init__(self, package, sync = False):
+	def __init__(self, package, sync = False, pip_exec = None):
 		logger.info("Initializing Package %s of type %s..." % (package, type(package)))
 
 		if   isinstance(package, (_pip.Distribution, _pip.DistInfoDistribution, _pip.EggInfoDistribution)):
@@ -36,6 +77,9 @@ class Package:
 			self.name            = package["name"]
 			self.current_version = package["version"]
 			self.latest_version  = package.get("latest_version")
+		elif isinstance(package, str):
+			self.name			 = package
+			self.current_version = _get_current_package_version(self.name, pip_exec = pip_exec)
 
 		_db = db.get_connection()
 		try:
@@ -55,6 +99,11 @@ class Package:
 				self.latest_version = _pypi_info.get("version")
 
 			self.home_page = _pypi_info.get("home_page")
+
+		if pip_exec:
+			logger.info("Fetching Dependencies for %s..." % self)
+			self.dependencies = _get_dependency_tree(self,
+				pip_exec = pip_exec)
 
 		if not res:
 			try:
