@@ -9,6 +9,7 @@ from   functools import partial
 from pipupgrade.commands.helper import (
 	get_registry_from_requirements,
 	get_registry_from_pip,
+	update_pip,
 	update_pipfile,
 	update_registry
 )
@@ -65,17 +66,22 @@ def command(
 	pip_path    = [which(p) for p in pip_path] or _pip._PIP_EXECUTABLES
 
 	logger.info("`pip` executables found: %s" % pip_path)
+	
+	logger.info("Using %s jobs..." % jobs)
 
 	registries  = [ ]
-
-	logger.info("Using %s jobs..." % jobs)
+	format_		= "table" if format == "list" else format
 
 	if pip:
 		logger.info("Updating pip executables: %s" % " ".join(pip_path))
 
-		for pip_exec in pip_path:
-			_pip.call("install", "pip", pip_exec = pip_exec, user = user, 
-				quiet = not verbose, no_cache_dir = True, upgrade = True)
+		with parallel.pool(processes = jobs) as pool:
+			results = pool.map(
+				partial(
+					update_pip, **{ "user": user, "quiet": not verbose }
+				),
+				pip_path
+			)
 
 	if self:
 		package = __name__
@@ -139,14 +145,15 @@ def command(
 						update_registry,
 						**{ "yes": yes, "user": user, "check": check,
 							"latest": latest, "interactive": interactive,
-							"verbose": verbose }
+							"verbose": verbose, "format_": format_ }
 					),
 					registries
 				)
 		else:
 			for registry in registries:
 				update_registry(registry, yes = yes, user = user, check = check,
-					latest = latest, interactive = interactive, verbose = verbose
+					latest = latest, interactive = interactive, verbose = verbose,
+					format_ = format_
 				)
 
 		if pipfile:

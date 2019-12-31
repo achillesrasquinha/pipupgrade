@@ -8,7 +8,7 @@ from pipupgrade.model         	import Registry
 from pipupgrade.commands.util 	import cli_format
 from pipupgrade.table      	  	import Table
 from pipupgrade.tree			import Node as TreeNode
-from pipupgrade.util.string     import pluralize
+from pipupgrade.util.string     import pluralize, strip
 from pipupgrade.util.system   	import read, write, popen, which
 from pipupgrade 		      	import (_pip, cli, semver,
 	log, parallel
@@ -114,18 +114,60 @@ def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True)
 
 	return registry
 
+def update_pip(pip_exec, user = None, quiet = None):
+	output = _pip.call("install", "pip", user = user, quiet = quiet,
+		no_cache = True, upgrade = True)
+	return output
+
+def _format_package(package):
+	diff_type = None
+	
+	try:
+		diff_type = semver.difference(package.current_version, package.latest_version)
+	except (TypeError, ValueError):
+		pass
+
+	string = cli_format(package.name, _SEMVER_COLOR_MAP.get(diff_type, cli.CLEAR))
+
+	if package.current_version:
+		string += " (%s)" % package.current_version
+
+	if package.latest_version and package.current_version != package.latest_version:
+		string += " -> (%s)" % _cli_format_semver(package.latest_version, diff_type)
+
+	return string
+
+def _render_dependency_tree(packages):
+	rendered = [ ]
+
+	for package in packages:
+		dependencies 	= package.dependencies
+		string			= dependencies.render(indent = 4,
+			formatter = lambda package: _format_package(package)
+		)
+
+		sanitized		= strip(string)
+
+		rendered.append(sanitized)
+
+	string = strip("\n\n".join(rendered))
+
+	return string
+
 def update_registry(registry,
 	yes         = False,
 	user 		= False,
 	check	    = False,
 	latest		= False,
 	interactive = False,
+	format_		= "table",
 	verbose 	= False):
 	source   = registry.source
 	packages = registry.packages
 
 	table 	 = Table(header = ["Name", "Current Version", "Latest Version", "Home Page"])
-	tree	 = TreeNode("Dependencies")
+	nodes	 = [ ]
+	render   = False
 	dinfo 	 = [ ] # Information DataFrame
 
 	for package in packages:
@@ -133,6 +175,7 @@ def update_registry(registry,
 		package.installed = registry.installed
 
 		if package.latest_version and package.current_version != package.latest_version:
+			render	  = True
 			diff_type = None
 
 			try:
@@ -140,12 +183,15 @@ def update_registry(registry,
 			except (TypeError, ValueError):
 				pass
 
-			table.insert([
-				cli_format(package.name, _SEMVER_COLOR_MAP.get(diff_type, cli.CLEAR)),
-				package.current_version or "na",
-				_cli_format_semver(package.latest_version, diff_type),
-				cli_format(package.home_page, cli.CYAN)
-			])
+			if format_ == "tree":
+				nodes.append(package)
+			else:
+				table.insert([
+					cli_format(package.name, _SEMVER_COLOR_MAP.get(diff_type, cli.CLEAR)),
+					package.current_version or "na",
+					_cli_format_semver(package.latest_version, diff_type),
+					cli_format(package.home_page, cli.CYAN)
+				])
 
 			package.diff_type = diff_type
 
@@ -156,8 +202,11 @@ def update_registry(registry,
 
 	stitle = "Installed Distributions (%s)" % source if registry.installed else source
 
-	if not table.empty:
-		string = table.render()
+	if render:
+		if format_ == "tree":
+			string = _render_dependency_tree(nodes)
+		else:
+			string = table.render()
 	
 		cli.echo("\nSource: %s\n" % stitle)
 		

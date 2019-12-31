@@ -7,6 +7,12 @@ CREATE TABLE IF NOT EXISTS `tabPackage` (
     `_updated_at`       DATETIME
 );
 
+CREATE TABLE IF NOT EXISTS `tabPackageDependency` (
+    `id`                INTEGER     PRIMARY KEY AUTOINCREMENT,
+    `package_id`        INTEGER     NOT NULL,
+    FOREIGN KEY(package_id) REFERENCES tabPackage(id)
+);
+
 CREATE TABLE IF NOT EXISTS `tabSettings` (
     `version`           TEXT        NOT NULL
 );

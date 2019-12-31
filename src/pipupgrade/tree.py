@@ -1,3 +1,15 @@
+def _render_tree(node, depth = 0, indent = 2, formatter = None):
+    spacing     = (indent * " ") * depth
+    formatted   = formatter(node.obj) if formatter else node.obj
+
+    string      = "%s%s\n" % (spacing, formatted)
+
+    for child in node.children:
+        string += _render_tree(child, depth + 1,
+            indent = indent, formatter = formatter)
+    
+    return string
+
 class Node:
     def __init__(self, obj, children = [ ]):
         self.obj        = obj
@@ -23,10 +35,14 @@ class Node:
 
     def add_child(self, child):
         if not isinstance(child, Node):
-            raise TypeError("Child must be of type Node, found %s" % type(child))
+            child = Node(child)
 
         self.children.append(child)
 
     def __repr__(self):
         repr_ = "<Node '%s'>" % str(self.obj)
         return repr_
+
+    def render(self, indent = 2, formatter = None):
+        string = _render_tree(self, indent = indent, formatter = formatter)
+        return string
