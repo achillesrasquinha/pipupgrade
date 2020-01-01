@@ -174,7 +174,7 @@ def update_registry(registry,
 	verbose 	= False):
 	source   = registry.source
 	packages = registry.packages
-
+	
 	table 	 = Table(header = ["Name", "Current Version", "Latest Version", "Home Page"])
 	nodes	 = [ ]
 	render   = False

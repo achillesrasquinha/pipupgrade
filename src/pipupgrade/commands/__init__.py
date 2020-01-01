@@ -72,7 +72,6 @@ def command(
 	logger.info("Using %s jobs..." % jobs)
 
 	registries  = [ ]
-	format_		= "table" if format == "list" else format
 
 	if pip:
 		logger.info("Updating pip executables: %s" % " ".join(pip_path))
@@ -84,8 +83,6 @@ def command(
 				),
 				pip_path
 			)
-
-	return
 
 	if self:
 		package = __name__
@@ -132,7 +129,7 @@ def command(
 				registries    += results
 		else:
 			# HACK: ?
-			daemonize 	= format_ != "tree"
+			daemonize 	= format != "tree"
 			class_		= parallel.Pool if daemonize else parallel.NoDaemonProcessPool
 
 			with parallel.pool(processes = jobs, class_ = class_) as pool:
@@ -140,7 +137,7 @@ def command(
 					partial(
 						get_registry_from_pip,
 						**{ "user": user, "sync": no_cache,
-							"outdated": not all, "dependencies": format_ == "tree"
+							"outdated": not all, "dependencies": format == "tree"
 						}
 					),
 					pip_path
@@ -151,6 +148,7 @@ def command(
 
 				registries    += results
 
+		# TODO: Tweaks within parallel.pool to run serially.
 		if yes:
 			with parallel.pool(processes = jobs) as pool:
 				results = pool.map(
@@ -158,7 +156,7 @@ def command(
 						update_registry,
 						**{ "yes": yes, "user": user, "check": check,
 							"latest": latest, "interactive": interactive,
-							"verbose": verbose, "format_": format_ }
+							"verbose": verbose, "format_": format }
 					),
 					registries
 				)
@@ -166,7 +164,7 @@ def command(
 			for registry in registries:
 				update_registry(registry, yes = yes, user = user, check = check,
 					latest = latest, interactive = interactive, verbose = verbose,
-					format_ = format_
+					format_ = format
 				)
 
 		if pipfile:

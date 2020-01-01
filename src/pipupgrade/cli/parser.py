@@ -51,9 +51,9 @@ def get_parser():
         help    = "Update all packages to latest."
     )
     parser.add_argument("-f", "--format",
-        choices = ["list", "tree", "json", "yaml"],
+        choices = ["list", "table", "tree", "json", "yaml"],
         help    = "Display packages format.",
-        default = "list"
+        default = "table"
     )
     parser.add_argument("-a", "--all",
         action  = "store_true",

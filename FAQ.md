@@ -2,6 +2,7 @@
 
 * [How do I upgrade `pip` itself?](#how-do-i-upgrade-pip-itself)
 * [How do I upgrade `pipupgrade` itself?](#how-do-i-upgrade-pipupgrade-itself)
+* [How do I upgrade packages mentioned within my `requirements.txt` files](#how-do-i-upgrade-packages-mentioned-within-my-requirements.txt-files)
 
 ### How do I upgrade `pip` itself?
 ---
@@ -32,4 +33,9 @@ $ pipupgrade --self
 Use the `--self` flag to ensure your `pipupgrade` is up-to-date. `pipupgrade`
  will then attempt to upgrade itself and exit execution.
 
-###
+### How do I upgrade packages mentioned within my `requirements.txt` files
+---
+
+```
+$ pipupgrade -r "<PATH_TO_REQUIREMENTS_FILE>"
+```
