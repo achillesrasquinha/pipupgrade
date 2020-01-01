@@ -48,7 +48,7 @@
 * [Usage](#usage)
 * [License](#license)
 
-#### Features
+### Features
 * Updates system packages and local packages.
 * Discovers packages present within multiple Python Environments.
 * Updates packages mentioned within a `requirements.txt` file (Also pins up-to-date versions if mentioned).
@@ -60,15 +60,15 @@
 * Automate your Dependencies by installing `pipupgrade` in your CI workflow.
 * Zero Dependencies!
 
-#### Installation
+### Installation
 
 ```shell
 $ pip install pipupgrade
 ```
 
-#### Usage
+### Usage
 
-##### Basic Usage
+#### Basic Usage
 
 * [**`pipupgrade`**](https://git.io/pipupgrade)
 
@@ -168,7 +168,7 @@ optional arguments:
   -h, --help            Show this help message and exit.
 ```
 
-#### Frequently Asked Questions
+### Frequently Asked Questions
 
 * ***How do I update `pip` itself?***
 
@@ -185,7 +185,7 @@ $ pipupgrade --pip --pip-path pip3
 
 This updates the pip3 executable only.
 
-#### Similar Packages
+### Similar Packages
 
 `pipupgrade` attempts to provide an all-in-one solution as compared to the following packages:
 
@@ -194,11 +194,11 @@ This updates the pip3 executable only.
 * [pipdate](https://github.com/nschloe/pipdate)
 * [pip-review](https://github.com/jgonggrijp/pip-review)
 
-#### Known Issues
+### Known Issues
 
 * [I'm stuck at "Checking..." forever.](https://github.com/achillesrasquinha/pipupgrade/issues/30)
 
-#### License
+### License
 
 This repository has been released under the [MIT License](LICENSE).
 
