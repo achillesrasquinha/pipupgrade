@@ -4,12 +4,16 @@ from pipupgrade._compat import iteritems
 # imports - standard imports
 import os, os.path as osp
 import errno
+import platform
 import subprocess  as sp
 from   distutils.spawn import find_executable
 
 # imports - module imports
 from pipupgrade.util.string import strip
 from pipupgrade._compat     import iteritems
+from pipupgrade.log         import get_logger
+
+logger = get_logger()
 
 def read(fname):
     with open(fname) as f:
@@ -52,10 +56,13 @@ def popen(*args, **kwargs):
 
     command     = " ".join([str(arg) for arg in args])
 
+    logger.info("Executing command: %s" % command)
+
     if quiet:
         output  = True
     
     proc        = sp.Popen(command,
+        bufsize = -1,
         stdin   = sp.PIPE if output else None,
         stdout  = sp.PIPE if output else None,
         stderr  = sp.PIPE if output else None,
@@ -93,3 +100,11 @@ def makedirs(dirs, exist_ok = False):
     except OSError as e:
         if not exist_ok or e.errno != errno.EEXIST:
             raise
+
+def environment():
+    environ = dict()
+    
+    environ["python_version"]   = platform.python_version()
+    environ["os"]               = platform.platform()
+
+    return environ

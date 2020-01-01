@@ -110,8 +110,9 @@ That's basically it! Run the help for more details...
 
 ```
 $ pipupgrade --help
-usage: pipupgrade [--pip-path PIP_PATH] [-y] [-c] [-l] [-s] [-r REQUIREMENTS]
-                  [--pipfile PIPFILE] [-i] [-p PROJECT]
+usage: pipupgrade [--pip-path PIP_PATH] [-y] [-c] [-l]
+                  [-f {list,tree,json,yaml}] [-a] [--pip] [-s]
+                  [-r REQUIREMENTS] [--pipfile PIPFILE] [-i] [-p PROJECT]
                   [--git-username GIT_USERNAME] [--git-email GIT_EMAIL]
                   [--pull-request] [--github-access-token GITHUB_ACCESS_TOKEN]
                   [--github-reponame GITHUB_REPONAME]
@@ -120,7 +121,7 @@ usage: pipupgrade [--pip-path PIP_PATH] [-y] [-c] [-l] [-s] [-r REQUIREMENTS]
                   [--no-included-requirements] [--no-cache] [--no-color] [-V]
                   [-v] [-h]
 
-pipupgrade (v 1.5.1)
+pipupgrade (v 1.5.2)
 
 UPGRADE ALL THE PIP PACKAGES!
 
@@ -129,6 +130,10 @@ optional arguments:
   -y, --yes             Confirm for all dialogs. (default: False)
   -c, --check           Check for outdated packages. (default: False)
   -l, --latest          Update all packages to latest. (default: False)
+  -f {list,tree,json,yaml}, --format {list,tree,json,yaml}
+                        Display packages format. (default: list)
+  -a, --all             List all packages. (default: False)
+  --pip                 Update pip (default: False)
   -s, --self            Update pipupgrade. (default: False)
   -r REQUIREMENTS, --requirements REQUIREMENTS
                         Path(s) to requirements.txt file. (default: None)
@@ -161,6 +166,21 @@ optional arguments:
   -V, --verbose         Display verbose output. (default: False)
   -v, --version         Show pipupgrade's version number and exit.
   -h, --help            Show this help message and exit.
+```
+
+#### Frequently Asked Questions
+
+#### *"How do I update `pip` itself?"*
+
+```
+$ pipupgrade --pip
+```
+
+Use the `--pip` flag to ensure your `pip` is up-to-date. If you wish to
+update a specific `pip` executable, use the `--pip-path` flag. For example
+
+```
+$ pipupgrade --pip --pip-path pip3 # This updates pip3 only.
 ```
 
 #### Similar Packages

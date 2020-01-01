@@ -71,4 +71,6 @@ def call(*args, **kwargs):
 
     output   = output or quiet
 
-    return popen(*params, output = output, raise_err = raise_err)
+    output = popen(*params, output = output, raise_err = raise_err)
+    
+    return output

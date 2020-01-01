@@ -14,6 +14,7 @@ from pipupgrade.util.imports import import_handler
 _ACCEPTABLE_INPUTS_YES      = ("", "y", "Y")
 _ACCEPTABLE_INPUTS_QUIT     = ("q", "Q")
 
+# https://gist.github.com/RDCH106/6562cc7136b30a5c59628501d87906f7
 _CAN_ANSI_FORMAT_WINDOWS    = (
     os.name == "nt" \
         and platform.release() == "10" \

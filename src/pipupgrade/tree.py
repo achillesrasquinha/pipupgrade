@@ -39,6 +39,10 @@ class Node:
 
         self.children.append(child)
 
+    def add_children(self, *children):
+        for child in children:
+            self.add_child(child)
+
     def __repr__(self):
         repr_ = "<Node '%s'>" % str(self.obj)
         return repr_
@@ -46,3 +50,24 @@ class Node:
     def render(self, indent = 2, formatter = None):
         string = _render_tree(self, indent = indent, formatter = formatter)
         return string
+
+    def to_dict(self, repr_ = None):
+        dict_ = dict({
+            "object": repr_(self.obj) if repr_ else str(self.obj),
+            "children": [
+                d.to_dict(repr_ = repr_) for d in self.children
+            ]
+        })
+
+        return dict_
+
+    @staticmethod
+    def from_dict(dict_, objectify = None):
+        obj             = objectify(dict_["object"] ) \
+            if objectify else dict_["object"]
+        children        = dict_["children"]
+
+        node            = Node(obj)
+        node.children   = [Node.from_dict(child) for child in children]
+
+        return node

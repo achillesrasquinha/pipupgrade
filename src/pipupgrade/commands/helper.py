@@ -73,6 +73,11 @@ def _update_requirements(path, package):
 		# In case we fucked up!
 		write(path, content, force = True)
 
+def update_pip(pip_exec, user = None, quiet = None):
+	output = _pip.call("install", "pip", pip_exec = pip_exec, 
+		user = user, quiet = quiet, no_cache_dir = True, upgrade = True)
+	return output
+
 def update_pipfile(pipfile, verbose = False):
 	if not verbose:
 		logger.setLevel(log.NOTSET)
@@ -98,26 +103,29 @@ def get_registry_from_requirements(requirements, sync = False):
 		packages =  _pip.parse_requirements(requirements, session = "hack")
 		registry = Registry(source = path, packages = packages, sync = sync)
 
-	logger.info("Packages within requirements %s found: %s..." % (requirements, registry.packages))
+	logger.info("Packages within requirements %s found: %s..." % (
+		requirements, registry.packages)
+	)
 
 	return registry
 
-def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True):
+def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True,
+	dependencies = False
+):
+	logger.info("Fetching installed packages for %s..." % pip_path)
+
 	_, output, _ = _pip.call("list", user = user, outdated = outdated, \
 		format = "json", pip_exec = pip_path, output = True)
+
 	packages     = json.loads(output)
+	logger.info("%s packages found for %s." % (len(packages), pip_path))
 	registry     = Registry(source = pip_path, packages = packages,
-		installed = True, sync = sync)
+		installed = True, sync = sync, dependencies = dependencies)
 
 	logger.info("Packages within `pip` %s found: %s..." % (pip_path, registry.packages))
 	# _pip.get_installed_distributions() # https://github.com/achillesrasquinha/pipupgrade/issues/13
 
 	return registry
-
-def update_pip(pip_exec, user = None, quiet = None):
-	output = _pip.call("install", "pip", user = user, quiet = quiet,
-		no_cache = True, upgrade = True)
-	return output
 
 def _format_package(package):
 	diff_type = None
@@ -127,13 +135,15 @@ def _format_package(package):
 	except (TypeError, ValueError):
 		pass
 
-	string = cli_format(package.name, _SEMVER_COLOR_MAP.get(diff_type, cli.CLEAR))
+	string = "* %s" % cli_format(package.name, _SEMVER_COLOR_MAP.get(diff_type, cli.CLEAR))
 
 	if package.current_version:
 		string += " (%s)" % package.current_version
 
 	if package.latest_version and package.current_version != package.latest_version:
 		string += " -> (%s)" % _cli_format_semver(package.latest_version, diff_type)
+
+	string += " " + cli_format("[%s]" % package.home_page, cli.CYAN)
 
 	return string
 
@@ -150,7 +160,7 @@ def _render_dependency_tree(packages):
 
 		rendered.append(sanitized)
 
-	string = strip("\n\n".join(rendered))
+	string = strip("\n".join(rendered))
 
 	return string
 

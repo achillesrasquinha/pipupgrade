@@ -157,7 +157,7 @@ ifeq (${launch},true)
 	$(call browse,file:///${DOCSDIR}/build/index.html)
 endif
 
-docker-build: clean pre-commit ## Build the Docker Image.
+docker-build: clean ## Build the Docker Image.
 	$(call log,INFO,Building Docker Image)
 
 	@docker build $(BASEDIR) --tag $(DOCKER_HUB_USERNAME)/$(PROJECT) $(DOCKER_BUILD_ARGS)

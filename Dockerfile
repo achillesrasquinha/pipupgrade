@@ -1,19 +1,21 @@
-FROM  python:alpine
+FROM  python:3-alpine
 
 LABEL maintainer=achillesrasquinha@gmail.com
 
-ENV PIPUPGRADEPATH=/usr/local/src/pipupgrade
+ENV PIPUPGRADE_PATH=/usr/local/src/pipupgrade
 
-RUN apk add --no-cache bash git
+RUN apk add --no-cache \
+        bash \
+        git \
+    && mkdir -p $PIPUPGRADE_PATH
 
-RUN mkdir -p $PIPUPGRADEPATH
+COPY . $PIPUPGRADE_PATH
+COPY ./docker/entrypoint.sh /entrypoint.sh
 
-COPY . $PIPUPGRADEPATH
+RUN pip install $PIPUPGRADE_PATH
 
-RUN pip install $PIPUPGRADEPATH
+WORKDIR $PIPUPGRADE_PATH
 
-WORKDIR $PIPUPGRADEPATH
+ENTRYPOINT ["/entrypoint.sh"]
 
-ENTRYPOINT ["/usr/local/src/pipupgrade/docker/entrypoint.sh"]
-
-CMD ["pipupgrade"]
+CMD ["python"]

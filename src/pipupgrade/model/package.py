@@ -1,13 +1,19 @@
 # imports - standard imports
-from   datetime import datetime
-import threading
+from   	datetime	import datetime
+from 	functools 	import partial
+import 	os.path as osp
+import 	re
 
 # imports - module imports
-from pipupgrade 	 import _pip, request as req, db, log
-from pipupgrade.tree import Node as TreeNode
+from pipupgrade.__attr__    import __name__ as NAME
+from pipupgrade 	 		import _pip, request as req, db, log
+from pipupgrade.tree 		import Node as TreeNode
+from pipupgrade.io			import _json
 from pipupgrade.util.array  import compact
 from pipupgrade.util.string import kebab_case
+from pipupgrade.util.system import makedirs
 from pipupgrade._compat		import iteritems
+from pipupgrade				import parallel
 
 logger = log.get_logger()
 
@@ -28,18 +34,54 @@ def _get_pypi_info(name, raise_err = True):
 
 def _get_package_info(package, pip_exec = _pip._PIP_EXECUTABLE):
 	logger.info("Fetching Package Information %s..." % package)
+	
 	_, out, err	= _pip.call("show", package, pip_exec = pip_exec,
 		output = True)
+	
 	info		= dict((kebab_case(k), v) \
 		for k, v in \
 			iteritems(
 				dict([(s + [""]) if len(s) == 1 else s
-					for s in [o.split(": ") for o in out.split("\n")]]
+					for s in [re.split(':\s?', o, maxsplit = 1) for o in out.split("\n")]]
 				)
 			)
 	)
 
 	return info
+
+def _get_dependency_cache_path(package):
+	path = osp.join(osp.expanduser("~"), ".%s" % NAME,
+		"deps", package.name, package.current_version)
+	return path
+
+def _get_dependency_tree_from_cache(package):
+	basepath	= _get_dependency_cache_path(package)
+	depspath	= osp.join(basepath, "tree.json")
+	
+	tree		= None
+
+	if osp.exists(depspath):
+		dict_ 	= _json.read(depspath)
+		tree 	= TreeNode.from_dict(dict_,
+			# objectify = 
+		)
+
+	return tree
+	
+def _save_dependency_tree_to_cache(package, dependencies):
+	basepath    = _get_dependency_cache_path(package)
+	makedirs(basepath, exist_ok = True)
+
+	depspath	= osp.join(basepath, "tree.json")
+
+	if not osp.exists(depspath):
+		_json.write(depspath, dependencies.to_dict(repr_ = lambda x: x.name))
+
+def _get_dependency_tree_helper(dependency, pip_exec = None):
+	child = _get_dependency_tree(Package(dependency, pip_exec = pip_exec,
+		dependencies = True
+	), pip_exec = pip_exec)
+	return child
 
 def _get_dependency_tree(package, pip_exec = _pip._PIP_EXECUTABLE):
 	logger.info("Fetching Dependencies for %s..." % package)
@@ -49,12 +91,21 @@ def _get_dependency_tree(package, pip_exec = _pip._PIP_EXECUTABLE):
 		pip_exec = pip_exec)
 
 	dependencies = compact(info["requires"].split(", "))
-	logger.info("Dependencies found: %s..." % dependencies)
+	logger.info("Dependencies found: %s." % dependencies)
 
-	for dependency in dependencies:
-		child = _get_dependency_tree(Package(dependency, pip_exec = pip_exec),
-			pip_exec = pip_exec)
-		tree.add_child(child)
+	with parallel.no_daemon_pool() as pool:
+		children = pool.map(
+			partial(
+				_get_dependency_tree_helper,
+				**{
+					"pip_exec": pip_exec
+				}
+			),
+			dependencies
+		)
+		
+		if children:
+			tree.add_children(*children)
 
 	return tree
 
@@ -64,7 +115,7 @@ def _get_current_package_version(package, pip_exec = _pip._PIP_EXECUTABLE):
 	return info["version"]
 
 class Package:
-	def __init__(self, package, sync = False, pip_exec = None):
+	def __init__(self, package, sync = False, pip_exec = None, dependencies = False):
 		logger.info("Initializing Package %s of type %s..." % (package, type(package)))
 
 		if   isinstance(package, (_pip.Distribution, _pip.DistInfoDistribution, _pip.EggInfoDistribution)):
@@ -81,8 +132,14 @@ class Package:
 			self.name			 = package
 			self.current_version = _get_current_package_version(self.name, pip_exec = pip_exec)
 
+		self._pip_exec	= pip_exec
+
 		_db = db.get_connection()
+		res = None
+
 		try:
+			logger.info("Fetching package %s information from DB..." % self.name)
+
 			res = _db.query("""
 				SELECT *
 				FROM `tabPackage`
@@ -100,10 +157,23 @@ class Package:
 
 			self.home_page = _pypi_info.get("home_page")
 
-		if pip_exec:
+		if dependencies and pip_exec:
 			logger.info("Fetching Dependencies for %s..." % self)
-			self.dependencies = _get_dependency_tree(self,
-				pip_exec = pip_exec)
+
+			dependencies		= _get_dependency_tree_from_cache(self)
+
+			if not dependencies:
+				logger.info("Building dependency tree for %s..." % self.name)
+
+				self.dependencies 	= _get_dependency_tree(self,
+					pip_exec = pip_exec)
+				
+				_save_dependency_tree_to_cache(self,
+					dependencies = self.dependencies)
+			else:
+				logger.info("Using cached dependency tree for %s." % self.name)
+				
+				self.dependencies	= dependencies
 
 		if not res:
 			try:
@@ -139,3 +209,9 @@ class Package:
 	def __repr__(self):
 		repr_ = "<Package %s (%s)>" % (self.name, self.current_version)
 		return repr_
+
+	def to_dict(self):
+		pass
+
+	def to_yaml(self):
+		pass

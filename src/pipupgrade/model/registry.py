@@ -4,13 +4,14 @@ from pipupgrade.model.package import Package
 class Registry:
     def __init__(self,
         source,
-        packages  = [ ],
-        installed = False,
-        sync      = False
+        packages        = [ ],
+        installed       = False,
+        sync            = False,
+        dependencies    = False
     ):
         self.source = source
 
-        args = { "sync": sync }
+        args = { "sync": sync, "dependencies": dependencies }
 
         if installed:
             args.update({ "pip_exec": source })

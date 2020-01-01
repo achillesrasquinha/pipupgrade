@@ -17,7 +17,7 @@ from pipupgrade.model           import Project
 from pipupgrade.model.project 	import get_included_requirements
 from pipupgrade.commands.util 	import cli_format
 from pipupgrade.util.types    	import flatten
-from pipupgrade.util.system   	import read, write, popen, which
+from pipupgrade.util.system   	import read, write, popen, which, environment
 from pipupgrade.util.environ  	import getenvvar
 from pipupgrade.util.datetime 	import get_timestamp_str
 from pipupgrade 		      	import (_pip, request as req, cli,
@@ -59,6 +59,8 @@ def command(
 	if not verbose:
 		logger.setLevel(log.NOTSET)
 		
+	logger.info("Environment: %s" % environment())
+
 	cli.echo(cli_format("Checking...", cli.YELLOW))
 	logger.info("Arguments Passed: %s" % locals())
 
@@ -76,12 +78,14 @@ def command(
 		logger.info("Updating pip executables: %s" % " ".join(pip_path))
 
 		with parallel.pool(processes = jobs) as pool:
-			results = pool.map(
+			pool.map(
 				partial(
 					update_pip, **{ "user": user, "quiet": not verbose }
 				),
 				pip_path
 			)
+
+	return
 
 	if self:
 		package = __name__
@@ -91,6 +95,7 @@ def command(
 
 		_pip.call("install", package, user = user, quiet = not verbose,
 			no_cache = True, upgrade = True)
+
 		cli.echo("%s upto date." % cli_format(package, cli.CYAN))
 	else:
 		if project:
@@ -126,16 +131,24 @@ def command(
 				)
 				registries    += results
 		else:
-			with parallel.pool(processes = jobs) as pool:
+			# HACK: ?
+			daemonize 	= format_ != "tree"
+			class_		= parallel.Pool if daemonize else parallel.NoDaemonProcessPool
+
+			with parallel.pool(processes = jobs, class_ = class_) as pool:
 				results       = pool.map(
 					partial(
 						get_registry_from_pip,
 						**{ "user": user, "sync": no_cache,
-							"outdated": not all,
+							"outdated": not all, "dependencies": format_ == "tree"
 						}
 					),
 					pip_path
 				)
+
+				if not daemonize:
+					pool.close(); pool.join()
+
 				registries    += results
 
 		if yes:

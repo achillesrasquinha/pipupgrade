@@ -13,10 +13,17 @@ import json
 # imports - module imports
 from pipupgrade.request.response import Response
 from pipupgrade.util.string      import safe_encode
+from pipupgrade.log              import get_logger
+
+logger = get_logger()
 
 # YAGNI: This patched "requests" works only for pipupgrade's use-cases.
 
 def get(*args, **kwargs):
+    logger.info("Dispatching GET request with arguments %s and parameters %s." % (
+        args, kwargs
+    ))
+
     try:
         import requests as req
         return req.get(*args, **kwargs)
@@ -40,6 +47,10 @@ def get(*args, **kwargs):
         return response
 
 def post(*args, **kwargs):
+    logger.info("Dispatching POST request with arguments %s and parameters %s." % (
+        args, kwargs
+    ))
+
     try:
         import requests as req
         return req.post(*args, **kwargs)
