@@ -10,9 +10,10 @@
 $ pipupgrade --pip
 ```
 
-Use the `--pip` flag to ensure your `pip` is up-to-date. If you wish to
-upgrade a specific `pip` executable, use the `--pip-path` flag. For example, if
-you'd like to upgrade `pip3` executable only, the command then would be
+Use the `--pip` flag to ensure your `pip` is up-to-date. `pipupgrade` would 
+then attempt to upgrade all pip executables it's able to discover and upgrade 
+them parallely. If you wish to upgrade a specific `pip` executable, use the `--pip-path` flag. For example, if you'd like to upgrade `pip3` executable only, 
+the command then would be
 
 ```
 $ pipupgrade --pip --pip-path pip3
@@ -30,3 +31,5 @@ $ pipupgrade --self
 
 Use the `--self` flag to ensure your `pipupgrade` is up-to-date. `pipupgrade`
  will then attempt to upgrade itself and exit execution.
+
+###
