@@ -171,6 +171,7 @@ optional arguments:
 ### Frequently Asked Questions
 
 * ***How do I update `pip` itself?***
+---
 
 ```
 $ pipupgrade --pip
