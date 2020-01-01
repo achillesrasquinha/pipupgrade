@@ -2,7 +2,7 @@
 
 * [How do I update `pip` itself?](#how-do-i-update-pip-itself)
 
-#### [How do I update `pip` itself?]()
+#### How do I update `pip` itself?
 ---
 
 ```
