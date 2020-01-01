@@ -3,7 +3,7 @@
 * [How do I upgrade `pip` itself?](#how-do-i-upgrade-pip-itself)
 * [How do I upgrade `pipupgrade` itself?](#how-do-i-upgrade-pipupgrade-itself)
 
-#### * How do I upgrade `pip` itself?
+#### How do I upgrade `pip` itself?
 ---
 
 ```
@@ -21,7 +21,7 @@ $ pipupgrade --pip --pip-path pip3
 The `--pip` flag enures to upgrade pip before it attempts to upgrade all other 
 packages.
 
-#### * How do I upgrade `pipupgrade` itself?
+How do I upgrade `pipupgrade` itself?
 ---
 
 ```
