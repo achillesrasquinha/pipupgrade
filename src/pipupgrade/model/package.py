@@ -8,12 +8,8 @@ import 	re
 from pipupgrade.__attr__    import __name__ as NAME
 from pipupgrade 	 		import _pip, request as req, db, log
 from pipupgrade.tree 		import Node as TreeNode
-from pipupgrade.io			import _json
-from pipupgrade.util.array  import compact
-from pipupgrade.util.string import kebab_case
-from pipupgrade.util.system import makedirs
+from pipupgrade.util.string import kebab_case, strip
 from pipupgrade._compat		import iteritems
-from pipupgrade				import parallel
 
 logger = log.get_logger()
 
@@ -35,22 +31,24 @@ def _get_pypi_info(name, raise_err = True):
 def _get_pip_info(*packages, pip_exec = None):
 	_, out, _	= _pip.call("show", *packages, pip_exec = pip_exec,
 		output = True)
-	results		= out.split("---")
+	results		= [strip(o) for o in out.split("---")]
 	
 	info		= dict()
+	
+	for i, package in enumerate(packages):
+		result = results[i]
 
-	for package in packages:
 		detail = dict((kebab_case(k), v) \
 			for k, v in \
 				iteritems(
 					dict([(s + [""]) if len(s) == 1 else s \
-						for s in [re.split(r':\s?', o, maxsplit = 1) \
+						for s in [re.split(r":\s?", o, maxsplit = 1) \
 							for o in result.split("\n")]]
 					)
 				)
 		)
 
-		info[detail["name"]] = detail
+		info[package] = detail
 	
 	return info
 
@@ -80,8 +78,12 @@ class Package:
 			self.latest_version  = package.get("latest_version")
 		elif isinstance(package, str):
 			self.name			 = package
-			self.current_version = _get_package_version(package,
-				pip_exec = pip_exec)
+			
+			if pip_exec:
+				self.current_version = _get_package_version(package,
+					pip_exec = pip_exec)
+			else:
+				self.current_version = None
 
 		_db = db.get_connection()
 		res = None

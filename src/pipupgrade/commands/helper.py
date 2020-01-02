@@ -167,7 +167,7 @@ def _render_dependency_tree(packages):
 	for package in packages:
 		dependencies 	= package.dependencies
 		string			= dependencies.render(indent = 4,
-			# formatter = lambda package: _format_package(package)
+			formatter = lambda package: _format_package(package)
 		)
 
 		sanitized		= strip(string)
