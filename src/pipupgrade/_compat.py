@@ -41,6 +41,13 @@ def iterkeys(dict_, **kwargs):
         iterator = iter(dict_.keys(), **kwargs)
     return iterator
 
+def itervalues(dict_, **kwargs):
+    if PY2:
+        iterator = dict_.itervalues()
+    else:
+        iterator = iter(dict_.values(), **kwargs)
+    return iterator
+
 if PYTHON_VERSION <= (3,5):
     class ModuleNotFoundError(ImportError):
         pass

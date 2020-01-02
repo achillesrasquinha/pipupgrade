@@ -115,7 +115,7 @@ def _get_current_package_version(package, pip_exec = _pip._PIP_EXECUTABLE):
 	return info["version"]
 
 class Package:
-	def __init__(self, package, sync = False, pip_exec = None, dependencies = False):
+	def __init__(self, package, sync = False):
 		logger.info("Initializing Package %s of type %s..." % (package, type(package)))
 
 		if   isinstance(package, (_pip.Distribution, _pip.DistInfoDistribution,
@@ -134,11 +134,6 @@ class Package:
 			self.name            = package["name"]
 			self.current_version = package["version"]
 			self.latest_version  = package.get("latest_version")
-		elif isinstance(package, str):
-			self.name			 = package
-			self.current_version = _get_current_package_version(self.name, pip_exec = pip_exec)
-
-		self._pip_exec	= pip_exec
 
 		_db = db.get_connection()
 		res = None
@@ -163,23 +158,7 @@ class Package:
 
 			self.home_page = _pypi_info.get("home_page")
 
-		if dependencies and pip_exec:
-			logger.info("Fetching Dependencies for %s..." % self)
-
-			dependencies		= _get_dependency_tree_from_cache(self)
-
-			if not dependencies:
-				logger.info("Building dependency tree for %s..." % self.name)
-
-				self.dependencies 	= _get_dependency_tree(self,
-					pip_exec = pip_exec)
-				
-				_save_dependency_tree_to_cache(self,
-					dependencies = self.dependencies)
-			else:
-				logger.info("Using cached dependency tree for %s." % self.name)
-				
-				self.dependencies	= dependencies
+		self.dependencies = TreeNode("dependencies")
 
 		if not res:
 			try:

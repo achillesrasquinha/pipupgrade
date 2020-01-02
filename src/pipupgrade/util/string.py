@@ -42,3 +42,6 @@ def safe_decode(obj, encoding = "utf-8"):
         pass
     
     return obj
+
+def lower(s):
+    return s.lower()

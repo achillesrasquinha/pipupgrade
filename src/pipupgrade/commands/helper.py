@@ -167,7 +167,7 @@ def _render_dependency_tree(packages):
 	for package in packages:
 		dependencies 	= package.dependencies
 		string			= dependencies.render(indent = 4,
-			formatter = lambda package: _format_package(package)
+			# formatter = lambda package: _format_package(package)
 		)
 
 		sanitized		= strip(string)
@@ -228,7 +228,7 @@ def update_registry(registry,
 			dinfo.append(package)
 
 	stitle = "Installed Distributions (%s)" % source if registry.installed else source
-
+	
 	if render:
 		if 	 format_ == "tree":
 			string = _render_dependency_tree(nodes)
