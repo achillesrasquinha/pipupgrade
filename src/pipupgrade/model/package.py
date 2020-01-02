@@ -32,90 +32,34 @@ def _get_pypi_info(name, raise_err = True):
 
 	return info
 
-def _get_package_info(package, pip_exec = _pip._PIP_EXECUTABLE):
-	logger.info("Fetching Package Information %s..." % package)
-	
-	_, out, err	= _pip.call("show", package, pip_exec = pip_exec,
+def _get_pip_info(*packages, pip_exec = None):
+	_, out, _	= _pip.call("show", *packages, pip_exec = pip_exec,
 		output = True)
+	results		= out.split("---")
 	
-	info		= dict((kebab_case(k), v) \
-		for k, v in \
-			iteritems(
-				dict([(s + [""]) if len(s) == 1 else s
-					for s in [re.split(':\s?', o, maxsplit = 1) for o in out.split("\n")]]
-				)
-			)
-	)
+	info		= dict()
 
+	for package in packages:
+		detail = dict((kebab_case(k), v) \
+			for k, v in \
+				iteritems(
+					dict([(s + [""]) if len(s) == 1 else s \
+						for s in [re.split(r':\s?', o, maxsplit = 1) \
+							for o in result.split("\n")]]
+					)
+				)
+		)
+
+		info[detail["name"]] = detail
+	
 	return info
 
-def _get_dependency_cache_path(package):
-	path = osp.join(osp.expanduser("~"), ".%s" % NAME,
-		"deps", package.name, package.current_version)
-	return path
-
-def _get_dependency_tree_from_cache(package):
-	basepath	= _get_dependency_cache_path(package)
-	depspath	= osp.join(basepath, "tree.json")
-	
-	tree		= None
-
-	if osp.exists(depspath):
-		dict_ 	= _json.read(depspath)
-		tree 	= TreeNode.from_dict(dict_,
-			# objectify = 
-		)
-
-	return tree
-	
-def _save_dependency_tree_to_cache(package, dependencies):
-	basepath    = _get_dependency_cache_path(package)
-	makedirs(basepath, exist_ok = True)
-
-	depspath	= osp.join(basepath, "tree.json")
-
-	if not osp.exists(depspath):
-		_json.write(depspath, dependencies.to_dict(repr_ = lambda x: x.name))
-
-def _get_dependency_tree_helper(dependency, pip_exec = None):
-	child = _get_dependency_tree(Package(dependency, pip_exec = pip_exec,
-		dependencies = True
-	), pip_exec = pip_exec)
-	return child
-
-def _get_dependency_tree(package, pip_exec = _pip._PIP_EXECUTABLE):
-	logger.info("Fetching Dependencies for %s..." % package)
-
-	tree 		= TreeNode(package)
-	info		= _get_package_info(package.name,
-		pip_exec = pip_exec)
-
-	dependencies = compact(info["requires"].split(", "))
-	logger.info("Dependencies found: %s." % dependencies)
-
-	with parallel.no_daemon_pool() as pool:
-		children = pool.map(
-			partial(
-				_get_dependency_tree_helper,
-				**{
-					"pip_exec": pip_exec
-				}
-			),
-			dependencies
-		)
-		
-		if children:
-			tree.add_children(*children)
-
-	return tree
-
-def _get_current_package_version(package, pip_exec = _pip._PIP_EXECUTABLE):
-	info = _get_package_info(package,
-		pip_exec = pip_exec)
+def _get_package_version(package, pip_exec = None):
+	info = _get_pip_info(package, pip_exec = pip_exec)[package]
 	return info["version"]
 
 class Package:
-	def __init__(self, package, sync = False):
+	def __init__(self, package, sync = False, pip_exec = None):
 		logger.info("Initializing Package %s of type %s..." % (package, type(package)))
 
 		if   isinstance(package, (_pip.Distribution, _pip.DistInfoDistribution,
@@ -134,6 +78,10 @@ class Package:
 			self.name            = package["name"]
 			self.current_version = package["version"]
 			self.latest_version  = package.get("latest_version")
+		elif isinstance(package, str):
+			self.name			 = package
+			self.current_version = _get_package_version(package,
+				pip_exec = pip_exec)
 
 		_db = db.get_connection()
 		res = None
@@ -157,8 +105,6 @@ class Package:
 				self.latest_version = _pypi_info.get("version")
 
 			self.home_page = _pypi_info.get("home_page")
-
-		self.dependencies = TreeNode("dependencies")
 
 		if not res:
 			try:
@@ -190,6 +136,8 @@ class Package:
 
 				self.latest_version = res["latest_version"]
 				self.home_page      = res["home_page"]
+
+		self.dependencies = TreeNode(self)
 
 	def __repr__(self):
 		repr_ = "<Package %s (%s)>" % (self.name, self.current_version)

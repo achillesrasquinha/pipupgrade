@@ -41,7 +41,9 @@ Use the `--self` flag to ensure your `pipupgrade` is up-to-date. `pipupgrade`
 $ pipupgrade --project "<PATH_TO_PYTHON_PROJECT>"
 ```
 
-The `--project` flag attempts to discover `requirements*.txt` files, recursively.
+The `--project` flag attempts to discover and update `requirements*.txt` files 
+within the entire project directory (recursively). It also discovers `Pipfile` 
+and if found, attempts to updates `Pipfile` and `Pipfile.lock`.
 
 ### How do I perform a dry run?
 ---
