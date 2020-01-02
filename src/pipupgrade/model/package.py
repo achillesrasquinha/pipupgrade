@@ -118,12 +118,18 @@ class Package:
 	def __init__(self, package, sync = False, pip_exec = None, dependencies = False):
 		logger.info("Initializing Package %s of type %s..." % (package, type(package)))
 
-		if   isinstance(package, (_pip.Distribution, _pip.DistInfoDistribution, _pip.EggInfoDistribution)):
+		if   isinstance(package, (_pip.Distribution, _pip.DistInfoDistribution,
+			_pip.EggInfoDistribution)):
 			self.name            = package.project_name
 			self.current_version = package.version
 		elif isinstance(package, _pip.InstallRequirement):
 			self.name            = package.name
-			self.current_version = package.installed_version
+
+			if hasattr(package, "req"):
+				if hasattr(package.req, "specifier"):
+					self.current_version = str(package.req.specifier)
+			else:
+				self.current_version = package.installed_version
 		elif isinstance(package, dict):
 			self.name            = package["name"]
 			self.current_version = package["version"]

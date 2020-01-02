@@ -176,6 +176,7 @@ optional arguments:
 * [pip_upgrade_outdated](https://github.com/defjaf/pip_upgrade_outdated)
 * [pipdate](https://github.com/nschloe/pipdate)
 * [pip-review](https://github.com/jgonggrijp/pip-review)
+* [pip-upgrader](https://github.com/simion/pip-upgrader)
 
 ### Known Issues
 

@@ -28,6 +28,8 @@ from pipupgrade.__attr__      	import __name__
 
 logger = log.get_logger(level = log.DEBUG)
 
+_DEPENDENCY_FORMAT = ("tree", "json", "yaml")
+
 @cli.command
 def command(
 	pip_path          		 	= [ ],
@@ -104,7 +106,7 @@ def command(
 			with parallel.pool(processes = jobs) as pool:
 				project       = pool.map(Project.from_path, project)
 				requirements += flatten(map(lambda p: p.requirements, project))
-				pipfile      += flatten(map(lambda p: [p.pipfile], project))
+				pipfile      += flatten(map(lambda p: [p.pipfile] if p.pipfile else [], project))
 			
 			logger.info("Updating projects %s..." % project)
 
@@ -129,15 +131,17 @@ def command(
 				registries    += results
 		else:
 			# HACK: ?
-			daemonize 	= format != "tree"
-			class_		= parallel.Pool if daemonize else parallel.NoDaemonProcessPool
+			daemonize 	= format not in _DEPENDENCY_FORMAT
+			class_		= parallel.Pool if daemonize \
+				else parallel.NoDaemonProcessPool
 
 			with parallel.pool(processes = jobs, class_ = class_) as pool:
 				results       = pool.map(
 					partial(
 						get_registry_from_pip,
 						**{ "user": user, "sync": no_cache,
-							"outdated": not all, "dependencies": format == "tree"
+							"outdated": not all, "dependencies": format in \
+								_DEPENDENCY_FORMAT
 						}
 					),
 					pip_path
@@ -156,7 +160,7 @@ def command(
 						update_registry,
 						**{ "yes": yes, "user": user, "check": check,
 							"latest": latest, "interactive": interactive,
-							"verbose": verbose, "format_": format }
+							"verbose": verbose, "format_": format, "all": all }
 					),
 					registries
 				)
@@ -164,7 +168,7 @@ def command(
 			for registry in registries:
 				update_registry(registry, yes = yes, user = user, check = check,
 					latest = latest, interactive = interactive, verbose = verbose,
-					format_ = format
+					format_ = format, all = all
 				)
 
 		if pipfile:

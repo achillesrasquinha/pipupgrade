@@ -4,8 +4,8 @@ from pipupgrade import cli
 
 def cli_format(string, type_):
     args = get_args(as_dict = False)
-
-    if not args.no_color:
+    
+    if getattr(args, "no_color", None):
         string = cli.format(string, type_)
 
     return string

@@ -10,6 +10,7 @@ from pipupgrade.table      	  	import Table
 from pipupgrade.tree			import Node as TreeNode
 from pipupgrade.util.string     import pluralize, strip
 from pipupgrade.util.system   	import read, write, popen, which
+from pipupgrade.util.array		import squash
 from pipupgrade 		      	import (_pip, cli, semver,
 	log, parallel
 )
@@ -60,8 +61,13 @@ def _update_requirements(path, package):
 		with open(path, "w") as f:
 			for i, line in enumerate(lines):
 				if re.search(pattern, line, flags = re.IGNORECASE):
+					current_version = package.current_version
+
+					if current_version:
+						current_version = package.current_version.replace("==", "")
+
 					line = line.replace(
-						"==%s" % package.current_version,
+						"==%s" % current_version,
 						"==%s" % package.latest_version
 					)
 					
@@ -86,7 +92,15 @@ def update_pipfile(pipfile, verbose = False):
 	basepath = osp.dirname(realpath)
 
 	logger.info("Searching for `pipenv`...")
-	pipenv   = which("pipenv", raise_err = True)
+	pipenv   = which("pipenv")
+
+	if not pipenv:
+		logger.info("Attempting to install pipenv...")
+
+		_pip.call("install", "pipenv")
+
+		pipenv = which("pipenv", raise_err = True)
+
 	logger.info("`pipenv` found.")
 
 	code     = popen("%s update" % pipenv, quiet = not verbose, cwd = basepath)
@@ -171,6 +185,7 @@ def update_registry(registry,
 	latest		= False,
 	interactive = False,
 	format_		= "table",
+	all			= False,
 	verbose 	= False):
 	source   = registry.source
 	packages = registry.packages
@@ -181,15 +196,20 @@ def update_registry(registry,
 	dinfo 	 = [ ] # Information DataFrame
 
 	for package in packages:
-		package.source    = source
-		package.installed = registry.installed
+		package.source    	= source
+		package.installed 	= registry.installed
+		
+		current_version		= package.current_version
+		
+		if all or current_version:
+			current_version = current_version.replace("==", "")
 
-		if package.latest_version and package.current_version != package.latest_version:
+		if all or (package.latest_version and current_version != package.latest_version):
 			render	  = True
 			diff_type = None
 
 			try:
-				diff_type = semver.difference(package.current_version, package.latest_version)
+				diff_type = semver.difference(current_version, package.latest_version)
 			except (TypeError, ValueError):
 				pass
 
@@ -207,20 +227,17 @@ def update_registry(registry,
 
 			dinfo.append(package)
 
-		if not registry.installed:
-			_update_requirements(package.source, package)
-
 	stitle = "Installed Distributions (%s)" % source if registry.installed else source
 
 	if render:
-		if format_ == "tree":
+		if 	 format_ == "tree":
 			string = _render_dependency_tree(nodes)
-		else:
+		elif format_ == "table":
 			string = table.render()
 	
 		cli.echo("\nSource: %s\n" % stitle)
 		
-		if not interactive:
+		if not interactive or check:
 			cli.echo(string)
 			cli.echo()
 
@@ -235,7 +252,7 @@ def update_registry(registry,
 				for i, package in enumerate(packages):
 					update = True
 					
-					query  = "%s (%s > %s)" % (
+					query  = "%s (%s) -> (%s)" % (
 						cli_format(package.name, _SEMVER_COLOR_MAP.get(package.diff_type, cli.CLEAR)),
 						package.current_version,
 						_cli_format_semver(package.latest_version, package.diff_type)
@@ -243,7 +260,7 @@ def update_registry(registry,
 
 					if interactive:
 						update = yes or cli.confirm(query)
-						
+					
 					if update:
 						cli.echo(cli_format(
 							"Updating %s of %s %s: %s" % (
@@ -254,9 +271,13 @@ def update_registry(registry,
 							)
 						, cli.BOLD))
 
-						_pip.call("install", package.name, pip_exec = package.source, user = user, quiet = not verbose, no_cache_dir = True, upgrade = True)
-
 						if not package.installed:
 							_update_requirements(package.source, package)
+						else:
+							_pip.call("install", package.name,
+								pip_exec = package.source, user = user,
+								quiet = not verbose, no_cache_dir = True,
+								upgrade = True
+							)
 	else:
 		cli.echo("%s upto date." % cli_format(stitle, cli.CYAN))

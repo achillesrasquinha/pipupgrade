@@ -76,7 +76,6 @@ setup(
             )
         ]
     },
-    
     install_requires     = get_dependencies(type_ = "production"),
     extras_require       = dict(
         dev = get_dependencies(type_ = "development")
