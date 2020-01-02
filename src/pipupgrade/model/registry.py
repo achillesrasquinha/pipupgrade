@@ -40,9 +40,9 @@ def _build_package(name, sync = False):
     return package
 
 def _get_dependency_tree_for_package(package, sync = False):
-    tree                    = TreeNode(package)
+    tree            = TreeNode(package)
 
-    dependencies            = [ ]
+    dependencies    = [ ]
     
     with parallel.no_daemon_pool() as pool:
         dependencies = pool.map(
@@ -84,7 +84,7 @@ class Registry:
 
         self.installed = installed
         
-        if installed and dependencies:
+        if installed and dependencies and self.packages:
             self._build_dependency_tree_for_packages()
 
     def _build_dependency_tree_for_packages(self):

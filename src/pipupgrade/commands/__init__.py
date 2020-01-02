@@ -78,7 +78,7 @@ def command(
 	if pip:
 		logger.info("Updating pip executables: %s" % " ".join(pip_path))
 
-		with parallel.pool(processes = jobs) as pool:
+		with parallel.no_daemon_pool(processes = jobs) as pool:
 			pool.map(
 				partial(
 					update_pip, **{ "user": user, "quiet": not verbose }
@@ -103,7 +103,7 @@ def command(
 
 			logger.info("Detecting projects and its dependencies...")
 			
-			with parallel.pool(processes = jobs) as pool:
+			with parallel.no_daemon_pool(processes = jobs) as pool:
 				project       = pool.map(Project.from_path, project)
 				requirements += flatten(map(lambda p: p.requirements, project))
 				pipfile      += flatten(map(lambda p: [p.pipfile] if p.pipfile else [], project))
@@ -114,13 +114,13 @@ def command(
 			logger.info("Detecting requirements...")
 
 			if not no_included_requirements:
-				with parallel.pool(processes = jobs) as pool:
+				with parallel.no_daemon_pool(processes = jobs) as pool:
 					results       = pool.map(get_included_requirements, requirements)
 					requirements += flatten(results)
 
 			logger.info("Requirements found: %s" % requirements)
 			
-			with parallel.pool(processes = jobs) as pool:
+			with parallel.no_daemon_pool(processes = jobs) as pool:
 				results       = pool.map(
 					partial(
 						get_registry_from_requirements,
@@ -135,7 +135,7 @@ def command(
 			class_		= parallel.Pool if daemonize \
 				else parallel.NoDaemonProcessPool
 
-			with parallel.pool(processes = jobs, class_ = class_) as pool:
+			with parallel.no_daemon_pool(processes = jobs, class_ = class_) as pool:
 				results       = pool.map(
 					partial(
 						get_registry_from_pip,
@@ -152,9 +152,9 @@ def command(
 
 				registries    += results
 
-		# TODO: Tweaks within parallel.pool to run serially.
+		# TODO: Tweaks within parallel.no_daemon_pool to run serially.
 		if yes:
-			with parallel.pool(processes = jobs) as pool:
+			with parallel.no_daemon_pool(processes = jobs) as pool:
 				results = pool.map(
 					partial(
 						update_registry,
@@ -176,7 +176,7 @@ def command(
 
 			cli.echo(cli_format("Updating Pipfiles: %s..." % ", ".join(pipfile), cli.YELLOW))
 
-			with parallel.pool(processes = jobs) as pool:
+			with parallel.no_daemon_pool(processes = jobs) as pool:
 				results = pool.map(
 					partial(
 						update_pipfile,

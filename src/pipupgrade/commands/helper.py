@@ -80,8 +80,19 @@ def _update_requirements(path, package):
 		write(path, content, force = True)
 
 def update_pip(pip_exec, user = None, quiet = None):
+	cli.echo(cli_format("Updating %s..." % pip_exec, cli.YELLOW))
+
 	output = _pip.call("install", "pip", pip_exec = pip_exec, 
 		user = user, quiet = quiet, no_cache_dir = True, upgrade = True)
+
+	if isinstance(output, int):
+		code = output
+	else:
+		code = output[0]
+
+	if not code:
+		cli.echo("%s upto date." % cli_format(pip_exec, cli.CYAN))
+
 	return output
 
 def update_pipfile(pipfile, verbose = False):

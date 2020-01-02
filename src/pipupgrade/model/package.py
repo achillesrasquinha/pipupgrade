@@ -60,6 +60,8 @@ class Package:
 	def __init__(self, package, sync = False, pip_exec = None):
 		logger.info("Initializing Package %s of type %s..." % (package, type(package)))
 
+		self.current_version = None
+
 		if   isinstance(package, (_pip.Distribution, _pip.DistInfoDistribution,
 			_pip.EggInfoDistribution)):
 			self.name            = package.project_name
@@ -82,8 +84,6 @@ class Package:
 			if pip_exec:
 				self.current_version = _get_package_version(package,
 					pip_exec = pip_exec)
-			else:
-				self.current_version = None
 
 		_db = db.get_connection()
 		res = None
