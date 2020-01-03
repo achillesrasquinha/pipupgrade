@@ -5,7 +5,7 @@
 * [How do I upgrade a Python Project?](#how-do-i-upgrade-a-python-project)
 * [How do I update a requirements.txt file?](#how-do-i-update-a-requirements.txt-file)
 * [How do I perform a dry run?](#how-do-i-perform-a-dry-run)
-* [How do I view a depedency graph?](#how-do-i-view-a-dependency-graph)
+* [How do I view a dependency graph?](#how-do-i-view-a-dependency-graph)
 
 ### How do I upgrade `pip` itself?
 ---
@@ -83,3 +83,6 @@ $ pipupgrade --format tree
 <div align="center">
   <img src="docs/source/assets/demos/pipupgrade-format-tree.gif">
 </div>
+
+The dependency graph also highlights any conflicting dependencies. 
+You can also set the environment variable `PIPUPGRADE_DISPLAY_FORMAT` to `tree`.
