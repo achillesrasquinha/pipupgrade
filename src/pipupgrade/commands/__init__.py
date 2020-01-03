@@ -11,7 +11,8 @@ from pipupgrade.commands.helper import (
 	get_registry_from_pip,
 	update_pip,
 	update_pipfile,
-	update_registry
+	update_registry,
+	_DEPENDENCY_FORMATS
 )
 from pipupgrade.model           import Project
 from pipupgrade.model.project 	import get_included_requirements
@@ -28,8 +29,6 @@ from pipupgrade.__attr__      	import __name__
 
 logger = log.get_logger(level = log.DEBUG)
 
-_DEPENDENCY_FORMATS = ("tree", "json", "yaml")
-
 @cli.command
 def command(
 	pip_path          		 	= [ ],
@@ -44,7 +43,7 @@ def command(
 	github_username   			= None,
 	target_branch    			= "master",
 	latest						= False,
-	format						= "list",
+	format						= "table",
 	all							= False,
 	pip							= False,
 	self 		 				= False,

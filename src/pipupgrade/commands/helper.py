@@ -17,11 +17,12 @@ from pipupgrade 		      	import (_pip, cli, semver,
 
 logger = log.get_logger()
 
-_SEMVER_COLOR_MAP = dict(
+_SEMVER_COLOR_MAP 	= dict(
 	major = cli.RED,
 	minor = cli.YELLOW,
 	patch = cli.GREEN
 )
+_DEPENDENCY_FORMATS = ("tree", "json", "yaml")
 
 def _cli_format_semver(version, type_):
 	def _format(x):
@@ -191,6 +192,28 @@ def _render_dependency_tree(packages):
 
 	return string
 
+def _render_json(packages):
+	dicts = [ ]
+
+	for package in packages:
+		dicts.append(package.to_dict())
+		
+	return dicts
+
+def _render_yaml(packages):
+	try:
+		import yaml
+
+		content = _render_json(packages)
+		string  = yaml.dump(content)
+
+		return string
+	except ImportError:
+		raise ValueError((
+			"Unable to import yaml. "
+			"Please install pyyaml. https://github.com/yaml/pyyaml."
+		))
+
 def update_registry(registry,
 	yes         = False,
 	user 		= False,
@@ -226,7 +249,7 @@ def update_registry(registry,
 			except (TypeError, ValueError):
 				pass
 
-			if format_ == "tree":
+			if format_ in _DEPENDENCY_FORMATS:
 				nodes.append(package)
 			else:
 				table.insert([
@@ -245,6 +268,10 @@ def update_registry(registry,
 	if render:
 		if 	 format_ == "tree":
 			string = _render_dependency_tree(nodes)
+		elif format_ == "json":
+			string = _render_json(nodes)
+		elif format_ == "yaml":
+			string = _render_yaml(nodes)
 		elif format_ == "table":
 			string = table.render()
 	

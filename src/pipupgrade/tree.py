@@ -51,9 +51,9 @@ class Node:
         string = _render_tree(self, indent = indent, formatter = formatter)
         return string
 
-    def to_dict(self, repr_ = None):
+    def to_dict(self, repr_ = None, object_key = "object"):
         dict_ = dict({
-            "object": repr_(self.obj) if repr_ else str(self.obj),
+            object_key: repr_(self.obj) if repr_ else str(self.obj),
             "children": [
                 d.to_dict(repr_ = repr_) for d in self.children
             ]
@@ -62,9 +62,9 @@ class Node:
         return dict_
 
     @staticmethod
-    def from_dict(dict_, objectify = None):
-        obj             = objectify(dict_["object"] ) \
-            if objectify else dict_["object"]
+    def from_dict(dict_, objectify = None, object_key = "object"):
+        obj             = objectify(dict_[object_key] ) \
+            if objectify else dict_[object_key]
         children        = dict_["children"]
 
         node            = Node(obj)
