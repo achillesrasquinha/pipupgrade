@@ -12,9 +12,11 @@
 $ pipupgrade --pip
 ```
 
-Use the `--pip` flag to ensure your `pip` is up-to-date. `pipupgrade` would 
-then attempt to upgrade all pip executables it's able to discover and upgrade 
-them parallely. If you wish to upgrade a specific `pip` executable, use the `--pip-path` flag. For example, if you'd like to upgrade `pip3` executable only, 
+Use the `--pip` flag to ensure your `pip` is up-to-date. You can also set the 
+environment variable `PIPUPGRADE_PIP` to `true`. `pipupgrade` would then 
+attempt to upgrade all pip executables it's able to discover and upgrade 
+them parallely. If you wish to upgrade a specific `pip` executable, use the 
+`--pip-path` flag. For example, if you'd like to upgrade `pip3` executable only, 
 the command then would be
 
 ```
@@ -51,3 +53,6 @@ and if found, attempts to updates `Pipfile` and `Pipfile.lock`.
 ```
 $ pipupgrade --check
 ```
+
+Use the `--check` flag to perform a dry run. You can also set the 
+environment variable `PIPUPGRADE_DRY_RUN` to `true`.
