@@ -80,4 +80,6 @@ environment variable `PIPUPGRADE_DRY_RUN` to `true`.
 $ pipupgrade --format tree
 ```
 
-![](docs/assets/demos/pipupgrade-format-tree.gif)
+<div align="center">
+  <img src="docs/assets/demo/pipupgrade-format-tree.gif">
+</div>
