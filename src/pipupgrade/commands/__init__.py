@@ -28,7 +28,7 @@ from pipupgrade.__attr__      	import __name__
 
 logger = log.get_logger(level = log.DEBUG)
 
-_DEPENDENCY_FORMAT = ("tree", "json", "yaml")
+_DEPENDENCY_FORMATS = ("tree", "json", "yaml")
 
 @cli.command
 def command(
@@ -56,6 +56,7 @@ def command(
 	no_included_requirements 	= False,
 	no_cache		            = False,
 	no_color 	 				= True,
+	force						= False,
 	verbose		 				= False
 ):
 	if not verbose:
@@ -104,7 +105,14 @@ def command(
 			logger.info("Detecting projects and its dependencies...")
 			
 			with parallel.no_daemon_pool(processes = jobs) as pool:
-				project       = pool.map(Project.from_path, project)
+				project       = pool.map(
+					partial(
+						Project.from_path,
+						**{ "recursive_search": force }
+					),
+					project
+				)
+
 				requirements += flatten(map(lambda p: p.requirements, project))
 				pipfile      += flatten(map(lambda p: [p.pipfile] if p.pipfile else [], project))
 			
@@ -124,31 +132,25 @@ def command(
 				results       = pool.map(
 					partial(
 						get_registry_from_requirements,
-						**{ "sync": no_cache }
+						**{ "sync": no_cache, "jobs": jobs }
 					),
 					requirements
 				)
 				registries    += results
-		else:
-			# HACK: ?
-			daemonize 	= format not in _DEPENDENCY_FORMAT
-			class_		= parallel.Pool if daemonize \
-				else parallel.NoDaemonProcessPool
 
-			with parallel.no_daemon_pool(processes = jobs, class_ = class_) as pool:
+			return
+		else:
+			with parallel.no_daemon_pool(processes = jobs) as pool:
 				results       = pool.map(
 					partial(
 						get_registry_from_pip,
 						**{ "user": user, "sync": no_cache,
 							"outdated": not all, "dependencies": format in \
-								_DEPENDENCY_FORMAT
+								_DEPENDENCY_FORMATS, "jobs": jobs
 						}
 					),
 					pip_path
 				)
-
-				if not daemonize:
-					pool.close(); pool.join()
 
 				registries    += results
 

@@ -55,6 +55,7 @@
 * Smart `requirements.txt` detector.
 * [Pipfile](https://github.com/pypa/pipenv) support.
 * Detects semantic version to avoid updates that break changes.
+* View Dependency Graph.
 * Parallel updates (blazingly fast).
 * Python 2.7+ and Python 3.4+ compatible. Also pip 9+, pip 10+, pip 18+ and [pip 19.0.1+](https://github.com/pypa/pip/issues/6158) compatible.
 * Automate your Dependencies by installing `pipupgrade` in your CI workflow.

@@ -118,7 +118,7 @@ def update_pipfile(pipfile, verbose = False):
 
 	return code == 0
 
-def get_registry_from_requirements(requirements, sync = False):
+def get_registry_from_requirements(requirements, sync = False, jobs = 1):
 	path = osp.realpath(requirements)
 
 	if not osp.exists(path):
@@ -126,7 +126,9 @@ def get_registry_from_requirements(requirements, sync = False):
 		sys.exit(os.EX_NOINPUT)
 	else:
 		packages =  _pip.parse_requirements(requirements, session = "hack")
-		registry = Registry(source = path, packages = packages, sync = sync)
+		registry = Registry(source = path, packages = packages, sync = sync,
+			jobs = jobs
+		)
 
 	logger.info("Packages within requirements %s found: %s..." % (
 		requirements, registry.packages)
@@ -135,7 +137,7 @@ def get_registry_from_requirements(requirements, sync = False):
 	return registry
 
 def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True,
-	dependencies = False
+	dependencies = False, jobs = 1
 ):
 	logger.info("Fetching installed packages for %s..." % pip_path)
 
@@ -145,7 +147,7 @@ def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True,
 	packages     = json.loads(output)
 	logger.info("%s packages found for %s." % (len(packages), pip_path))
 	registry     = Registry(source = pip_path, packages = packages,
-		installed = True, sync = sync, dependencies = dependencies)
+		installed = True, sync = sync, dependencies = dependencies, jobs = jobs)
 
 	logger.info("Packages within `pip` %s found: %s..." % (pip_path, registry.packages))
 	# _pip.get_installed_distributions() # https://github.com/achillesrasquinha/pipupgrade/issues/13

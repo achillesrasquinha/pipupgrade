@@ -1,5 +1,6 @@
 # imports - standard imports
-import os.path as osp
+import os, os.path as osp
+import fnmatch
 import glob
 
 # imports - module imports
@@ -14,7 +15,7 @@ class Project:
 		project = Project(path, *args, **kwargs)
 		return project
 
-	def __init__(self, path):
+	def __init__(self, path, recursive_search = False):
 		path = osp.realpath(path)
 
 		if not osp.exists(path):
@@ -24,22 +25,30 @@ class Project:
 		logger.info("Initializing project with path %s." % path)
 		self.path         = path
 		logger.info("Fetching requirements...")
-		self.requirements = self._get_requirements()
+		self.requirements = self._get_requirements(
+			recursive_search = recursive_search)
 
 		logger.info("Fetching Pipfile...")
 		self.pipfile      = self._get_pipfile()
 
-	def _get_requirements(self):
+	def _get_requirements(self, recursive_search = False):
 		# COLLECT ALL THE REQUIREMENTS FILES!
 		path         = self.path
 		requirements = [ ]
 
 		# Detect Requirements Files
-		# Check requirements*.txt files in current directory.
-		for requirement in glob.glob(osp.join(path, "requirements*.txt")):
-			logger.info("Requirement found at %s." % requirement)
-			requirements.append(requirement)
+		level = 0
+		for root, _, files in os.walk(path):
+			for file_ in fnmatch.filter(files, "requirements*.txt"):
+				requirement = osp.join(root, file_)
+				logger.info("Requirement found at %s." % requirement)
+				requirements.append(requirement)
 
+			if level == 0 and not recursive_search:
+				break
+			else:
+				level += 1
+	
 		# Check if requirements is a directory
 		if osp.isdir(osp.join(path, "requirements")):
 			for requirement in glob.glob(osp.join(path, "requirements", "*.txt")):

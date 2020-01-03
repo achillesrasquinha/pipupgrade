@@ -11,7 +11,8 @@ from pipupgrade.tree 		import Node as TreeNode
 from pipupgrade.util.string import kebab_case, strip
 from pipupgrade._compat		import iteritems
 
-logger = log.get_logger()
+logger  = log.get_logger()
+_db		= db.get_connection() 
 
 def _get_pypi_info(name, raise_err = True):
 	url  = "https://pypi.org/pypi/{}/json".format(name)
@@ -80,12 +81,10 @@ class Package:
 			self.latest_version  = package.get("latest_version")
 		elif isinstance(package, str):
 			self.name			 = package
-			
 			if pip_exec:
 				self.current_version = _get_package_version(package,
 					pip_exec = pip_exec)
 
-		_db = db.get_connection()
 		res = None
 
 		try:
@@ -142,7 +141,8 @@ class Package:
 		self.dependencies = TreeNode(self)
 
 	def __repr__(self):
-		repr_ = "<Package %s (%s)>" % (self.name, self.current_version)
+		repr_ = "<Package %s%s>" % (self.name,
+			" (%s)" % self.current_version if self.current_version else "")
 		return repr_
 
 	def to_dict(self):

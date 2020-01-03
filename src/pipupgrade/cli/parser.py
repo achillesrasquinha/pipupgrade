@@ -129,6 +129,10 @@ def get_parser():
         action  = "store_true",
         help    = "Avoid fetching latest updates from PyPI server."
     )
+    parser.add_argument("--force",
+        action  = "store_true",
+        help    = "Force search for files within a project."
+    )
 
     if _CAN_ANSI_FORMAT:
         parser.add_argument("--no-color",
