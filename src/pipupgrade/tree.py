@@ -10,13 +10,36 @@ def _render_tree(node, depth = 0, indent = 2, formatter = None):
     
     return string
 
+def _check_node(node, query):
+    result = False
+
+    if callable(query):
+        result = bool(query(node))
+    else:
+        result = node == query
+
+    return result
+
 class Node:
-    def __init__(self, obj, children = [ ]):
+    def __init__(self, obj, children = [ ], parent = None):
         self.obj        = obj
         self._children  = [ ]
 
         for child in children:
             self.add_child(child)
+
+        self._parent    = parent
+
+    @property
+    def parent(self):
+        return getattr(self, "_parent", None)
+
+    @parent.setter
+    def parent(self, value):
+        if self.parent == value:
+            pass
+        else:
+            self._parent = value
 
     @property
     def children(self):
@@ -33,9 +56,13 @@ class Node:
         else:
             self._children = value
 
+    def empty(self):
+        nchildren = len(self.children)
+        return bool(nchildren)
+
     def add_child(self, child):
         if not isinstance(child, Node):
-            child = Node(child)
+            child = Node(child, parent = self)
 
         self.children.append(child)
 
@@ -59,3 +86,18 @@ class Node:
         })
 
         return dict_
+
+    def find(self, query):
+        """
+        Performs a Depth-First Search to find a Node based on a query provieded.
+        """
+        found = None
+
+        if _check_node(self, query):
+            found = self
+
+        for child in self.children:
+            if _check_node(child):
+                found = child
+
+        return found

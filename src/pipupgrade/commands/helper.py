@@ -222,6 +222,11 @@ def _render_yaml(packages):
 			"Please install pyyaml. https://github.com/yaml/pyyaml."
 		))
 
+def _resolve_dependencies(nodes):
+	trees = [ ]
+
+	return trees
+
 def update_registry(registry,
 	yes         = False,
 	user 		= False,
@@ -258,6 +263,8 @@ def update_registry(registry,
 			except (TypeError, ValueError):
 				pass
 
+			package.diff_type = diff_type
+
 			if format_ in _DEPENDENCY_FORMATS:
 				nodes.append(package)
 			else:
@@ -268,13 +275,14 @@ def update_registry(registry,
 					cli_format(package.home_page, cli.CYAN)
 				])
 
-			package.diff_type = diff_type
-
 			dinfo.append(package)
 
 	stitle = "Installed Distributions (%s)" % source if registry.installed else source
 	
 	if render:
+		if format_ in _DEPENDECY_FORMATS:
+			nodes  = _resolve_dependencies(nodes)
+
 		if 	 format_ == "tree":
 			string = _render_dependency_tree(nodes)
 		elif format_ == "json":
