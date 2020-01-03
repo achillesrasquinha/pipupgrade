@@ -101,3 +101,6 @@ class Node:
                 found = child
 
         return found
+
+    def flatten(self):
+        pass
