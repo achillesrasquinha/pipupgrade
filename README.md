@@ -169,6 +169,10 @@ optional arguments:
   -h, --help            Show this help message and exit.
 ```
 
+### Frequently Asked Questions (FAQ)
+
+See [FAQ](FAQ.md) for more details.
+
 ### Similar Packages
 
 `pipupgrade` attempts to provide an all-in-one solution as compared to the following packages:
