@@ -122,7 +122,8 @@ def command(
 
 			if not no_included_requirements:
 				with parallel.no_daemon_pool(processes = jobs) as pool:
-					results       = pool.map(get_included_requirements, requirements)
+					results       = pool.map(get_included_requirements,
+						requirements)
 					requirements += flatten(results)
 
 			logger.info("Requirements found: %s" % requirements)

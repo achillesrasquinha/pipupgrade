@@ -3,6 +3,7 @@
 * [How do I upgrade `pip` itself?](#how-do-i-upgrade-pip-itself)
 * [How do I upgrade `pipupgrade` itself?](#how-do-i-upgrade-pipupgrade-itself)
 * [How do I upgrade a Python Project?](#how-do-i-upgrade-a-python-project)
+* [How do I update a requirements.txt file?](#how-do-i-update-a-requirements.txt-file)
 * [How do I perform a dry run?](#how-do-i-perform-a-dry-run)
 
 ### How do I upgrade `pip` itself?
@@ -44,8 +45,22 @@ $ pipupgrade --project "<PATH_TO_PYTHON_PROJECT>"
 ```
 
 The `--project` flag attempts to discover and update `requirements*.txt` files 
-within the entire project directory (recursively). It also discovers `Pipfile` 
+within the entire project directory. It also discovers `Pipfile` 
 and if found, attempts to updates `Pipfile` and `Pipfile.lock`.
+
+In order to discover requirementss files recursively, use the `--force` flag
+ or set the environment variable `PIPUPGRADE_FORCE` to `true`.
+
+```
+$ pipupgrade --project "<PATH_TO_PYTHON_PROJECT>" --force
+```
+
+### How do I update a requirements.txt file?
+---
+
+```
+$ pipupgrade --requirements "<PATH_TO_REQUIREMENTS_FILE>"
+```
 
 ### How do I perform a dry run?
 ---
