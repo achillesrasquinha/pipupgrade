@@ -159,7 +159,8 @@ def _format_package(package):
 	diff_type = None
 	
 	try:
-		diff_type = semver.difference(package.current_version, package.latest_version)
+		diff_type = semver.difference(package.current_version,
+			package.latest_version)
 	except (TypeError, ValueError):
 		pass
 
@@ -185,7 +186,7 @@ def _render_dependency_tree(packages):
 		)
 
 		sanitized		= strip(string)
-
+		
 		rendered.append(sanitized)
 
 	string = strip("\n".join(rendered))
@@ -196,7 +197,8 @@ def _render_json(packages):
 	dicts = [ ]
 
 	for package in packages:
-		dicts.append(package.to_dict())
+		dict_ = package.to_dict()
+		dicts.append(dict_)
 		
 	return dicts
 
@@ -205,7 +207,13 @@ def _render_yaml(packages):
 		import yaml
 
 		content = _render_json(packages)
-		string  = yaml.dump(content)
+		dict_   = dict()
+
+		for details in content:
+			name = details.pop("name")
+			dict_[name] = details
+
+		string  = strip(yaml.dump(dict_))
 
 		return string
 	except ImportError:
@@ -226,7 +234,8 @@ def update_registry(registry,
 	source   = registry.source
 	packages = registry.packages
 	
-	table 	 = Table(header = ["Name", "Current Version", "Latest Version", "Home Page"])
+	table 	 = Table(header = ["Name", "Current Version", "Latest Version",
+		"Home Page"])
 	nodes	 = [ ]
 	render   = False
 	dinfo 	 = [ ] # Information DataFrame

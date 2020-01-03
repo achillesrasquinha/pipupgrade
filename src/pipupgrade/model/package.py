@@ -146,26 +146,14 @@ class Package:
 		return repr_
 
 	def to_dict(self):
-		dict_ = dict({
+		dependencies = self.dependencies.to_dict(repr_ = lambda x: x.name)
+		
+		dict_ 		 = dict({
 					   "name": self.name,
 			"current_version": self.current_version,
 			 "latest_version": self.latest_version,
 				  "home_page": self.home_page,
-			   "dependencies": self.dependencies.to_dict(repr_ = lambda x: x.name)
+			   "dependencies": dependencies[self.name]
 		})
 
 		return dict_
-
-	def to_yaml(self):
-		try:
-			import yaml
-			
-			content = self.to_dict()
-			string  = yaml.dump(content)
-
-			return string
-		except ImportError:
-			raise ValueError((
-				"Unable to import yaml. "
-				"Please install pyyaml. https://github.com/yaml/pyyaml."
-			))

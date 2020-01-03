@@ -40,27 +40,32 @@ def get_parser():
     )
     parser.add_argument("-y", "--yes",
         action  = "store_true",
+        default = getenv("ACCEPT_ALL_DIALOGS", False),
         help    = "Confirm for all dialogs."
     )
     parser.add_argument("-c", "--check",
         action  = "store_true",
+        default = getenv("DRY_RUN", False),
         help    = "Check for outdated packages."
     )
     parser.add_argument("-l", "--latest",
         action  = "store_true",
+        default = getenv("UPDATE_LATEST", False),
         help    = "Update all packages to latest."
     )
     parser.add_argument("-f", "--format",
-        choices = ["list", "table", "tree", "json", "yaml"],
+        choices = ["table", "tree", "json", "yaml"],
         help    = "Display packages format.",
-        default = "table"
+        default = getenv("DISPLAY_FORMAT", "table")
     )
     parser.add_argument("-a", "--all",
         action  = "store_true",
+        default = getenv("DISPLAY_ALL_PACKAGES", False),
         help    = "List all packages."
     )
     parser.add_argument("--pip",
         action  = "store_true",
+        default = getenv("UPDATE_PIP", False),
         help    = "Update pip"
     )
     parser.add_argument("-s", "--self",
@@ -77,6 +82,7 @@ def get_parser():
     )
     parser.add_argument("-i", "--interactive",
         action  = "store_true",
+        default = getenv("INTERACTIVE", False),
         help    = "Interactive Mode"
     )
     parser.add_argument("-p", "--project",
@@ -118,25 +124,30 @@ def get_parser():
     )
     parser.add_argument("-u", "--user",
         action  = "store_true",
+        default = getenv("USER_ONLY", False),
         help    = "Install to the Python user install directory for environment \
                     variables and user configuration."
     )
     parser.add_argument("--no-included-requirements",
         action  = "store_true",
+        default = getenv("NO_INCLUDED_REQUIREMENTS", False),
         help    = "Avoid updating included requirements"
     )
     parser.add_argument("--no-cache",
         action  = "store_true",
+        default = getenv("NO_CACHE", False),
         help    = "Avoid fetching latest updates from PyPI server."
     )
     parser.add_argument("--force",
         action  = "store_true",
+        default = getenv("FORCE", False),
         help    = "Force search for files within a project."
     )
 
     if _CAN_ANSI_FORMAT:
         parser.add_argument("--no-color",
             action  = "store_true",
+            default = getenv("NO_COLOR", False),
             help    = "Avoid colored output."
         )
 
