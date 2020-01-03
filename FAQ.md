@@ -5,6 +5,7 @@
 * [How do I upgrade a Python Project?](#how-do-i-upgrade-a-python-project)
 * [How do I update a requirements.txt file?](#how-do-i-update-a-requirements.txt-file)
 * [How do I perform a dry run?](#how-do-i-perform-a-dry-run)
+* [How do I view a depedency graph?](#how-do-i-view-a-dependency-graph)
 
 ### How do I upgrade `pip` itself?
 ---
@@ -48,7 +49,7 @@ The `--project` flag attempts to discover and update `requirements*.txt` files
 within the entire project directory. It also discovers `Pipfile` 
 and if found, attempts to updates `Pipfile` and `Pipfile.lock`.
 
-In order to discover requirementss files recursively, use the `--force` flag
+In order to discover requirement files recursively, use the `--force` flag
  or set the environment variable `PIPUPGRADE_FORCE` to `true`.
 
 ```
@@ -71,3 +72,12 @@ $ pipupgrade --check
 
 Use the `--check` flag to perform a dry run. You can also set the 
 environment variable `PIPUPGRADE_DRY_RUN` to `true`.
+
+### How do I view a dependency graph?
+---
+
+```
+$ pipupgrade --format tree
+```
+
+![](docs/assets/demos/pipupgrade-format-tree.gif)

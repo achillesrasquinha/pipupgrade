@@ -79,6 +79,10 @@ $ pip install pipupgrade
 
 *Upgrades `pipupgrade`.*
 
+* [**`pipupgrade --format {table,tree,json,yaml}`**](https://git.io/pipupgrade)
+
+*Display packages in the format (defaults to `table`)*
+
 * [**`pipupgrade --pip-path PIP_PATH`**](https://git.io/pipupgrade)
 
 *Upgrades all the packages within the defined pip environment.*
@@ -90,6 +94,10 @@ $ pip install pipupgrade
 * [**`pipupgrade --latest`**](https://git.io/pipupgrade)
 
 *WARNING: Upgrades all packages (including the ones that break change).*
+
+* [**`pipupgrade --all`**](https://git.io/pipupgrade)
+
+*List all packages.*
 
 * [**`pipupgrade --interactive`**](https://git.io/pipupgrade)
 

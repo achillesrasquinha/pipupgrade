@@ -61,11 +61,12 @@ class DB:
 
 _CONNECTION = None
 
-def get_connection(bootstrap = True):
+def get_connection(bootstrap = True, log = False):
     global _CONNECTION
 
     if not _CONNECTION:
-        logger.info("Establishing a DataBase connection...")
+        if log:
+            logger.info("Establishing a DataBase connection...")
 
         basepath    = osp.join(osp.expanduser("~"), ".%s" % NAME)
         makedirs(basepath, exist_ok = True)
@@ -76,7 +77,8 @@ def get_connection(bootstrap = True):
         _CONNECTION.connect()
 
         if bootstrap:
-            logger.info("Bootstrapping DataBase...")
+            if log:
+                logger.info("Bootstrapping DataBase...")
 
             abspath = osp.join(config.PATH["DATA"], "bootstrap.sql")
             buffer  = read(abspath)
