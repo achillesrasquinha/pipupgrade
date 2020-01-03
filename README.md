@@ -112,34 +112,34 @@ That's basically it! Run the help for more details...
 ```
 $ pipupgrade --help
 usage: pipupgrade [--pip-path PIP_PATH] [-y] [-c] [-l]
-                  [-f {list,tree,json,yaml}] [-a] [--pip] [-s]
+                  [-f {table,tree,json,yaml}] [-a] [--pip] [-s]
                   [-r REQUIREMENTS] [--pipfile PIPFILE] [-i] [-p PROJECT]
                   [--git-username GIT_USERNAME] [--git-email GIT_EMAIL]
                   [--pull-request] [--github-access-token GITHUB_ACCESS_TOKEN]
                   [--github-reponame GITHUB_REPONAME]
                   [--github-username GITHUB_USERNAME]
                   [--target-branch TARGET_BRANCH] [-j JOBS] [-u]
-                  [--no-included-requirements] [--no-cache] [--no-color] [-V]
-                  [-v] [-h]
+                  [--no-included-requirements] [--no-cache] [--force]
+                  [--no-color] [-V] [-v] [-h]
 
-pipupgrade (v 1.5.2)
+pipupgrade (v 1.6.0)
 
 UPGRADE ALL THE PIP PACKAGES!
 
 optional arguments:
   --pip-path PIP_PATH   Path to pip executable to be used. (default: None)
-  -y, --yes             Confirm for all dialogs. (default: False)
-  -c, --check           Check for outdated packages. (default: False)
-  -l, --latest          Update all packages to latest. (default: False)
-  -f {list,tree,json,yaml}, --format {list,tree,json,yaml}
-                        Display packages format. (default: list)
-  -a, --all             List all packages. (default: False)
-  --pip                 Update pip (default: False)
+  -y, --yes             Confirm for all dialogs. (default: 0)
+  -c, --check           Check for outdated packages. (default: 0)
+  -l, --latest          Update all packages to latest. (default: 0)
+  -f {table,tree,json,yaml}, --format {table,tree,json,yaml}
+                        Display packages format. (default: table)
+  -a, --all             List all packages. (default: 0)
+  --pip                 Update pip (default: 0)
   -s, --self            Update pipupgrade. (default: False)
   -r REQUIREMENTS, --requirements REQUIREMENTS
                         Path(s) to requirements.txt file. (default: None)
   --pipfile PIPFILE     Path(s) to Pipfile (default: None)
-  -i, --interactive     Interactive Mode (default: False)
+  -i, --interactive     Interactive Mode (default: 0)
   -p PROJECT, --project PROJECT
                         Path(s) to Project (default: None)
   --git-username GIT_USERNAME
@@ -158,12 +158,13 @@ optional arguments:
   -j JOBS, --jobs JOBS  Number of Jobs to be used. (default: 4)
   -u, --user            Install to the Python user install directory for
                         environment variables and user configuration.
-                        (default: False)
+                        (default: 0)
   --no-included-requirements
-                        Avoid updating included requirements (default: False)
+                        Avoid updating included requirements (default: 0)
   --no-cache            Avoid fetching latest updates from PyPI server.
-                        (default: False)
-  --no-color            Avoid colored output. (default: False)
+                        (default: 0)
+  --force               Force search for files within a project. (default: 0)
+  --no-color            Avoid colored output. (default: 0)
   -V, --verbose         Display verbose output. (default: False)
   -v, --version         Show pipupgrade's version number and exit.
   -h, --help            Show this help message and exit.
