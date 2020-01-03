@@ -81,5 +81,5 @@ $ pipupgrade --format tree
 ```
 
 <div align="center">
-  <img src="docs/assets/demos/pipupgrade-format-tree.gif">
+  <img src="docs/source/assets/demos/pipupgrade-format-tree.gif">
 </div>
