@@ -46,6 +46,9 @@
 * [Features](#Features)
 * [Installation](#installation)
 * [Usage](#usage)
+  * [Basic Usage](#basic-usage)
+  * [Environment Variables](docs/source/envvar.md)
+* [FAQ](#frequently-asked-questions)
 * [License](#license)
 
 ### Features
