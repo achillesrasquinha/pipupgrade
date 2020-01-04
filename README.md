@@ -54,7 +54,8 @@
 * Updates packages mentioned within a `requirements.txt` file (Also pins up-to-date versions if mentioned).
 * Smart `requirements.txt` detector.
 * [Pipfile](https://github.com/pypa/pipenv) support.
-* Detects semantic version to avoid updates that break changes.
+* Detects semantic version to avoid updates that break changes. **Also ensures to avoid
+ child dependencies that break changes.**
 * View Dependency Graph.
 * Parallel updates (blazingly fast).
 * Python 2.7+ and Python 3.4+ compatible. Also pip 9+, pip 10+, pip 18+ and [pip 19.0.1+](https://github.com/pypa/pip/issues/6158) compatible.

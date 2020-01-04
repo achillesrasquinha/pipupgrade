@@ -3,7 +3,7 @@
 * [How do I upgrade `pip` itself?](#how-do-i-upgrade-pip-itself)
 * [How do I upgrade `pipupgrade` itself?](#how-do-i-upgrade-pipupgrade-itself)
 * [How do I upgrade a Python Project?](#how-do-i-upgrade-a-python-project)
-* [How do I update a requirements.txt file?](#how-do-i-update-a-requirements.txt-file)
+* [How do I update a requirements.txt file?](#how-do-i-update-a-requirementstxt-file)
 * [How do I perform a dry run?](#how-do-i-perform-a-dry-run)
 * [How do I view a dependency graph?](#how-do-i-view-a-dependency-graph)
 
