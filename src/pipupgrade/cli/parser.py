@@ -46,7 +46,7 @@ def get_parser():
     parser.add_argument("-c", "--check",
         action  = "store_true",
         default = getenv("DRY_RUN", False),
-        help    = "Check for outdated packages."
+        help    = "Perform a dry-run, avoid updating packages."
     )
     parser.add_argument("-l", "--latest",
         action  = "store_true",
@@ -66,7 +66,7 @@ def get_parser():
     parser.add_argument("--pip",
         action  = "store_true",
         default = getenv("UPDATE_PIP", False),
-        help    = "Update pip"
+        help    = "Update pip."
     )
     parser.add_argument("-s", "--self",
         action  = "store_true",
@@ -83,7 +83,7 @@ def get_parser():
     parser.add_argument("-i", "--interactive",
         action  = "store_true",
         default = getenv("INTERACTIVE", False),
-        help    = "Interactive Mode"
+        help    = "Interactive Mode."
     )
     parser.add_argument("-p", "--project",
         action  = "append",
@@ -99,7 +99,7 @@ def get_parser():
     )
     parser.add_argument("--pull-request",
         action  = "store_true",
-        help    = "Perform a Pull Request"
+        help    = "Perform a Pull Request."
     )
     parser.add_argument("--github-access-token",
         help    = "GitHub Access Token",
@@ -131,7 +131,7 @@ def get_parser():
     parser.add_argument("--no-included-requirements",
         action  = "store_true",
         default = getenv("NO_INCLUDED_REQUIREMENTS", False),
-        help    = "Avoid updating included requirements"
+        help    = "Avoid updating included requirements."
     )
     parser.add_argument("--no-cache",
         action  = "store_true",
