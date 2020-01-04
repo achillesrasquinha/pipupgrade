@@ -86,3 +86,5 @@ $ pipupgrade --format tree
 
 The dependency graph also highlights any conflicting dependencies. 
 You can also set the environment variable `PIPUPGRADE_DISPLAY_FORMAT` to `tree`.
+ If you avoid using the `--latest` flag, the tree format ensures to avoid
+ child dependencies that break changes.
