@@ -48,7 +48,7 @@
 * [Usage](#usage)
   * [Basic Usage](#basic-usage)
   * [Environment Variables](docs/source/envvar.md)
-* [FAQ](#frequently-asked-questions)
+* [FAQ](FAQ.md)
 * [License](#license)
 
 ### Features
@@ -181,10 +181,6 @@ optional arguments:
   -v, --version         Show pipupgrade's version number and exit.
   -h, --help            Show this help message and exit.
 ```
-
-### Frequently Asked Questions (FAQ)
-
-See [FAQ](FAQ.md) for more details.
 
 ### Similar Packages
 
