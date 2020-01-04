@@ -138,7 +138,7 @@ def get_registry_from_requirements(requirements, sync = False, jobs = 1):
 	return registry
 
 def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True,
-	dependencies = False, jobs = 1
+	build_dependency_tree = False, jobs = 1
 ):
 	logger.info("Fetching installed packages for %s..." % pip_path)
 
@@ -148,7 +148,8 @@ def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True,
 	packages     = json.loads(output)
 	logger.info("%s packages found for %s." % (len(packages), pip_path))
 	registry     = Registry(source = pip_path, packages = packages,
-		installed = True, sync = sync, dependencies = dependencies, jobs = jobs)
+		installed = True, sync = sync,
+		build_dependency_tree = build_dependency_tree, jobs = jobs)
 
 	logger.info("Packages within `pip` %s found: %s..." % (pip_path, registry.packages))
 	# _pip.get_installed_distributions() # https://github.com/achillesrasquinha/pipupgrade/issues/13
@@ -156,21 +157,24 @@ def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True,
 	return registry
 
 def _format_package(package):
-	diff_type = None
+	difference = None
 	
 	try:
-		diff_type = semver.difference(package.current_version,
+		difference = semver.difference(package.current_version,
 			package.latest_version)
 	except (TypeError, ValueError):
 		pass
 
-	string = "* %s" % cli_format(package.name, _SEMVER_COLOR_MAP.get(diff_type, cli.CLEAR))
+	string = "* %s" % cli_format(package.name, _SEMVER_COLOR_MAP.get(difference, cli.CLEAR))
+
+	if getattr(package, "has_dependency_conflict", False):
+		string += cli_format(" [dependency conflict]", cli.RED)
 
 	if package.current_version:
 		string += " (%s)" % package.current_version
 
 	if package.latest_version and package.current_version != package.latest_version:
-		string += " -> (%s)" % _cli_format_semver(package.latest_version, diff_type)
+		string += " -> (%s)" % _cli_format_semver(package.latest_version, difference)
 
 	string += " " + cli_format("[%s]" % package.home_page, cli.CYAN)
 
@@ -180,7 +184,7 @@ def _render_dependency_tree(packages):
 	rendered = [ ]
 
 	for package in packages:
-		dependencies 	= package.dependencies
+		dependencies 	= package.dependency_tree
 		string			= dependencies.render(indent = 4,
 			formatter = lambda package: _format_package(package)
 		)
@@ -223,9 +227,16 @@ def _render_yaml(packages):
 		))
 
 def _resolve_dependencies(nodes):
-	trees = [ ]
+	for node in nodes:
+		deptree = node.dependency_tree
+		found 	= deptree.find(
+			lambda x: x.parent != None and x.obj.difference == "major"
+		)
 
-	return trees
+		if found:
+			node.has_dependency_conflict = True
+	
+	return nodes
 
 def update_registry(registry,
 	yes         = False,
@@ -256,22 +267,14 @@ def update_registry(registry,
 
 		if all or (package.latest_version and current_version != package.latest_version):
 			render	  = True
-			diff_type = None
-
-			try:
-				diff_type = semver.difference(current_version, package.latest_version)
-			except (TypeError, ValueError):
-				pass
-
-			package.diff_type = diff_type
 
 			if format_ in _DEPENDENCY_FORMATS:
 				nodes.append(package)
 			else:
 				table.insert([
-					cli_format(package.name, _SEMVER_COLOR_MAP.get(diff_type, cli.CLEAR)),
+					cli_format(package.name, _SEMVER_COLOR_MAP.get(package.difference, cli.CLEAR)),
 					package.current_version or "na",
-					_cli_format_semver(package.latest_version, diff_type),
+					_cli_format_semver(package.latest_version, package.differenc),
 					cli_format(package.home_page, cli.CYAN)
 				])
 
@@ -280,8 +283,9 @@ def update_registry(registry,
 	stitle = "Installed Distributions (%s)" % source if registry.installed else source
 	
 	if render:
-		if format_ in _DEPENDECY_FORMATS:
+		if format_ in _DEPENDENCY_FORMATS:
 			nodes  = _resolve_dependencies(nodes)
+			dinfo  = nodes
 
 		if 	 format_ == "tree":
 			string = _render_dependency_tree(nodes)
@@ -299,7 +303,8 @@ def update_registry(registry,
 			cli.echo()
 
 		if not check:
-			packages  = [p for p in dinfo if p.diff_type != "major" or latest]
+			packages  = [p for p in dinfo if p.difference != "major" 
+				or getattr(p, "has_dependency_conflict", False) or latest]
 			npackages = len(packages)
 
 			spackages = pluralize("package", npackages) # Packages "string"
@@ -310,9 +315,9 @@ def update_registry(registry,
 					update = True
 					
 					query  = "%s (%s) -> (%s)" % (
-						cli_format(package.name, _SEMVER_COLOR_MAP.get(package.diff_type, cli.CLEAR)),
+						cli_format(package.name, _SEMVER_COLOR_MAP.get(package.difference, cli.CLEAR)),
 						package.current_version,
-						_cli_format_semver(package.latest_version, package.diff_type)
+						_cli_format_semver(package.latest_version, package.difference)
 					)
 
 					if interactive:

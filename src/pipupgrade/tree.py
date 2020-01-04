@@ -71,7 +71,8 @@ class Node:
             self.add_child(child)
 
     def __repr__(self):
-        repr_ = "<Node '%s'>" % str(self.obj)
+        repr_ = "<Node '%s'%s>" % (str(self.obj), 
+            "parent='%s'" % self.parent if self.parent else "")
         return repr_
 
     def render(self, indent = 2, formatter = None):
@@ -97,8 +98,9 @@ class Node:
             found = self
 
         for child in self.children:
-            if _check_node(child):
-                found = child
+            found = _check_node(child, query)
+            if found:
+                break
 
         return found
 

@@ -46,11 +46,12 @@ def _create_package(name, sync = False):
     
     return package
 
-def _get_dependency_tree_for_package(package, sync = False, jobs = 1):
+def _get_dependency_tree_for_package(package, parent = None, sync = False,
+    jobs = 1):
     if package.name not in _TREE_DICT:
         logger.info("Building dependency tree for package: %s..." % package)
 
-        tree            = TreeNode(package)
+        tree            = TreeNode(package, parent = parent)
 
         dependencies    = [ ]
         
@@ -65,7 +66,15 @@ def _get_dependency_tree_for_package(package, sync = False, jobs = 1):
             )
 
         with parallel.no_daemon_pool(processes = jobs) as pool:
-            children = pool.map(_get_dependency_tree_for_package, dependencies)
+            children = pool.map(
+                partial(
+                    _get_dependency_tree_for_package, **{
+                        "parent": tree
+                    }
+                ),
+                dependencies
+            )
+
             if children:
                 tree.add_children(*children)
 
@@ -73,16 +82,19 @@ def _get_dependency_tree_for_package(package, sync = False, jobs = 1):
     else:
         logger.info("Using cached dependency tree for package: %s." % package)
 
-    return _TREE_DICT[package.name]
+    tree        = _TREE_DICT[package.name]
+    tree.parent = parent
+
+    return tree
 
 class Registry:
     def __init__(self,
         source,
-        packages        = [ ],
-        installed       = False,
-        sync            = False,
-        dependencies    = False,
-        jobs            = 1
+        packages                = [ ],
+        installed               = False,
+        sync                    = False,
+        build_dependency_tree   = False,
+        jobs                    = 1
     ):
         self.source = source
 
@@ -96,7 +108,7 @@ class Registry:
 
         self.installed = installed
         
-        if installed and dependencies and self.packages:
+        if installed and build_dependency_tree and self.packages:
             self._build_dependency_tree_for_packages(sync = sync, jobs = jobs)
 
     def _build_dependency_tree_for_packages(self, sync = False, jobs = 1):
@@ -104,6 +116,5 @@ class Registry:
         _build_packages_info_dict(names, pip_exec = self.source)
 
         for package in self.packages:
-            package.dependencies = _get_dependency_tree_for_package(package,
-                sync = sync, jobs = 1
-            )
+            package.dependency_tree = _get_dependency_tree_for_package(package,
+                sync = sync, jobs = 1)

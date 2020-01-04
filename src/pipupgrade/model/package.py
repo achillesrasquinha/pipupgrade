@@ -6,7 +6,7 @@ import 	re
 
 # imports - module imports
 from pipupgrade.__attr__    import __name__ as NAME
-from pipupgrade 	 		import _pip, request as req, db, log
+from pipupgrade 	 		import _pip, semver, request as req, db, log
 from pipupgrade.tree 		import Node as TreeNode
 from pipupgrade.util.string import kebab_case, strip
 from pipupgrade._compat		import iteritems
@@ -138,7 +138,15 @@ class Package:
 				self.latest_version = res["latest_version"]
 				self.home_page      = res["home_page"]
 
-		self.dependencies = TreeNode(self)
+		self.dependency_tree = TreeNode(self)
+
+		try:
+			self.difference = semver.difference(
+				self.current_version,
+				self.latest_version
+			)
+		except (TypeError, ValueError):
+			self.difference = None
 
 	def __repr__(self):
 		repr_ = "<Package %s%s>" % (self.name,
@@ -146,7 +154,7 @@ class Package:
 		return repr_
 
 	def to_dict(self):
-		dependencies = self.dependencies.to_dict(repr_ = lambda x: x.name)
+		dependencies = self.dependency_tree.to_dict(repr_ = lambda x: x.name)
 		
 		dict_ 		 = dict({
 					   "name": self.name,

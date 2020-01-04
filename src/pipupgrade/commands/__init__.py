@@ -145,8 +145,9 @@ def command(
 					partial(
 						get_registry_from_pip,
 						**{ "user": user, "sync": no_cache,
-							"outdated": not all, "dependencies": format in \
-								_DEPENDENCY_FORMATS, "jobs": jobs
+							"outdated": not all,
+							"build_dependency_tree": format in _DEPENDENCY_FORMATS,
+							"jobs": jobs
 						}
 					),
 					pip_path
