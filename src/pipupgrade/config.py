@@ -8,3 +8,7 @@ from pipupgrade.util.types  import autodict
 PATH         = autodict()
 PATH["BASE"] = pardir(__file__)
 PATH["DATA"] = osp.join(PATH["BASE"], "data")
+
+class Configuration:
+    def __init__(self):
+        pass

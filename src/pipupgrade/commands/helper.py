@@ -274,7 +274,7 @@ def update_registry(registry,
 				table.insert([
 					cli_format(package.name, _SEMVER_COLOR_MAP.get(package.difference, cli.CLEAR)),
 					package.current_version or "na",
-					_cli_format_semver(package.latest_version, package.differenc),
+					_cli_format_semver(package.latest_version, package.difference),
 					cli_format(package.home_page, cli.CYAN)
 				])
 

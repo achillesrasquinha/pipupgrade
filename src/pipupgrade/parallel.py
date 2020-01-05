@@ -4,17 +4,19 @@ import multiprocessing as mp
 from   multiprocessing.pool import Pool
 
 class NoDaemonProcess(mp.Process):
-    def _get_daemon(self):
+    @property
+    def daemon(self):
         return False
-    def _set_daemon(self, value):
+
+    @daemon.setter
+    def daemon(self, value):
         pass
-    daemon = property(_get_daemon, _set_daemon)
 
 class NoDaemonProcessPool(Pool):
     Process = NoDaemonProcess
 
 @contextmanager
-def pool(class_ = mp.Pool, *args, **kwargs):
+def pool(class_ = Pool, *args, **kwargs):
     pool = class_(*args, **kwargs)
     yield pool
     pool.terminate()

@@ -67,7 +67,7 @@ if PY2:
 
     import __builtin__ as builtins
 
-    from builtins import raw_input as input
+    from __builtin__ import raw_input as input
 
     from StringIO import StringIO
 

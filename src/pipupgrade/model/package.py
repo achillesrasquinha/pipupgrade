@@ -29,7 +29,10 @@ def _get_pypi_info(name, raise_err = True):
 
 	return info
 
-def _get_pip_info(*packages, pip_exec = None):
+def _get_pip_info(*args, **kwargs):
+	args		= packages
+	pip_exec	= kwargs.get("pip_exec", None)
+	
 	_, out, _	= _pip.call("show", *packages, pip_exec = pip_exec,
 		output = True)
 	results		= [strip(o) for o in out.split("---")]

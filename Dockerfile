@@ -1,4 +1,4 @@
-FROM  python:3-alpine
+FROM  python:3.7-alpine
 
 LABEL maintainer=achillesrasquinha@gmail.com
 
@@ -18,4 +18,4 @@ WORKDIR $PIPUPGRADE_PATH
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-CMD ["python"]
+CMD ["pipupgrade"]
