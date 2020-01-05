@@ -3,7 +3,7 @@ import os.path as osp
 
 # imports - module imports
 from pipupgrade.util.system import pardir
-from pipupgrade.util.types  import autodict
+from pipupgrade.util._dict  import autodict
 
 PATH         = autodict()
 PATH["BASE"] = pardir(__file__)

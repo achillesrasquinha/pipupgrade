@@ -5,10 +5,10 @@ class HandlerRegistry(dict):
         else:
             module_name, handler_name = name.rsplit('.', 1)
 
-            module = __import__(module_name, {}, {}, [handler_name])
+            module  = __import__(module_name, {}, {}, [handler_name])
             handler = getattr(module, handler_name)
 
-            self[name] = handler
+        self[name] = handler
 
         return handler
 

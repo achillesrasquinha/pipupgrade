@@ -1,7 +1,8 @@
 # imports - module imports
 from pipupgrade.cli.util   import *
 from pipupgrade.cli.parser import get_args
-from pipupgrade.util.types import merge_dict, get_function_arguments
+from pipupgrade.util._dict import merge_dict
+from pipupgrade.util.types import get_function_arguments
 
 def command(fn):
     args    = get_args()

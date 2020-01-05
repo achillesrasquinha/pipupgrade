@@ -2,7 +2,15 @@
 import pytest
 
 # imports - module imports
-from pipupgrade.util.environ import value_to_envval
+from pipupgrade.util.environ import getenvvar, getenv, value_to_envval
+
+def test_getenvvar():
+    assert getenvvar("FOOBAR")                  == "PIPUPGRADE_FOOBAR"
+    assert getenvvar("FOOBAR", prefix = False)  == "FOOBAR"
+
+def test_getenv():
+    with pytest.raises(KeyError):
+        assert getenv("ABCDEFGHIJKLMNOPQRSTUVWZYX", raise_err = True)
 
 def test_value_to_envval():
     assert value_to_envval(True)     == "true"

@@ -3,7 +3,7 @@ import collections
 
 # imports - module imports
 from pipupgrade._compat import (cmp, input, StringIO, iteritems, iterkeys,
-    PYTHON_VERSION, _is_python_version)
+    itervalues, PYTHON_VERSION, _is_python_version)
 
 # imports - test imports
 from testutils import mock_input, assert_input
@@ -70,3 +70,10 @@ def test_iterkeys():
 
     for k in iterkeys(dict_):
         assert k in dict_
+
+def test_itervalues():
+    dict_ = dict(foo = "bar")
+    
+    assert isinstance(itervalues(dict_), collections.Iterable)
+
+    assert list(itervalues(dict_)) == ["bar"]

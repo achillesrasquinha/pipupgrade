@@ -30,7 +30,7 @@ def _get_pypi_info(name, raise_err = True):
 	return info
 
 def _get_pip_info(*args, **kwargs):
-	args		= packages
+	packages	= args
 	pip_exec	= kwargs.get("pip_exec", None)
 	
 	_, out, _	= _pip.call("show", *packages, pip_exec = pip_exec,

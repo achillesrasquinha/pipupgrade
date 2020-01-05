@@ -7,7 +7,8 @@ from   distutils.spawn import find_executable
 import pytest
 
 # imports - module imports
-from pipupgrade.util.system import read, write, popen, which
+from pipupgrade.util.system import (read, write, popen, which, makedirs,
+    environment)
 
 def test_read(tmpdir):
     directory = tmpdir.mkdir("tmp")
@@ -77,9 +78,32 @@ def test_popen(tmpdir):
     popen("touch %s" % filename, cwd = dirpath)
     assert osp.exists(osp.join(dirpath, filename))
 
+    code = popen("echo $FOOBAR; echo $PATH", quiet = True)
+    assert code == 0
+
 def test_which():
     assert which("foobar") == None
     assert which("python") == find_executable("python")
 
     with pytest.raises(ValueError) as e:
         which("foobar", raise_err = True)
+
+def test_makedirs(tmpdir):
+    directory = tmpdir.mkdir("tmp")
+    path      = osp.join(str(directory), "foo", "bar")
+
+    makedirs(path)
+    assert osp.exists(path)
+
+    makedirs(path, exist_ok = True)
+    assert osp.exists(path)
+
+    with pytest.raises(OSError):
+        makedirs(path)
+
+def test_environment():
+    details = environment()
+
+    assert all((k in details for k in ("python_version", "os")))
+
+    return details

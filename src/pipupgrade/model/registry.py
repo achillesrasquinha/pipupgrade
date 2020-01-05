@@ -5,9 +5,8 @@ from   functools import partial
 # imports - module imports
 from pipupgrade.model.package   import Package, _get_pip_info
 from pipupgrade                 import _pip, parallel
-from pipupgrade.util.types      import flatten
-from pipupgrade.util.array      import compact
-from pipupgrade.util.string     import kebab_case, lower
+from pipupgrade.util.array      import compact, flatten
+from pipupgrade.util.string     import kebab_case
 from pipupgrade._compat		    import iteritems, iterkeys, itervalues
 from pipupgrade.tree            import Node as TreeNode
 from pipupgrade.log             import get_logger
@@ -28,9 +27,7 @@ def _build_packages_info_dict(packages, pip_exec = None):
         if not name in _INFO_DICT:
             _INFO_DICT[name] = dict({
                      "version": detail["version"], 
-                "dependencies": compact(
-                    map(lower, detail["requires"].split(", "))
-                )
+                "dependencies": compact(detail["requires"].split(", "))
             })
 
             for requirement in _INFO_DICT[name]["dependencies"]:

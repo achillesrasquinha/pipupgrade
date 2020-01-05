@@ -1,26 +1,15 @@
 # pylint: disable=E1101
 
 # imports - compatibility imports
-from pipupgrade         import _compat
-from pipupgrade._compat import zip, _is_python_version
+from pipupgrade             import _compat
+from pipupgrade._compat     import zip, _is_python_version
+from pipupgrade.util._dict  import dict_from_list
 
 # imports - standard imports
 import sys
 import inspect
 import collections
 import itertools
-
-def merge_dict(*args):
-    merged = dict()
-
-    for arg in args:
-        copy = arg.copy()
-        merged.update(copy)
-
-    return merged
-
-def dict_from_list(keys, values):
-    return dict(zip(keys, values))
 
 def get_function_arguments(fn):
     # https://stackoverflow.com/a/2677263
@@ -61,25 +50,3 @@ def auto_typecast(value):
             pass
 
     return value
-
-def sequencify(value, type_ = list):
-    if not isinstance(value, (list, tuple)):
-        value = list([value])
-
-    value = type_(value)
-        
-    return value
-
-def autodict():
-    _autodict = collections.defaultdict(autodict)
-    return _autodict
-
-def flatten(arr):
-    if _is_python_version(major = 2, minor = 6):
-        chainer = itertools.chain.from_iterable
-    else:
-        chainer = itertools.chain
-
-    flattened = list(chainer(*arr))
-
-    return flattened

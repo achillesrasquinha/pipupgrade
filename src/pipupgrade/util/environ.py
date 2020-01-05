@@ -2,13 +2,14 @@
 import os
 
 # imports - module imports
-from   pipupgrade.util.types import auto_typecast
 import pipupgrade
+from   pipupgrade.util.types import auto_typecast
 
 PREFIX = "%s" % pipupgrade.__name__.upper()
 
 def getenvvar(name, prefix = PREFIX, seperator = "_"):
 	if not prefix:
+		prefix	  = ""
 		seperator = ""
 
 	envvar = "%s%s%s" % (prefix, seperator, name)

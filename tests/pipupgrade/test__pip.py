@@ -38,10 +38,10 @@ def test_call(tmpdir):
     tempfile  = directory.join("tmp.log")
     path      = str(tempfile)
 
-    _pip.call("install", "requests")
-    assert_pip_call(_pip.call("install", "requests", quiet = True))
+    _pip.call("install", "pipupgrade")
+    assert_pip_call(_pip.call("install", "pipupgrade", quiet = True))
     
-    _pip.call("install", "requests", log = path)
+    _pip.call("install", "pipupgrade", log = path)
     assert tempfile.read()
 
     # assert_pip_call(_pip.call("list", output = True))

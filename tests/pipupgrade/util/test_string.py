@@ -1,5 +1,6 @@
 # imports - module imports
-from pipupgrade.util.string import strip, strip_ansi, pluralize, kebab_case
+from pipupgrade.util.string import (strip, strip_ansi, pluralize, kebab_case,
+    safe_encode, safe_decode)
 from pipupgrade import cli
 
 def test_strip():
@@ -28,3 +29,15 @@ def test_kebab_case():
 
     assert kebab_case("_FOO_BAR_", delimiter = "_") == "foo-bar"
     assert kebab_case("foo_bar",   delimiter = "_") == "foo-bar"
+
+def test_safe_encode():
+    assert safe_encode(b"foobar") == b"foobar"
+    assert safe_encode( "foobar") == b"foobar"
+
+    assert safe_encode(123456789) == 123456789
+
+def test_safe_decode():
+    assert safe_decode(b"foobar") == "foobar"
+    assert safe_decode( "foobar") == "foobar"
+    
+    assert safe_decode(123456789) == 123456789

@@ -65,6 +65,7 @@ def post(*args, **kwargs):
             data             = safe_encode(urlencode(data))
             request          = Request(url, data = data, headers = headers)
             http_response    = urlopen(request)
+            status_code      = http_response.getcode()
 
             response.content = http_response.read()
 

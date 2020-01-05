@@ -9,7 +9,7 @@ import json
 from pipupgrade.util.system  import which, popen
 from pipupgrade.util.string  import kebab_case
 from pipupgrade.util.environ import value_to_envval
-from pipupgrade.util.types   import sequencify
+from pipupgrade.util.array   import sequencify
 from pipupgrade              import log
 
 logger = log.get_logger()

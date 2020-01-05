@@ -17,7 +17,7 @@ from pipupgrade.commands.helper import (
 from pipupgrade.model           import Project
 from pipupgrade.model.project 	import get_included_requirements
 from pipupgrade.commands.util 	import cli_format
-from pipupgrade.util.types    	import flatten
+from pipupgrade.util.array    	import flatten
 from pipupgrade.util.system   	import read, write, popen, which, environment
 from pipupgrade.util.environ  	import getenvvar
 from pipupgrade.util.datetime 	import get_timestamp_str

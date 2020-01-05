@@ -54,11 +54,19 @@ class Node:
                 % type(value)
             )
         else:
-            self._children = value
+            children = [ ]
 
+            for child in value:
+                if not isinstance(child, Node):
+                    child = Node(value)
+                children.append(child)
+
+            self._children = children
+
+    @property
     def empty(self):
         nchildren = len(self.children)
-        return bool(nchildren)
+        return nchildren == 0
 
     def add_child(self, child):
         if not isinstance(child, Node):
@@ -98,11 +106,8 @@ class Node:
             found = self
 
         for child in self.children:
-            found = _check_node(child, query)
+            found = child.find(query)
             if found:
                 break
 
         return found
-
-    def flatten(self):
-        pass
