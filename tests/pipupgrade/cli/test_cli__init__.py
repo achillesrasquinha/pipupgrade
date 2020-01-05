@@ -4,7 +4,7 @@ from pipupgrade._compat import iteritems, iterkeys
 # imports - module imports
 from pipupgrade import cli
 from pipupgrade.cli import get_args
-from pipupgrade.util.types import merge_dict
+from pipupgrade.util._dict import merge_dict
 
 def test_command():
     def _assert_command(values, override = dict(), initial = dict()):

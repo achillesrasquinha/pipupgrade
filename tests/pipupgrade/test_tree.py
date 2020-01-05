@@ -1,9 +1,14 @@
+# imports - test imports
+import pytest
+
 # imports - module imports
 from pipupgrade.tree import Node
 
 def test_node():
     tree1 = Node("foo")
     assert tree1.empty == True
+
+    assert str(tree1) == "<Node 'foo'>"
 
     assert tree1.render() == \
 """\
@@ -32,14 +37,16 @@ foo
 * foo
     * bar
     * baz
-"""
-    
-    # assert      tree2.find(lambda x: x.obj == "foo")
-    # assert      tree2.find(lambda x: x.obj == "bar")
-    # assert not  tree2.find(lambda x: x.obj == "foobaz")
+""" 
+    assert      tree2.find(lambda x: x.obj == "foo")
+    assert      tree2.find(lambda x: x.obj == "bar")
+    assert not  tree2.find(lambda x: x.obj == "foobaz")
 
     tree3 = Node("foo")
     tree3.add_children(["bar", "baz"])
 
-    tree4          = Node("foo")
-    tree4.children = ["bar", "baz"]
+    tree4           = Node("foo")
+    tree4.children  = ["bar", "baz"]
+
+    with pytest.raises(TypeError):
+        tree4.children = "foo"

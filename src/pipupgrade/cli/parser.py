@@ -138,6 +138,10 @@ def get_parser():
         default = getenv("NO_CACHE", False),
         help    = "Avoid fetching latest updates from PyPI server."
     )
+    parser.add_argument("-o", "--output",
+        default = getenv("OUTPUT_FILE"),
+        help    = "Print Output to File."
+    )
     parser.add_argument("--force",
         action  = "store_true",
         default = getenv("FORCE", False),

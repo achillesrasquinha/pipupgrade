@@ -55,6 +55,7 @@ def command(
 	no_included_requirements 	= False,
 	no_cache		            = False,
 	no_color 	 				= True,
+	output						= None,
 	force						= False,
 	verbose		 				= False
 ):

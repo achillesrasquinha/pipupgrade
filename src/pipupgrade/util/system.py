@@ -9,6 +9,7 @@ import subprocess  as sp
 from   distutils.spawn import find_executable
 
 # imports - module imports
+from pipupgrade.exception   import PopenError
 from pipupgrade.util.string import strip
 from pipupgrade._compat     import iteritems
 from pipupgrade.log         import get_logger
@@ -74,7 +75,7 @@ def popen(*args, **kwargs):
     code       = proc.wait()
 
     if code and raise_err:
-        raise sp.CalledProcessError(code, command)
+        raise PopenError(code, command)
 
     if output:
         output, error = proc.communicate()

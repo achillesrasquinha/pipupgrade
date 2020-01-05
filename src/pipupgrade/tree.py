@@ -58,7 +58,8 @@ class Node:
 
             for child in value:
                 if not isinstance(child, Node):
-                    child = Node(value)
+                    child = Node(child, parent = self)
+
                 children.append(child)
 
             self._children = children
@@ -105,9 +106,10 @@ class Node:
         if _check_node(self, query):
             found = self
 
-        for child in self.children:
-            found = child.find(query)
-            if found:
-                break
+        if not found:
+            for child in self.children:
+                found = child.find(query)
+                if found:
+                    break
 
         return found

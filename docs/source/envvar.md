@@ -21,3 +21,4 @@
 | `PIPUPGRADE_NO_CACHE`                 | `boolean`                             | Avoid fetching latest updates from PyPI server.
 | `PIPUPGRADE_FORCE`                    | `boolean`                             | Force search for files within a project.
 | `PIPUPGRADE_NO_COLOR`                 | `boolean`                             | Avoid colored output.
+| `PIPUPGRADE_OUTPUT_FILE`              | `string`                              | Output File.
