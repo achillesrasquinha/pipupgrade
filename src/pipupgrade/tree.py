@@ -64,6 +64,9 @@ class Node:
 
             self._children = children
 
+    def __eq__(self, other):
+        return not self.find(lambda x: x.obj != other.obj)
+
     @property
     def empty(self):
         nchildren = len(self.children)
