@@ -59,7 +59,7 @@
 * [Pipfile](https://github.com/pypa/pipenv) support.
 * Detects semantic version to avoid updates that break changes. **Also ensures to avoid
  child dependencies that break changes.**
-* View Dependency Graph.
+* [View Dependency Graph.](FAQ.md/#how-do-i-view-a-dependency-graph)
 * Parallel updates (blazingly fast).
 * Python 2.7+ and Python 3.4+ compatible. Also pip 9+, pip 10+, pip 18+ and [pip 19.0.1+](https://github.com/pypa/pip/issues/6158) compatible.
 * Automate your Dependencies by installing `pipupgrade` in your CI workflow.
