@@ -109,3 +109,8 @@ def environment():
     environ["os"]               = platform.platform()
 
     return environ
+
+def touch(filename):
+    if not osp.exists(filename):
+        with open(filename, "w") as f:
+            pass
