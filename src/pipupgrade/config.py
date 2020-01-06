@@ -3,8 +3,9 @@ import os.path      as osp
 import configparser as cp
 
 # imports - module imports
-from pipupgrade             import __name__ as NAME
+from pipupgrade             import __name__ as NAME, __version__
 from pipupgrade.util.system import pardir, makedirs, touch
+from pipupgrade.util.types  import auto_typecast
 from pipupgrade.util._dict  import autodict
 from pipupgrade._compat     import iteritems
 
@@ -22,33 +23,59 @@ class Configuration:
         
     @property
     def config(self):
-        pass
+        path    = osp.join(self.location, self.name)
+        config  = cp.ConfigParser()
+        
+        if osp.exists(path):
+            config.read(path)
 
-    def _check_key(self, section, key):
+        return config
+
+    def get(self, section, key):
+        config = self.config
+
         if not section in config:
             raise KeyError("No section %s found." % section)
 
         if not key in config[section]:
             raise KeyError("No key %s found." % key)
-
-    def get(self, section, key, value):
-        path    = osp.join(self.location, self.name)
-        touch(path)
-
-        self._check_key(section, key)
         
-    def set(self, section, key, value):
-        pass
+        value = auto_typecast(config[section][key])
+
+        return value
+        
+    def set(self, section, key, value, force = False):
+        config = self.config
+
+        if not section in config:
+            config[section] = dict({ key: value })
+        else:
+            if not key in config[section]:
+                config[section][key] = value
+            else:
+                if force:
+                    config[section][key] = value
+
+        path = osp.join(self.location, self.name)
+        with open(path, "w") as f:
+            config.write(f)
         
 class Settings:
+    _DEFAULTS = {
+        "version": __version__
+    }
+
     def __init__(self):
         self.config = Configuration()
 
-        for k, v in iteritems(self.config["settings"]):
-            print(k, v)
+        self._init()
+
+    def _init(self):
+        for k, v in iteritems(Settings._DEFAULTS):
+            self.set(k, v)
 
     def get(self, key):
-        self.config.set("settings", key)
+        return self.config.get("settings", key)
 
     def set(self, key, value):
-        self.config.get("settings", key, value)
+        self.config.set("settings", key, value)
