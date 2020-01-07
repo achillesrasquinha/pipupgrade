@@ -1,7 +1,6 @@
 # imports - standard imports
 import os
 import argparse
-import multiprocessing as mp
 
 # imports - module imports
 from pipupgrade.__attr__     import (
@@ -120,7 +119,7 @@ def get_parser():
     parser.add_argument("-j", "--jobs",
         type    = int,
         help    = "Number of Jobs to be used.",
-        default = getenv("JOBS", mp.cpu_count())
+        default = getenv("JOBS", 1)
     )
     parser.add_argument("-u", "--user",
         action  = "store_true",
