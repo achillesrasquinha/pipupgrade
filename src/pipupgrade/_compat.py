@@ -48,7 +48,7 @@ def itervalues(dict_, **kwargs):
         iterator = iter(dict_.values(), **kwargs)
     return iterator
 
-if PYTHON_VERSION <= (3,5):
+if PYTHON_VERSION < (3,5):
     class ModuleNotFoundError(ImportError):
         pass
 else:
