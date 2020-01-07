@@ -47,6 +47,7 @@
 * [Installation](#installation)
 * [Usage](#usage)
   * [Basic Usage](#basic-usage)
+  * [Docker](#docker)
   * [Environment Variables](docs/source/envvar.md)
 * [FAQ](FAQ.md)
 * [License](#license)
@@ -180,6 +181,27 @@ optional arguments:
   -V, --verbose         Display verbose output. (default: False)
   -v, --version         Show pipupgrade's version number and exit.
   -h, --help            Show this help message and exit.
+```
+
+### Docker
+
+Using `pipupgrade`'s Docker Image to generate a Pull Request can be done as follows:
+
+```
+$ docker run \
+    -e "PIPUPGRADE_GIT_USERNAME=achillesrasquinha" \
+    -e "PIPUPGRADE_GIT_EMAIL=achillesrasquinha@gmail.com" \
+    -e "PIPUPGRADE_GITHUB_REPONAME=pipupgrade" \
+    -e "PIPUPGRADE_GITHUB_USERNAME=achillesrasquinha" \
+    --rm \
+    -it \
+    -v $(pwd):/path/to/project \
+      achillesrasquinha/pipupgrade \
+        --project /path/to/project \
+        --pull-request \
+        --force \
+        --yes \
+        --verbose
 ```
 
 ### Similar Packages
