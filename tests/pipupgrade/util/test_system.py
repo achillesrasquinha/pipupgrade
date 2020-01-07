@@ -8,7 +8,7 @@ import pytest
 
 # imports - module imports
 from pipupgrade.util.system import (read, write, popen, which, makedirs,
-    environment)
+    environment, touch)
 
 def test_read(tmpdir):
     directory = tmpdir.mkdir("tmp")
@@ -107,3 +107,12 @@ def test_environment():
     assert all((k in details for k in ("python_version", "os")))
 
     return details
+
+def test_touch(tmpdir):
+    directory = tmpdir.mkdir("tmp")
+    path      = osp.join(str(directory), "foo")
+
+    assert not osp.exists(path)
+
+    touch(path)
+    assert osp.exists(path)

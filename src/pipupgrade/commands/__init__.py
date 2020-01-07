@@ -17,7 +17,7 @@ from pipupgrade.commands.helper import (
 from pipupgrade.model           import Project
 from pipupgrade.model.project 	import get_included_requirements
 from pipupgrade.commands.util 	import cli_format
-from pipupgrade.util.array    	import flatten
+from pipupgrade.util.array    	import flatten, sequencify
 from pipupgrade.util.system   	import read, write, popen, which, environment
 from pipupgrade.util.environ  	import getenvvar
 from pipupgrade.util.datetime 	import get_timestamp_str
@@ -99,6 +99,7 @@ def command(
 		cli.echo("%s upto date." % cli_format(package, cli.CYAN))
 	else:
 		if project:
+			project		 = sequencify(project)
 			requirements = requirements or [ ]
 			pipfile      = pipfile      or [ ]
 
@@ -138,8 +139,6 @@ def command(
 					requirements
 				)
 				registries    += results
-
-			return
 		else:
 			with parallel.no_daemon_pool(processes = jobs) as pool:
 				results       = pool.map(
@@ -155,6 +154,8 @@ def command(
 				)
 
 				registries    += results
+
+		logger.info("Updating registries: %s..." % registries)
 
 		# TODO: Tweaks within parallel.no_daemon_pool to run serially.
 		if yes:

@@ -1,10 +1,17 @@
 # imports - compatibility imports
-from pipupgrade._compat     import StringIO, input
+from pipupgrade.util.system import popen, pardir
 from pipupgrade.util.string import safe_decode
+from pipupgrade._compat     import StringIO, EX_OK, input
 
 # imports - standard imports
 import sys
+import os.path as osp
 from   contextlib import contextmanager
+import traceback
+
+PATH            = dict()
+PATH["BASE"]    = pardir(__file__, 2)
+PATH["DATA"]    = osp.join(PATH["BASE"], "data") 
 
 __STDIN__ = sys.stdin
 
@@ -28,3 +35,41 @@ def assert_input(capfd, text, output, expected = None, input_ = None, stdout = N
     with mock_input(StringIO(output)):
         assert input_(text, *input_args) == expected
         assert_stdout(capfd, stdout)
+
+class CLIRunnerResult:
+    pass
+
+class Capture:
+    def __enter__(self):
+        self._stdout    = sys.stdout
+        
+        self._output    = StringIO()
+
+        sys.stdout      = self._output
+
+        return self
+        
+    def __exit__(self, *args):
+        self.output     = safe_decode(self._output.getvalue())
+        del self._output
+        sys.stdout      = self._stdout
+
+class CLIRunner:
+    def invoke(self, command, args, **kwargs):
+        code    = EX_OK
+        error   = ""
+
+        with Capture() as capture:
+            try:
+                command(**args)
+            except Exception:
+                code    = 1
+                error   = traceback.format_exception()
+        
+        result          = CLIRunnerResult()
+
+        result.code     = code
+        result.output   = capture.output
+        result.eror     = error
+
+        return result

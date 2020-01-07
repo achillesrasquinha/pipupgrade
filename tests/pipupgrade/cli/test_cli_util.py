@@ -1,8 +1,9 @@
 # imports - module imports
-from pipupgrade import cli
+from    pipupgrade import cli
 
 # imports - test imports
-from testutils import assert_input, assert_stdout
+import  pytest
+from    testutils import assert_input, assert_stdout
 
 def test_confirm(capfd):
     query  = "foobar"
@@ -18,6 +19,12 @@ def test_confirm(capfd):
     _assert_confirm(stdout)
 
     stdout = "{} [Y/n]: ".format(query)
+
+    with pytest.raises(SystemExit):
+        assert_input(capfd, query, "q", expected = False, input_ = cli.confirm, stdout = stdout)
+    
+    with pytest.raises(SystemExit):
+        assert_input(capfd, query, "Q", expected = False, input_ = cli.confirm, stdout = stdout)
 
     # assert_input(capfd, query, "Y", expected = True,  input_ = cli.confirm, stdout = stdout, input_args = { 'quit_': False })
     # assert_input(capfd, query, "y", expected = True,  input_ = cli.confirm, stdout = stdout, input_args = { 'quit_': False })

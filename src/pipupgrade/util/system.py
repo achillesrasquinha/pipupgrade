@@ -10,7 +10,7 @@ from   distutils.spawn import find_executable
 
 # imports - module imports
 from pipupgrade.exception   import PopenError
-from pipupgrade.util.string import strip
+from pipupgrade.util.string import strip, safe_decode
 from pipupgrade._compat     import iteritems
 from pipupgrade.log         import get_logger
 
@@ -81,11 +81,11 @@ def popen(*args, **kwargs):
         output, error = proc.communicate()
 
         if output:
-            output = output.decode("utf-8")
+            output = safe_decode(output)
             output = strip(output)
 
         if error:
-            error  = error.decode("utf-8")
+            error  = safe_decode(error)
             error  = strip(error)
 
         if quiet:
