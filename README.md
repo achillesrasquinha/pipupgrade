@@ -189,10 +189,10 @@ Using `pipupgrade`'s Docker Image to generate a Pull Request can be done as foll
 
 ```
 $ docker run \
-    -e "PIPUPGRADE_GIT_USERNAME=achillesrasquinha" \
-    -e "PIPUPGRADE_GIT_EMAIL=achillesrasquinha@gmail.com" \
-    -e "PIPUPGRADE_GITHUB_REPONAME=pipupgrade" \
-    -e "PIPUPGRADE_GITHUB_USERNAME=achillesrasquinha" \
+    -e "PIPUPGRADE_GIT_USERNAME=<YOUR_GIT_USERNAME>" \
+    -e "PIPUPGRADE_GIT_EMAIL=<YOUR_GIT_EMAIL>" \
+    -e "PIPUPGRADE_GITHUB_REPONAME=<YOUR_GIT_REPONAME>" \
+    -e "PIPUPGRADE_GITHUB_USERNAME=<YOUR_GIT_USERNAME>" \
     --rm \
     -it \
     -v $(pwd):/path/to/project \
