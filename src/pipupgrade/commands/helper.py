@@ -217,7 +217,7 @@ def _render_yaml(packages):
 			name = details.pop("name")
 			dict_[name] = details
 
-		string  = strip(yaml.dump(dict_))
+		string  = strip(yaml.safe_dump(dict_))
 
 		return string
 	except ImportError:
