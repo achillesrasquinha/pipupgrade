@@ -1,13 +1,12 @@
 # imports - standard imports
 import os.path      as osp
-import configparser as cp
 
 # imports - module imports
 from pipupgrade             import __name__ as NAME, __version__
 from pipupgrade.util.system import pardir, makedirs, touch
 from pipupgrade.util.types  import auto_typecast
 from pipupgrade.util._dict  import autodict
-from pipupgrade._compat     import iteritems
+from pipupgrade._compat     import iteritems, configparser
 
 PATH            = autodict()
 PATH["BASE"]    = pardir(__file__)

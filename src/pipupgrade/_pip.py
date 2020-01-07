@@ -69,8 +69,8 @@ def call(*args, **kwargs):
                 value = value_to_envval(value)
                 params.append(value)
 
-    output   = output or quiet
-
+    output = output or quiet
+	
     output = popen(*params, output = output, raise_err = raise_err)
     
     return output

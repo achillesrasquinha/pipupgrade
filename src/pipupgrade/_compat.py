@@ -73,6 +73,8 @@ if PY2:
 
     from itertools import izip         as zip
     from itertools import izip_longest as zip_longest
+
+    import ConfigParser as configparser
 else:
     # moves
     from urllib.request import urlopen, Request
@@ -92,6 +94,8 @@ else:
     from itertools import zip_longest
 
     zip = zip
+
+    import configparser
 
 if platform.system() in ['Linux', 'Darwin']:
     EX_OK      = os.EX_OK
