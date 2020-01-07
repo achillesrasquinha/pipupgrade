@@ -3,24 +3,26 @@ from   contextlib      import contextmanager
 import multiprocessing as mp
 from   multiprocessing.pool import Pool
 
+def _get_no_daemon_process_class(klass):
+    class NonDaemonProcess(process.__class__):
+        @property
+        def daemon(self):
+            return False
+
+        @daemon.setter
+        def daemon(self, val):
+            pass
+    
+    return NonDaemonProcess
+
 class NoDaemonPool(Pool):
     def __init__(self, *args, **kwargs):
         self.super = super(NoDaemonPool, self)
         self.super.__init__(*args, **kwargs)
 
     def Process(self, *args, **kwargs):
-        process = self.super.Process(*args, **kwargs)
-
-        class NonDaemonProcess(process.__class__):
-            @property
-            def daemon(self):
-                return False
-
-            @daemon.setter
-            def daemon(self, val):
-                pass
-
-        process.__class__ = NonDaemonProcess
+        process             = self.super.Process(*args, **kwargs)
+        process.__class__   = _get_no_daemon_process_class(process.__class__)
 
         return process
 
