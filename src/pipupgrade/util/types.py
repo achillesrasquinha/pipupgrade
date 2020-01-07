@@ -19,7 +19,7 @@ def get_function_arguments(fn):
     if _compat.PY2:
         argspec_getter = inspect.getargspec
         success        = True
-    if _compat.PYTHON_VERSION >= (3,0) and (3,4) <= _compat.PYTHON_VERSION:
+    if _compat.PYTHON_VERSION >= (3,0) and _compat.PYTHON_VERSION <= (3,4):
         argspec_getter = inspect.getfullargspec
         success        = True
 
