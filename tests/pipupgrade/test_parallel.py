@@ -11,7 +11,7 @@ def test_pool():
     with parallel.pool() as pool:
         _assert(pool)
 
-    with parallel.pool(class_ = parallel.NoDaemonProcessPool) as pool:
+    with parallel.pool(class_ = parallel.NoDaemonPool) as pool:
         _assert(pool)
 
     with parallel.no_daemon_pool() as pool:

@@ -3,17 +3,26 @@ from   contextlib      import contextmanager
 import multiprocessing as mp
 from   multiprocessing.pool import Pool
 
-class NoDaemonProcess(mp.Process):
-    @property
-    def daemon(self):
-        return False
+class NoDaemonPool(Pool):
+    def __init__(self, *args, **kwargs):
+        self.super = super(NoDaemonPool, self)
+        self.super.__init__(*args, **kwargs)
 
-    @daemon.setter
-    def daemon(self, value):
-        pass
+    def Process(self, *args, **kwargs):
+        process = self.super.Process(*args, **kwargs)
 
-class NoDaemonProcessPool(Pool):
-    Process = NoDaemonProcess
+        class NonDaemonProcess(process.__class__):
+            @property
+            def daemon(self):
+                return False
+
+            @daemon.setter
+            def daemon(self, val):
+                pass
+
+        process.__class__ = NonDaemonProcess
+
+        return process
 
 @contextmanager
 def pool(class_ = Pool, *args, **kwargs):
@@ -23,7 +32,7 @@ def pool(class_ = Pool, *args, **kwargs):
 
 @contextmanager
 def no_daemon_pool(*args, **kwargs):
-    with pool(class_ = NoDaemonProcessPool, *args, **kwargs) as p:
+    with pool(class_ = NoDaemonPool, *args, **kwargs) as p:
         yield p
 
         p.close(); p.join()
