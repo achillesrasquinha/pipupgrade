@@ -205,21 +205,27 @@ def command(
 				popen("git config user.name  %s" % git_username, cwd = p.path)
 				popen("git config user.email %s" % git_email,    cwd = p.path)
 
-				_, output, _ = popen("git status -s", output = True)
+				_, output, _ = popen("git status -s", output = True,
+					cwd = p.path)
 
 				if output:
 					branch   = get_timestamp_str(format_ = "%Y%m%d%H%M%S")
-					popen("git checkout -B %s" % branch, quiet = not verbose)
+					popen("git checkout -B %s" % branch, quiet = not verbose,
+						cwd = p.path
+					)
 
 					title    = "fix(dependencies): Update dependencies to latest"
 					body     = ""
 
 					# TODO: cross-check with "git add" ?
 					files    = p.requirements + [p.pipfile]
-					popen("git add %s" % " ".join(files), quiet = not verbose, cwd = p.path)
-					popen("git commit -m '%s'" % title, quiet = not verbose, cwd = p.path)
+					popen("git add %s" % " ".join(files), quiet = not verbose,
+						cwd = p.path)
+					popen("git commit -m '%s'" % title, quiet = not verbose,
+						cwd = p.path)
 
-					popen("git push origin %s" % branch, quiet = not verbose, cwd = p.path)
+					popen("git push origin %s" % branch, quiet = not verbose,
+						cwd = p.path)
 
 					if not github_reponame:
 						raise ValueError(errstr % ("GitHub Reponame", "--github-reponame", getenvvar("GITHUB_REPONAME")))
