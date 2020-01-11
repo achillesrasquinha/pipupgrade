@@ -31,6 +31,7 @@ logger = log.get_logger(level = log.DEBUG)
 
 @cli.command
 def command(
+	packages					= [ ],
 	pip_path          		 	= [ ],
 	requirements 				= [ ],
 	pipfile            			= [ ],
@@ -80,7 +81,7 @@ def command(
 		logger.info("Updating pip executables: %s" % " ".join(pip_path))
 
 		with parallel.no_daemon_pool(processes = jobs) as pool:
-			pool.map(
+			pool.imap_unordered(
 				partial(
 					update_pip, **{ "user": user, "quiet": not verbose }
 				),
@@ -106,7 +107,7 @@ def command(
 			logger.info("Detecting projects and its dependencies...")
 			
 			with parallel.no_daemon_pool(processes = jobs) as pool:
-				project       = pool.map(
+				project       = pool.imap_unordered(
 					partial(
 						Project.from_path,
 						**{ "recursive_search": force }
@@ -124,14 +125,14 @@ def command(
 
 			if not no_included_requirements:
 				with parallel.no_daemon_pool(processes = jobs) as pool:
-					results       = pool.map(get_included_requirements,
+					results       = pool.imap_unordered(get_included_requirements,
 						requirements)
 					requirements += flatten(results)
 
 			logger.info("Requirements found: %s" % requirements)
 			
 			with parallel.no_daemon_pool(processes = jobs) as pool:
-				results       = pool.map(
+				results       = pool.imap_unordered(
 					partial(
 						get_registry_from_requirements,
 						**{ "sync": no_cache, "jobs": jobs }
@@ -141,7 +142,7 @@ def command(
 				registries    += results
 		else:
 			with parallel.no_daemon_pool(processes = jobs) as pool:
-				results       = pool.map(
+				results       = pool.imap_unordered(
 					partial(
 						get_registry_from_pip,
 						**{ "user": user, "sync": no_cache,
@@ -160,7 +161,7 @@ def command(
 		# TODO: Tweaks within parallel.no_daemon_pool to run serially.
 		if yes:
 			with parallel.no_daemon_pool(processes = jobs) as pool:
-				results = pool.map(
+				results = pool.imap_unordered(
 					partial(
 						update_registry,
 						**{ "yes": yes, "user": user, "check": check,
@@ -182,7 +183,7 @@ def command(
 			cli.echo(cli_format("Updating Pipfiles: %s..." % ", ".join(pipfile), cli.YELLOW))
 
 			with parallel.no_daemon_pool(processes = jobs) as pool:
-				results = pool.map(
+				results = pool.imap_unordered(
 					partial(
 						update_pipfile,
 						**{ "verbose": verbose }

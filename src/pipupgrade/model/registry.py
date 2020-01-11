@@ -53,7 +53,7 @@ def _get_dependency_tree_for_package(package, parent = None, sync = False,
         dependencies    = [ ]
         
         with parallel.no_daemon_pool(processes = jobs) as pool:
-            dependencies = pool.map(
+            dependencies = pool.imap_unordered(
                 partial(
                     _create_package, **{
                         "sync": sync
@@ -63,7 +63,7 @@ def _get_dependency_tree_for_package(package, parent = None, sync = False,
             )
 
         with parallel.no_daemon_pool(processes = jobs) as pool:
-            children = pool.map(
+            children = pool.imap_unordered(
                 partial(
                     _get_dependency_tree_for_package, **{
                         "parent": tree
@@ -93,17 +93,20 @@ class Registry:
         build_dependency_tree   = False,
         jobs                    = 1
     ):
-        self.source = source
+        self.source     = source
 
-        args        = { "sync": sync }
+        args            = { "sync": sync }
 
         if installed:
             args["pip_exec"] = source
         
+        self.packages   = [ ]
         with parallel.no_daemon_pool(processes = jobs) as pool:
-            self.packages = pool.map(partial(Package, **args), packages)
+            for package in pool.imap_unordered(partial(Package, **args),
+                packages):
+                self.packages.append(package)
 
-        self.installed = installed
+        self.installed  = installed
         
         if installed and build_dependency_tree and self.packages:
             self._build_dependency_tree_for_packages(sync = sync, jobs = jobs)

@@ -34,6 +34,10 @@ def get_parser():
         add_help        = False,
         formatter_class = ArgumentParserFormatter
     )
+    parser.add_argument("packages",
+        nargs   = "*",
+        help    = "Packages to Upgrade."
+    )
     parser.add_argument("--pip-path",
         action  = "append",
         help    = "Path to pip executable to be used."
