@@ -78,9 +78,14 @@ endif
 	$(call log,INFO,Building Requirements)
 	@find $(BASEDIR)/requirements -maxdepth 1 -type f | xargs awk '{print}' > $(BASEDIR)/requirements-dev.txt
 	@cat $(BASEDIR)/requirements/production.txt  > $(BASEDIR)/requirements.txt
+	@cat $(BASEDIR)/requirements/production.txt $(BASEDIR)/requirements/test.txt > $(BASEDIR)/requirements-test.txt
 
 	$(call log,INFO,Installing Requirements)
-	$(PIP) install -r $(BASEDIR)/requirements-dev.txt $(OUT)
+ifeq (${TRAVIS},true)
+	$(PIP) install -r $(BASEDIR)/requirements-test.txt $(OUT)
+else
+	$(PIP) install -r $(BASEDIR)/requirements-dev.txt  $(OUT)
+endif
 
 	$(call log,INFO,Installing ${PROJECT} (${ENVIRONMENT}))
 ifeq (${ENVIRONMENT},production)
