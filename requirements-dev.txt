@@ -9,6 +9,7 @@ pytest-sugar
 pytest-travis-fold
 tox-travis
 coveralls
+pluggy<1,>=0.12.0
 pipenv
 ipython
 vulture
