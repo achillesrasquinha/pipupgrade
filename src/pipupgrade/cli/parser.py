@@ -1,4 +1,5 @@
 # imports - standard imports
+import sys
 import os
 import argparse
 import multiprocessing as mp
@@ -152,7 +153,7 @@ def get_parser():
         help    = "Force search for files within a project."
     )
 
-    if _CAN_ANSI_FORMAT:
+    if _CAN_ANSI_FORMAT or "pytest" in sys.modules:
         parser.add_argument("--no-color",
             action  = "store_true",
             default = getenv("NO_COLOR", False),

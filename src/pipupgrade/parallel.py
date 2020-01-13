@@ -12,6 +12,7 @@ class NonDaemonProcess(mp.Process):
     def daemon(self, val):
         pass
 
+# https://github.com/nipy/nipype/pull/2754
 class NoDaemonPool(Pool):
     def __init__(self, *args, **kwargs):
         self.super = super(NoDaemonPool, self)
@@ -20,7 +21,6 @@ class NoDaemonPool(Pool):
     def Process(self, *args, **kwargs):
         process             = self.super.Process(*args, **kwargs)
         process.__class__   = NonDaemonProcess
-
         return process
 
 @contextmanager

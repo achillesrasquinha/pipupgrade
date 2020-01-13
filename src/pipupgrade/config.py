@@ -6,7 +6,7 @@ from pipupgrade             import __name__ as NAME, __version__
 from pipupgrade.util.system import pardir, makedirs, touch
 from pipupgrade.util.types  import auto_typecast
 from pipupgrade.util._dict  import autodict
-from pipupgrade._compat     import iteritems, configparser
+from pipupgrade._compat     import iteritems, configparser as cp
 
 PATH            = autodict()
 PATH["BASE"]    = pardir(__file__)

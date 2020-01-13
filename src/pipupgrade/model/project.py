@@ -15,7 +15,7 @@ class Project:
 		project = Project(path, *args, **kwargs)
 		return project
 
-	def __init__(self, path, recursive_search = False):
+	def __init__(self, path, depth_search = False):
 		path = osp.realpath(path)
 
 		if not osp.exists(path):
@@ -26,12 +26,12 @@ class Project:
 		self.path         = path
 		logger.info("Fetching requirements...")
 		self.requirements = self._get_requirements(
-			recursive_search = recursive_search)
+			depth_search = depth_search)
 
 		logger.info("Fetching Pipfile...")
 		self.pipfile      = self._get_pipfile()
 
-	def _get_requirements(self, recursive_search = False):
+	def _get_requirements(self, depth_search = False):
 		# COLLECT ALL THE REQUIREMENTS FILES!
 		path         = self.path
 		requirements = [ ]
@@ -44,7 +44,7 @@ class Project:
 				logger.info("Requirement found at %s." % requirement)
 				requirements.append(requirement)
 
-			if level == 0 and not recursive_search:
+			if level == 0 and not depth_search:
 				break
 			else:
 				level += 1

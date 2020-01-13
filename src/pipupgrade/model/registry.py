@@ -102,8 +102,7 @@ class Registry:
         
         self.packages   = [ ]
         with parallel.no_daemon_pool(processes = jobs) as pool:
-            for package in pool.imap_unordered(partial(Package, **args),
-                packages):
+            for package in pool.imap_unordered(partial(Package, **args), packages):
                 self.packages.append(package)
 
         self.installed  = installed

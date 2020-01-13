@@ -1,11 +1,7 @@
-pipenv
-ipython
-vulture
-safety
-pre-commit
-twine
 sphinx
 recommonmark
+pylint
+autopep8
 pytest
 pytest-cov
 pytest-xdist
@@ -13,5 +9,9 @@ pytest-sugar
 pytest-travis-fold
 tox-travis
 coveralls
-pylint
-autopep8
+pipenv
+ipython
+vulture
+safety
+pre-commit
+twine

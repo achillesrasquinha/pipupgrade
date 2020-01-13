@@ -110,7 +110,7 @@ def command(
 				project       = pool.imap_unordered(
 					partial(
 						Project.from_path,
-						**{ "recursive_search": force }
+						**{ "depth_search": force }
 					),
 					project
 				)
@@ -142,7 +142,7 @@ def command(
 				registries    += results
 		else:
 			with parallel.no_daemon_pool(processes = jobs) as pool:
-				results       = pool.imap_unordered(
+				for registry in pool.imap_unordered(
 					partial(
 						get_registry_from_pip,
 						**{ "user": user, "sync": no_cache,
@@ -152,16 +152,15 @@ def command(
 						}
 					),
 					pip_path
-				)
-
-				registries    += results
+				):
+					registries.append(registry)
 
 		logger.info("Updating registries: %s..." % registries)
 
 		# TODO: Tweaks within parallel.no_daemon_pool to run serially.
 		if yes:
 			with parallel.no_daemon_pool(processes = jobs) as pool:
-				results = pool.imap_unordered(
+				pool.imap_unordered(
 					partial(
 						update_registry,
 						**{ "yes": yes, "user": user, "check": check,

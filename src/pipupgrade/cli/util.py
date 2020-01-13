@@ -55,7 +55,7 @@ def format(string, type_):
         kernel32 = ctypes.windll.kernel32
         kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
 
-    if _CAN_ANSI_FORMAT:
+    if _CAN_ANSI_FORMAT or "pytest" in sys.modules:
         string = "{}{}{}".format(type_, string, CLEAR)
 
     return string

@@ -68,8 +68,18 @@ class Node:
         equals = False
 
         if isinstance(other, Node):
-            equals = self.find(lambda x: x.obj != other.obj)
-        
+            equals = self.obj == other.obj
+
+            if len(self.children) == len(other.children):
+                for child in self.children:
+                    for other in self.children:
+                        equals = equals and (child == other)
+                        
+                        if not equals:
+                            break
+            else:
+                equals = False
+
         return equals
     
     @property

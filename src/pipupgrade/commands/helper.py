@@ -80,22 +80,6 @@ def _update_requirements(path, package):
 		# In case we fucked up!
 		write(path, content, force = True)
 
-def update_pip(pip_exec, user = None, quiet = None):
-	cli.echo(cli_format("Updating %s..." % pip_exec, cli.YELLOW))
-
-	output = _pip.call("install", "pip", pip_exec = pip_exec, 
-		user = user, quiet = quiet, no_cache_dir = True, upgrade = True)
-
-	if isinstance(output, int):
-		code = output
-	else:
-		code = output[0]
-
-	if not code:
-		cli.echo("%s upto date." % cli_format(pip_exec, cli.CYAN))
-
-	return output
-
 def update_pipfile(pipfile, verbose = False):
 	if not verbose:
 		logger.setLevel(log.NOTSET)
@@ -118,43 +102,6 @@ def update_pipfile(pipfile, verbose = False):
 	code     = popen("%s update" % pipenv, quiet = not verbose, cwd = basepath)
 
 	return code == 0
-
-def get_registry_from_requirements(requirements, sync = False, jobs = 1):
-	path = osp.realpath(requirements)
-
-	if not osp.exists(path):
-		cli.echo(cli_format("{} not found.".format(path), cli.RED))
-		sys.exit(os.EX_NOINPUT)
-	else:
-		packages =  _pip.parse_requirements(requirements, session = "hack")
-		registry = Registry(source = path, packages = packages, sync = sync,
-			jobs = jobs
-		)
-
-	logger.info("Packages within requirements %s found: %s..." % (
-		requirements, registry.packages)
-	)
-
-	return registry
-
-def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True,
-	build_dependency_tree = False, jobs = 1
-):
-	logger.info("Fetching installed packages for %s..." % pip_path)
-
-	_, output, _ = _pip.call("list", user = user, outdated = outdated, \
-		format = "json", pip_exec = pip_path, output = True)
-
-	packages     = json.loads(output)
-	logger.info("%s packages found for %s." % (len(packages), pip_path))
-	registry     = Registry(source = pip_path, packages = packages,
-		installed = True, sync = sync,
-		build_dependency_tree = build_dependency_tree, jobs = jobs)
-
-	logger.info("Packages within `pip` %s found: %s..." % (pip_path, registry.packages))
-	# _pip.get_installed_distributions() # https://github.com/achillesrasquinha/pipupgrade/issues/13
-
-	return registry
 
 def _format_package(package):
 	difference = None
@@ -343,3 +290,59 @@ def update_registry(registry,
 							)
 	else:
 		cli.echo("%s upto date." % cli_format(stitle, cli.CYAN))
+
+def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True,
+	build_dependency_tree = False, jobs = 1
+):
+	logger.info("Fetching installed packages for %s..." % pip_path)
+
+	_, output, _ = _pip.call("list", user = user, outdated = outdated, \
+		format = "json", pip_exec = pip_path, output = True)
+
+	packages     = json.loads(output)
+	logger.info("%s packages found for %s." % (len(packages), pip_path))
+	registry     = Registry(source = pip_path, packages = packages,
+		installed = True, sync = sync,
+		build_dependency_tree = build_dependency_tree, jobs = jobs)
+
+	logger.info("Packages within `pip` %s found: %s..." % (pip_path, registry.packages))
+	# _pip.get_installed_distributions() # https://github.com/achillesrasquinha/pipupgrade/issues/13
+
+	return registry
+
+def get_registry_from_requirements(requirements, sync = False, jobs = 1):
+	path = osp.realpath(requirements)
+
+	if not osp.exists(path):
+		cli.echo(cli_format("{} not found.".format(path), cli.RED))
+		sys.exit(os.EX_NOINPUT)
+	else:
+		packages =  _pip.parse_requirements(requirements, session = "hack")
+		registry = Registry(source = path, packages = packages, sync = sync,
+			jobs = jobs
+		)
+
+	logger.info("Packages within requirements %s found: %s..." % (
+		requirements, registry.packages)
+	)
+
+	return registry
+
+def pip_upgrade(package, pip_exec = None, user = None, quiet = None):
+	return _pip.call("install", package, pip_exec = pip_exec, 
+		user = user, quiet = quiet, no_cache_dir = True, upgrade = True)
+
+def update_pip(pip_exec, user = None, quiet = None):
+	cli.echo(cli_format("Updating %s..." % pip_exec, cli.YELLOW))
+
+	output = pip_upgrade("pip", pip_exec = pip_exec, user = user, quiet = quiet)
+
+	if isinstance(output, int):
+		code = output
+	else:
+		code = output[0]
+
+	if not code:
+		cli.echo("%s upto date." % cli_format(pip_exec, cli.CYAN))
+
+	return output
