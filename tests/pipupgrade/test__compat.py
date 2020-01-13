@@ -1,9 +1,6 @@
-# imports - standard imports
-import collections
-
 # imports - module imports
 from pipupgrade._compat import (cmp, input, StringIO, iteritems, iterkeys,
-    itervalues, PYTHON_VERSION, _is_python_version)
+    itervalues, PYTHON_VERSION, _is_python_version, Iterable)
 
 # imports - test imports
 from testutils import mock_input, assert_input
@@ -58,7 +55,7 @@ def test_cmp():
 def test_iteritems():
     dict_ = dict(foo = "bar")
     
-    assert isinstance(iteritems(dict_), collections.Iterable)
+    assert isinstance(iteritems(dict_), Iterable)
 
     for k, v in iteritems(dict_):
         assert dict_[k] == v
@@ -66,7 +63,7 @@ def test_iteritems():
 def test_iterkeys():
     dict_ = dict(foo = "bar")
     
-    assert isinstance(iterkeys(dict_), collections.Iterable)
+    assert isinstance(iterkeys(dict_), Iterable)
 
     for k in iterkeys(dict_):
         assert k in dict_
@@ -74,6 +71,6 @@ def test_iterkeys():
 def test_itervalues():
     dict_ = dict(foo = "bar")
     
-    assert isinstance(itervalues(dict_), collections.Iterable)
+    assert isinstance(itervalues(dict_), Iterable)
 
     assert list(itervalues(dict_)) == ["bar"]

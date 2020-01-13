@@ -11,6 +11,9 @@ python:
   - "3.8-dev"
   - "nightly"
 
+allow_failures:
+  - "nightly"
+
 services:
   - docker
 

@@ -54,6 +54,11 @@ if PYTHON_VERSION < (3,6):
 else:
     ModuleNotFoundError = ModuleNotFoundError
 
+if PYTHON_VERSION > (3,8):
+    from collections.abc    import Iterable
+else:
+    from collections        import Iterable
+
 if PY2:
     # moves
     from urllib2 import urlopen, Request
