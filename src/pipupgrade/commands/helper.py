@@ -292,7 +292,7 @@ def update_registry(registry,
 		cli.echo("%s upto date." % cli_format(stitle, cli.CYAN))
 
 def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True,
-	build_dependency_tree = False, jobs = 1
+	build_dependency_tree = False, jobs = 1, only_packages = [ ]
 ):
 	logger.info("Fetching installed packages for %s..." % pip_path)
 
@@ -301,6 +301,10 @@ def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True,
 
 	packages     = json.loads(output)
 	logger.info("%s packages found for %s." % (len(packages), pip_path))
+
+	if only_packages:
+		packages = [p for p in packages if p["name"] in only_packages]
+	
 	registry     = Registry(source = pip_path, packages = packages,
 		installed = True, sync = sync,
 		build_dependency_tree = build_dependency_tree, jobs = jobs)
@@ -310,7 +314,8 @@ def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True,
 
 	return registry
 
-def get_registry_from_requirements(requirements, sync = False, jobs = 1):
+def get_registry_from_requirements(requirements, sync = False, jobs = 1,
+	only_packages = [ ]):
 	path = osp.realpath(requirements)
 
 	if not osp.exists(path):
@@ -318,6 +323,10 @@ def get_registry_from_requirements(requirements, sync = False, jobs = 1):
 		sys.exit(os.EX_NOINPUT)
 	else:
 		packages =  _pip.parse_requirements(requirements, session = "hack")
+		
+		if only_packages:
+			packages = [p for p in packages if p.name in only_packages]
+
 		registry = Registry(source = path, packages = packages, sync = sync,
 			jobs = jobs
 		)

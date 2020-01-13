@@ -135,7 +135,9 @@ def command(
 				results       = pool.imap_unordered(
 					partial(
 						get_registry_from_requirements,
-						**{ "sync": no_cache, "jobs": jobs }
+						**{ "sync": no_cache, "jobs": jobs,
+							"only_packages": packages
+						}
 					),
 					requirements
 				)
@@ -148,7 +150,7 @@ def command(
 						**{ "user": user, "sync": no_cache,
 							"outdated": not all,
 							"build_dependency_tree": format in _DEPENDENCY_FORMATS,
-							"jobs": jobs
+							"jobs": jobs, "only_packages": packages
 						}
 					),
 					pip_path
@@ -165,7 +167,9 @@ def command(
 						update_registry,
 						**{ "yes": yes, "user": user, "check": check,
 							"latest": latest, "interactive": interactive,
-							"verbose": verbose, "format_": format, "all": all }
+							"verbose": verbose, "format_": format, "all": all,
+							"filter": packages	
+						}
 					),
 					registries
 				)
