@@ -25,7 +25,7 @@
 		<img src="https://img.shields.io/pypi/pyversions/pipupgrade.svg?style=flat-square">
 	</a>
     <a href="https://hub.docker.com/r/achillesrasquinha/pipupgrade">
-		<img src="https://img.shields.io/docker/build/achillesrasquinha/pipupgrade.svg?style=flat-square&logo=docker">
+		<img src="https://img.shields.io/docker/cloud/build/achillesrasquinha/pipupgrade.svg?style=flat-square&logo=docker">
 	</a>
     <a href="https://git.io/boilpy">
       <img src="https://img.shields.io/badge/made%20with-boilpy-red.svg?style=flat-square">
