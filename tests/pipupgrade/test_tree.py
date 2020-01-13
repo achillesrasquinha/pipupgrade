@@ -19,6 +19,10 @@ foo
     tree2 = Node("foo", children = ["bar", "baz"])
     assert tree2.parent == None
     assert tree2 != Node("foo", children = ["bar", "baz", "boo"])
+    assert Node("foo", children = ["bar", "baz"]) \
+        == Node("foo", children = ["bar", "baz"])
+    assert not Node("foo", children = ["bar", "baz"]) \
+            == Node("foo", children = ["baz", "boo"])
 
     assert tree2.render() == \
 """\
@@ -45,11 +49,11 @@ foo
     assert      tree2.find(lambda x: x.obj == "bar")
     assert not  tree2.find(lambda x: x.obj == "foobaz")
 
-    # tree3 = Node("foo")
-    # tree3.add_children(["bar", "baz"])
+    tree3 = Node("foo")
+    tree3.add_children(["bar", "baz"])
 
-    # tree4           = Node("foo")
-    # tree4.children  = ["bar", "baz"]
+    tree4           = Node("foo")
+    tree4.children  = ["bar", "baz"]
 
-    # with pytest.raises(TypeError):
-    #     tree4.children = "foo"
+    with pytest.raises(TypeError):
+        tree4.children = "foo"

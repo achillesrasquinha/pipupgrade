@@ -72,11 +72,9 @@ class Node:
 
             if len(self.children) == len(other.children):
                 for child in self.children:
-                    for other in self.children:
-                        equals = equals and (child == other)
-                        
-                        if not equals:
-                            break
+                    equals = child in other.children
+                    if not equals:
+                        break
             else:
                 equals = False
 

@@ -53,10 +53,10 @@ _PIP_EXECUTABLE  = _get_pip_executable()
 _PIP_EXECUTABLES = _get_pip_executable(multiple = True)
 
 def call(*args, **kwargs):
-    pip_exec  = kwargs.pop("pip_exec", _PIP_EXECUTABLE)
-    quiet     = kwargs.pop("quiet",  False)
-    output    = kwargs.pop("output", False)
-    raise_err = kwargs.pop("raise_err", True)
+    pip_exec  = kwargs.pop("pip_exec", None)  or _PIP_EXECUTABLE
+    quiet     = kwargs.pop("quiet", None)     or False
+    output    = kwargs.pop("output", None)    or False
+    raise_err = kwargs.pop("raise_err", None) or True
 
     params    = sequencify(pip_exec) + sequencify(args)
     
