@@ -132,34 +132,39 @@ usage: pipupgrade [--pip-path PIP_PATH] [-y] [-c] [-l]
                   [--github-reponame GITHUB_REPONAME]
                   [--github-username GITHUB_USERNAME]
                   [--target-branch TARGET_BRANCH] [-j JOBS] [-u]
-                  [--no-included-requirements] [--no-cache] [--force]
-                  [--no-color] [-V] [-v] [-h]
+                  [--no-included-requirements] [--no-cache] [-o OUTPUT]
+                  [--force] [--no-color] [-V] [-v] [-h]
+                  [packages [packages ...]]
 
-pipupgrade (v 1.6.0)
+pipupgrade (v 1.6.6)
 
 UPGRADE ALL THE PIP PACKAGES!
+
+positional arguments:
+  packages              Packages to Upgrade. (default: None)
 
 optional arguments:
   --pip-path PIP_PATH   Path to pip executable to be used. (default: None)
   -y, --yes             Confirm for all dialogs. (default: 0)
-  -c, --check           Check for outdated packages. (default: 0)
+  -c, --check           Perform a dry-run, avoid updating packages. (default:
+                        0)
   -l, --latest          Update all packages to latest. (default: 0)
   -f {table,tree,json,yaml}, --format {table,tree,json,yaml}
                         Display packages format. (default: table)
   -a, --all             List all packages. (default: 0)
-  --pip                 Update pip (default: 0)
+  --pip                 Update pip. (default: 0)
   -s, --self            Update pipupgrade. (default: False)
   -r REQUIREMENTS, --requirements REQUIREMENTS
                         Path(s) to requirements.txt file. (default: None)
   --pipfile PIPFILE     Path(s) to Pipfile (default: None)
-  -i, --interactive     Interactive Mode (default: 0)
+  -i, --interactive     Interactive Mode. (default: 0)
   -p PROJECT, --project PROJECT
                         Path(s) to Project (default: None)
   --git-username GIT_USERNAME
                         Git Username (default: None)
   --git-email GIT_EMAIL
                         Git Email (default: None)
-  --pull-request        Perform a Pull Request (default: False)
+  --pull-request        Perform a Pull Request. (default: False)
   --github-access-token GITHUB_ACCESS_TOKEN
                         GitHub Access Token (default: None)
   --github-reponame GITHUB_REPONAME
@@ -173,9 +178,11 @@ optional arguments:
                         environment variables and user configuration.
                         (default: 0)
   --no-included-requirements
-                        Avoid updating included requirements (default: 0)
+                        Avoid updating included requirements. (default: 0)
   --no-cache            Avoid fetching latest updates from PyPI server.
                         (default: 0)
+  -o OUTPUT, --output OUTPUT
+                        Print Output to File. (default: None)
   --force               Force search for files within a project. (default: 0)
   --no-color            Avoid colored output. (default: 0)
   -V, --verbose         Display verbose output. (default: False)

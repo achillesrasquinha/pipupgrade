@@ -6,6 +6,7 @@
 * [How do I update a requirements.txt file?](#how-do-i-update-a-requirementstxt-file)
 * [How do I perform a dry run?](#how-do-i-perform-a-dry-run)
 * [How do I view a dependency graph?](#how-do-i-view-a-dependency-graph)
+* [How do I upgrade only selected packages?](#how-do-i-upgrade-only-selected-packages)
 
 ### How do I upgrade `pip` itself?
 ---
@@ -88,3 +89,10 @@ The dependency graph also highlights any conflicting dependencies.
 You can also set the environment variable `PIPUPGRADE_DISPLAY_FORMAT` to `tree`.
  If you avoid using the `--latest` flag, the tree format ensures to avoid
  child dependencies that break changes.
+
+### How do I upgrade only selected packages?
+---
+
+```
+$ pipupgrade "<PACKAGE_1>" "<PACKAGE_2>"
+```
