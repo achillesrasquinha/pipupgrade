@@ -174,14 +174,14 @@ def _render_yaml(packages):
 		))
 
 def _resolve_dependencies(nodes):
-	for node in nodes:
+	for i, node in enumerate(nodes):
 		deptree = node.dependency_tree
 		found 	= deptree.find(
 			lambda x: x.parent != None and x.obj.difference == "major"
 		)
 
 		if found:
-			node.has_dependency_conflict = True
+			nodes[i].has_dependency_conflict = True
 	
 	return nodes
 

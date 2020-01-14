@@ -1,6 +1,6 @@
 # imports - standard imports
 import re
-from   functools import partial
+from   functools import partial, cmp_to_key
 
 # imports - module imports
 from pipupgrade.model.package   import Package, _get_pip_info
@@ -38,8 +38,11 @@ def _build_packages_info_dict(packages, pip_exec = None):
         _build_packages_info_dict(requirements, pip_exec = pip_exec)
 
 def _create_package(name, sync = False):
-    package                 = Package(name, sync = sync)
-    package.current_version = _INFO_DICT[name]["version"]
+    data                    = dict(
+        name    = name,
+        version = _INFO_DICT[name]["version"]
+    )
+    package                 = Package(data, sync = sync)
     
     return package
 
@@ -100,15 +103,20 @@ class Registry:
         if installed:
             args["pip_exec"] = source
         
-        self.packages   = [ ]
+        self._packages  = [ ]
         with parallel.no_daemon_pool(processes = jobs) as pool:
             for package in pool.imap_unordered(partial(Package, **args), packages):
-                self.packages.append(package)
+                self._packages.append(package)
 
         self.installed  = installed
         
-        if installed and build_dependency_tree and self.packages:
+        if installed and build_dependency_tree and self._packages:
             self._build_dependency_tree_for_packages(sync = sync, jobs = jobs)
+
+    @property
+    def packages(self):
+        packages = getattr(self, "_packages", [ ])
+        return sorted(packages, key = lambda x: x.name.lower())
 
     def _build_dependency_tree_for_packages(self, sync = False, jobs = 1):
         names = [p.name for p in self.packages]

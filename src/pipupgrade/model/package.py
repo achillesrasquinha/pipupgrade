@@ -105,21 +105,22 @@ class Package:
 			logger.info("Fetching PyPI info for package %s..." % self)
 			_pypi_info = _get_pypi_info(self.name, raise_err = False) or { }
 		
-			if not hasattr(self, "latest_version"):
+			if not getattr(self, "latest_version", None) or sync:
 				self.latest_version = _pypi_info.get("version")
 
 			self.home_page = _pypi_info.get("home_page")
 
 		if not res:
 			try:
-				logger.info("Attempting to INSERT package %s into database." % self)
+				values = (self.name, self.latest_version or "NULL", self.home_page, datetime.now())
+				logger.info("Attempting to INSERT package %s into database with values: %s." % (self, values))
 
 				_db.query("""
 					INSERT INTO `tabPackage`
 						(name, latest_version, home_page, _created_at)
 					VALUES
 						('%s', '%s', '%s', '%s')
-				""" % (self.name, self.latest_version, self.home_page, datetime.now()))
+				""" % values)
 			except (db.IntegrityError, db.OperationalError) as e:
 				logger.warn("Unable to save package name. %s" % e)
 		else:
@@ -143,13 +144,19 @@ class Package:
 
 		self.dependency_tree = TreeNode(self)
 
+	@property
+	def difference(self):
+		difference = None
+
 		try:
-			self.difference = semver.difference(
+			difference = semver.difference(
 				self.current_version,
 				self.latest_version
 			)
 		except (TypeError, ValueError):
-			self.difference = None
+			pass
+
+		return difference
 
 	def __repr__(self):
 		repr_ = "<Package %s%s>" % (self.name,
