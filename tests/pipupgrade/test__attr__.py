@@ -14,6 +14,7 @@ from pipupgrade.__attr__ import (
     sequence_filter,
     get_revision
 )
+from pipupgrade._compat  import string_types
 
 def call(*args, **kwargs):
     subprocess.call(args, **kwargs)
@@ -23,7 +24,7 @@ def test_read(tmpdir):
     tempfile  = directory.join("foobar.txt")
     tempfile.write("foobar")
 
-    assert tempfile.read() == read(str(tempfile))
+    assert tempfile.read() == read(string_types(tempfile))
 
     tempfile  = directory.join("barfoo.txt")
     tempfile.write(\
@@ -34,7 +35,7 @@ def test_read(tmpdir):
         """
     )
 
-    assert tempfile.read() == read(str(tempfile))
+    assert tempfile.read() == read(string_types(tempfile))
 
 def test_pardir():
     assert pardir(__file__)    == osp.dirname(__file__)
@@ -65,7 +66,7 @@ def test_sequence_filter():
 
 def test_get_revision(tmpdir):
     directory = tmpdir.mkdir("tmp")
-    path      = str(directory)
+    path      = string_types(directory)
     
     with pytest.raises(subprocess.CalledProcessError):
         get_revision(path)

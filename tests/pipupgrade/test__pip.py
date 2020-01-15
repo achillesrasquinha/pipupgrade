@@ -5,7 +5,8 @@ import subprocess
 import pytest
 
 # imports - module imports
-from pipupgrade import _pip
+from pipupgrade         import _pip
+from pipupgrade._compat import string_types
 
 def test_imports():
     from pipupgrade._pip import (
@@ -36,7 +37,7 @@ def test_call(tmpdir):
 
     directory = tmpdir.mkdir("tmp")
     tempfile  = directory.join("tmp.log")
-    path      = str(tempfile)
+    path      = string_types(tempfile)
 
     _pip.call("install", "pipupgrade")
     assert_pip_call(_pip.call("install", "pipupgrade", quiet = True))

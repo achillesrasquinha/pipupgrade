@@ -1,5 +1,5 @@
 # imports - standard imports
-from   	datetime	import datetime
+from   	datetime	import datetime, timedelta
 from 	functools 	import partial
 import 	os.path as osp
 import 	re
@@ -9,10 +9,12 @@ from pipupgrade.__attr__    import __name__ as NAME
 from pipupgrade 	 		import _pip, semver, request as req, db, log
 from pipupgrade.tree 		import Node as TreeNode
 from pipupgrade.util.string import kebab_case, strip
-from pipupgrade._compat		import iteritems
+from pipupgrade._compat		import iteritems, string_types
+from pipupgrade.config		import Settings
 
-logger  = log.get_logger()
-_db		= db.get_connection() 
+logger  	= log.get_logger()
+_db			= db.get_connection()
+settings	= Settings()
 
 def _get_pypi_info(name, raise_err = True):
 	url  = "https://pypi.org/pypi/{}/json".format(name)
@@ -64,7 +66,7 @@ class Package:
 	def __init__(self, package, sync = False, pip_exec = None):
 		logger.info("Initializing Package %s of type %s..." % (package, type(package)))
 
-		self.current_version = None
+		self.current_version 	= None
 
 		if   isinstance(package, (_pip.Distribution, _pip.DistInfoDistribution,
 			_pip.EggInfoDistribution)):
@@ -75,7 +77,7 @@ class Package:
 
 			if hasattr(package, "req"):
 				if hasattr(package.req, "specifier"):
-					self.current_version = str(package.req.specifier)
+					self.current_version = string_types(package.req.specifier)
 			else:
 				self.current_version = package.installed_version
 		elif isinstance(package, dict):
@@ -101,6 +103,13 @@ class Package:
 		except db.OperationalError as e:
 			logger.warn("Unable to fetch package name. %s" % e)
 
+		if res:
+			cache_timeout 	= settings.get("cache_timeout")
+			time_difference	= res["_updated_at"] + timedelta(seconds = cache_timeout)
+
+			if datetime.now() > time_difference:
+				sync = True
+
 		if not res or sync:
 			logger.info("Fetching PyPI info for package %s..." % self)
 			_pypi_info = _get_pypi_info(self.name, raise_err = False) or { }
@@ -112,14 +121,14 @@ class Package:
 
 		if not res:
 			try:
-				values = (self.name, self.latest_version or "NULL", self.home_page, datetime.now())
+				values = (self.name, self.latest_version or "NULL", self.home_page, datetime.now(), datetime.now())
 				logger.info("Attempting to INSERT package %s into database with values: %s." % (self, values))
 
 				_db.query("""
 					INSERT INTO `tabPackage`
-						(name, latest_version, home_page, _created_at)
+						(name, latest_version, home_page, _created_at, _updated_at)
 					VALUES
-						('%s', '%s', '%s', '%s')
+						('%s', '%s', '%s', '%s', '%s')
 				""" % values)
 			except (db.IntegrityError, db.OperationalError) as e:
 				logger.warn("Unable to save package name. %s" % e)

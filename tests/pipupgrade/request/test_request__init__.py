@@ -24,7 +24,7 @@ def test_get():
     with pytest.raises(HTTPError):
         res.raise_for_status()
 
-    assert str(res) == "<Response [{code}]>".format(
+    assert string_types(res) == "<Response [{code}]>".format(
         code = 404
     )
 
@@ -45,6 +45,6 @@ def test_post():
     with pytest.raises(HTTPError):
         res.raise_for_status()
 
-    assert str(res) == "<Response [{code}]>".format(
+    assert string_types(res) == "<Response [{code}]>".format(
         code = 404
     )

@@ -6,3 +6,5 @@ from pipupgrade.__attr__    import (
 )
 from pipupgrade.__main__    import main
 from pipupgrade.config      import Settings
+
+settings = Settings()

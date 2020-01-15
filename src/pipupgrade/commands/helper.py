@@ -14,6 +14,7 @@ from pipupgrade.util.array		import squash
 from pipupgrade 		      	import (_pip, cli, semver,
 	log, parallel
 )
+from pipupgrade._compat			import string_types
 
 logger = log.get_logger()
 

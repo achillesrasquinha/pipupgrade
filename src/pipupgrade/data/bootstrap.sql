@@ -3,8 +3,8 @@ CREATE TABLE IF NOT EXISTS `tabPackage` (
     `name`              TEXT        NOT NULL    UNIQUE,
     `latest_version`    TEXT,
     `home_page`         TEXT,
-    `_created_at`       DATETIME,
-    `_updated_at`       DATETIME
+    `_created_at`       TIMESTAMP,
+    `_updated_at`       TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS `tabPackageDependency` (

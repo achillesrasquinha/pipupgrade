@@ -3,7 +3,8 @@ import os
 
 # imports - module imports
 import pipupgrade
-from   pipupgrade.util.types import auto_typecast
+from   pipupgrade.util.types 	import auto_typecast
+from   pipupgrade._compat		import string_types
 
 PREFIX = "%s" % pipupgrade.__name__.upper()
 
@@ -31,13 +32,13 @@ def value_to_envval(value):
 	Convert python types to environment values
 	"""
 
-	if not isinstance(value, str):
+	if not isinstance(value, string_types):
 		if   value == True:
 			value = "true"
 		elif value == False:
 			value = "false"
 		elif isinstance(value, int):
-			value = str(value)
+			value = string_types(value)
 		else:
 			raise TypeError("Unknown parameter type %s with value %r" % (value, type(value)))
 

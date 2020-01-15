@@ -6,7 +6,7 @@ from pipupgrade             import __name__ as NAME, __version__
 from pipupgrade.util.system import pardir, makedirs, touch
 from pipupgrade.util.types  import auto_typecast
 from pipupgrade.util._dict  import autodict
-from pipupgrade._compat     import iteritems, configparser as cp
+from pipupgrade._compat     import iteritems, configparser as cp, string_types
 
 PATH            = autodict()
 PATH["BASE"]    = pardir(__file__)
@@ -45,6 +45,7 @@ class Configuration:
         
     def set(self, section, key, value, force = False):
         config = self.config
+        value  = string_types(value)
 
         if not section in config:
             config[section] = dict({ key: value })
@@ -61,7 +62,8 @@ class Configuration:
         
 class Settings:
     _DEFAULTS = {
-        "version": __version__
+              "version": __version__,
+        "cache_timeout": 60 * 60 * 24 # 1 day
     }
 
     def __init__(self):

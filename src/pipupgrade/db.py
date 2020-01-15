@@ -34,11 +34,10 @@ class DB:
         _connected = bool(self._connection)
         return _connected
 
-    def connect(self, bootstrap = True):
+    def connect(self, bootstrap = True, **kwargs):
         if not self.connected:
             self._connection = sqlite3.connect(self.path,
-                timeout = self.timeout
-            )
+                timeout = self.timeout, **kwargs)
             self._connection.row_factory = sqlite3.Row
 
     def query(self, *args, **kwargs):
@@ -74,7 +73,7 @@ def get_connection(bootstrap = True, log = False):
         abspath     = osp.join(basepath, "db.db")
 
         _CONNECTION = DB(abspath)
-        _CONNECTION.connect()
+        _CONNECTION.connect(detect_types = sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
 
         if bootstrap:
             if log:
