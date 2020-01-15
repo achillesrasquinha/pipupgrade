@@ -22,9 +22,9 @@ def read(fname):
         data = f.read()
     return data
 
-def write(fname, data = None, force = False):
-    if not osp.exists(fname) or force:
-        with open(fname, "w") as f:
+def write(fname, data = None, force = False, append = False):
+    if not osp.exists(fname) or append or force:
+        with open(fname, mode = "a" if append else "w") as f:
             if data:
                 f.write(data)
 
