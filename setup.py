@@ -4,8 +4,12 @@ import sys
 import os.path as osp
 import glob
 import io
+import shutil
 
 from setuptools import setup, find_packages
+
+from setuptools.command.develop import develop
+from setuptools.command.install import install
 
 import pip
 
@@ -54,6 +58,22 @@ def get_dependencies(type_ = None):
 
 PKGINFO    = get_package_info()
 
+
+def remove_cache():
+    path = osp.join(osp.expanduser("~"), ".%s" % PKGINFO["__name__"])
+    if osp.exists(path):
+        shutil.rmtree(path)
+
+class DevelopCommand(develop):
+    def run(self):
+        develop.run(self)
+        remove_cache()
+
+class InstallCommand(install):
+    def run(self):
+        install.run(self)
+        remove_cache()
+        
 setup(
     name                 = PKGINFO["__name__"],
     version              = PKGINFO["__version__"],
@@ -98,5 +118,9 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy"
-    ]
+    ],
+    cmdclass = {
+        "install": InstallCommand,
+        "develop": DevelopCommand
+    }
 )

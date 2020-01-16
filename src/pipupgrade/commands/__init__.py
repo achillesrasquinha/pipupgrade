@@ -59,6 +59,7 @@ def command(
 	no_cache		            = False,
 	no_color 	 				= True,
 	output						= None,
+	ignore_error				= False,
 	force						= False,
 	verbose		 				= False
 ):
@@ -179,7 +180,8 @@ def command(
 						**{ "yes": yes, "user": user, "check": check,
 							"latest": latest, "interactive": interactive,
 							"verbose": verbose, "format_": format, "all": all,
-							"filter": packages, "file": file_
+							"filter": packages, "file": file_,
+							"raise_err": not ignore_error
 						}
 					),
 					registries
@@ -188,7 +190,7 @@ def command(
 			for registry in registries:
 				update_registry(registry, yes = yes, user = user, check = check,
 					latest = latest, interactive = interactive, verbose = verbose,
-					format_ = format, all = all, file = file_
+					format_ = format, all = all, file = file_, raise_err = not ignore_error
 				)
 
 		if pipfile:

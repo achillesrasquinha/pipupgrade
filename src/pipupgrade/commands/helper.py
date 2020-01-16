@@ -14,6 +14,7 @@ from pipupgrade.util.array		import squash
 from pipupgrade 		      	import (_pip, cli, semver,
 	log, parallel
 )
+from pipupgrade.exception		import PopenError
 from pipupgrade._compat			import string_types
 
 logger = log.get_logger()
@@ -195,6 +196,7 @@ def update_registry(registry,
 	format_		= "table",
 	all			= False,
 	file		= None,
+	raise_err	= True,
 	verbose 	= False):
 	source   = registry.source
 	packages = registry.packages
@@ -285,11 +287,15 @@ def update_registry(registry,
 						if not package.installed:
 							_update_requirements(package.source, package)
 						else:
-							_pip.call("install", package.name,
-								pip_exec = package.source, user = user,
-								quiet = not verbose, no_cache_dir = True,
-								upgrade = True
-							)
+							try:
+								_pip.call("install", package.name,
+									pip_exec = package.source, user = user,
+									quiet = not verbose, no_cache_dir = True,
+									upgrade = True
+								)
+							except PopenError as e:
+								if raise_err:
+									raise
 	else:
 		cli.echo("%s upto date." % cli_format(stitle, cli.CYAN),
 			file = file)

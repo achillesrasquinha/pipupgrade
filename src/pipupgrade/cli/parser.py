@@ -147,6 +147,11 @@ def get_parser():
         default = getenv("OUTPUT_FILE"),
         help    = "Print Output to File."
     )
+    parser.add_argument("--ignore-error",
+        action  = "store_true",
+        default = getenv("IGNORE_ERROR", False),
+        help    = "Ignore Error in case of upgrade failure."
+    )
     parser.add_argument("--force",
         action  = "store_true",
         default = getenv("FORCE", False),

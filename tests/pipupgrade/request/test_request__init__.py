@@ -5,7 +5,8 @@ from pipupgrade._compat import HTTPError
 import pytest
 
 # imports - standard imports
-from pipupgrade import request as req
+from pipupgrade         import request as req
+from pipupgrade._compat import string_types
 
 def test_get():
     res  = req.get("https://httpbin.org/get")
