@@ -183,6 +183,7 @@ optional arguments:
                         (default: 0)
   -o OUTPUT, --output OUTPUT
                         Print Output to File. (default: None)
+  --ignore-error        Ignore Error in case of upgrade failure. (default: 0)
   --force               Force search for files within a project. (default: 0)
   --no-color            Avoid colored output. (default: 0)
   -V, --verbose         Display verbose output. (default: False)
