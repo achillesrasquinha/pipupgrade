@@ -8,8 +8,10 @@ import platform
 import inspect
 
 # imports - module imports
-from pipupgrade._compat      import EX_OK
-from pipupgrade.util.imports import import_handler
+from pipupgrade._compat         import EX_OK
+from pipupgrade.util.imports    import import_handler
+from pipupgrade.util.system     import write
+from pipupgrade.util.string     import strip_ansi
 
 _ACCEPTABLE_INPUTS_YES      = ("", "y", "Y")
 _ACCEPTABLE_INPUTS_QUIT     = ("q", "Q")
@@ -60,5 +62,11 @@ def format(string, type_):
 
     return string
 
-def echo(string = "", nl = True):
-    print(string, end = "\n" if nl else "")
+def echo(string = "", file = None, nl = True):
+    nl = "\n" if nl else ""
+    
+    print(string, end = nl)
+    
+    if file:
+        string = strip_ansi(string)
+        write(file, string + nl, append = True)

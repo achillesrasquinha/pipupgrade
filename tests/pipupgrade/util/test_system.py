@@ -9,13 +9,14 @@ import pytest
 # imports - module imports
 from pipupgrade.util.system import (read, write, popen, which, makedirs,
     environment, touch)
+from pipupgrade._compat     import string_types
 
 def test_read(tmpdir):
     directory = tmpdir.mkdir("tmp")
     tempfile  = directory.join("foobar.txt")
     tempfile.write("foobar")
 
-    assert tempfile.read() == read(str(tempfile))
+    assert tempfile.read() == read(string_types(tempfile))
 
     tempfile  = directory.join("barfoo.txt")
     tempfile.write(\
@@ -26,13 +27,13 @@ def test_read(tmpdir):
         """
     )
 
-    assert tempfile.read() == read(str(tempfile))
+    assert tempfile.read() == read(string_types(tempfile))
 
 def test_write(tmpdir):
     directory   = tmpdir.mkdir("tmp")
     tempfile    = directory.join("foobar.txt")
     
-    path        = str(tempfile) 
+    path        = string_types(tempfile) 
     
     prev, next_ = "foobar", "barfoo"
 
@@ -47,7 +48,7 @@ def test_write(tmpdir):
 
 def test_popen(tmpdir):
     directory = tmpdir.mkdir("tmp")
-    dirpath   = str(directory)
+    dirpath   = string_types(directory)
 
     string    = "Hello, World!"
 
@@ -90,7 +91,7 @@ def test_which():
 
 def test_makedirs(tmpdir):
     directory = tmpdir.mkdir("tmp")
-    path      = osp.join(str(directory), "foo", "bar")
+    path      = osp.join(string_types(directory), "foo", "bar")
 
     makedirs(path)
     assert osp.exists(path)
@@ -110,7 +111,7 @@ def test_environment():
 
 def test_touch(tmpdir):
     directory = tmpdir.mkdir("tmp")
-    path      = osp.join(str(directory), "foo")
+    path      = osp.join(string_types(directory), "foo")
 
     assert not osp.exists(path)
 

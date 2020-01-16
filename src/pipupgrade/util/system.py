@@ -13,6 +13,7 @@ from pipupgrade.exception   import PopenError
 from pipupgrade.util.string import strip, safe_decode
 from pipupgrade._compat     import iteritems
 from pipupgrade.log         import get_logger
+from pipupgrade._compat     import string_types
 
 logger = get_logger()
 
@@ -21,9 +22,9 @@ def read(fname):
         data = f.read()
     return data
 
-def write(fname, data = None, force = False):
-    if not osp.exists(fname) or force:
-        with open(fname, "w") as f:
+def write(fname, data = None, force = False, append = False):
+    if not osp.exists(fname) or append or force:
+        with open(fname, mode = "a" if append else "w") as f:
             if data:
                 f.write(data)
 
@@ -53,9 +54,9 @@ def popen(*args, **kwargs):
         environ.update(environment)
 
     for k, v in iteritems(environ):
-        environ[k] = str(v)
+        environ[k] = string_types(v)
 
-    command     = " ".join([str(arg) for arg in args])
+    command     = " ".join([string_types(arg) for arg in args])
 
     logger.info("Executing command: %s" % command)
 

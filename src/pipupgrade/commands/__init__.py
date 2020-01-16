@@ -18,7 +18,9 @@ from pipupgrade.model           import Project
 from pipupgrade.model.project 	import get_included_requirements
 from pipupgrade.commands.util 	import cli_format
 from pipupgrade.util.array    	import flatten, sequencify
-from pipupgrade.util.system   	import read, write, popen, which, environment
+from pipupgrade.util.system   	import (read, write, touch, popen, which,
+	environment
+)
 from pipupgrade.util.environ  	import getenvvar
 from pipupgrade.util.datetime 	import get_timestamp_str
 from pipupgrade 		      	import (_pip, request as req, cli,
@@ -57,6 +59,7 @@ def command(
 	no_cache		            = False,
 	no_color 	 				= True,
 	output						= None,
+	ignore_error				= False,
 	force						= False,
 	verbose		 				= False
 ):
@@ -64,9 +67,15 @@ def command(
 		logger.setLevel(log.NOTSET)
 		
 	logger.info("Environment: %s" % environment())
-
-	cli.echo(cli_format("Checking...", cli.YELLOW))
 	logger.info("Arguments Passed: %s" % locals())
+
+	file_ = output
+
+	if file_:
+		logger.info("Writing to output file %s..." % file_)
+		touch(file_)
+
+	cli.echo(cli_format("Checking...", cli.YELLOW), file = file_)
 
 	pip_path    = pip_path or [ ]
 	pip_path    = [which(p) for p in pip_path] or _pip._PIP_EXECUTABLES
@@ -83,7 +92,8 @@ def command(
 		with parallel.no_daemon_pool(processes = jobs) as pool:
 			pool.imap_unordered(
 				partial(
-					update_pip, **{ "user": user, "quiet": not verbose }
+					update_pip, **{ "user": user, "quiet": not verbose,
+						"file": file }
 				),
 				pip_path
 			)
@@ -92,12 +102,14 @@ def command(
 		package = __name__
 		logger.info("Updating %s..." % package)
 
-		cli.echo(cli_format("Updating %s..." % package, cli.YELLOW))
+		cli.echo(cli_format("Updating %s..." % package, cli.YELLOW),
+			file = file_)
 
 		_pip.call("install", package, user = user, quiet = not verbose,
 			no_cache = True, upgrade = True)
 
-		cli.echo("%s upto date." % cli_format(package, cli.CYAN))
+		cli.echo("%s upto date." % cli_format(package, cli.CYAN),
+			file = file_)
 	else:
 		if project:
 			project		 = sequencify(project)
@@ -136,7 +148,7 @@ def command(
 					partial(
 						get_registry_from_requirements,
 						**{ "sync": no_cache, "jobs": jobs,
-							"only_packages": packages
+							"only_packages": packages, "file": file_
 						}
 					),
 					requirements
@@ -168,7 +180,8 @@ def command(
 						**{ "yes": yes, "user": user, "check": check,
 							"latest": latest, "interactive": interactive,
 							"verbose": verbose, "format_": format, "all": all,
-							"filter": packages	
+							"filter": packages, "file": file_,
+							"raise_err": not ignore_error
 						}
 					),
 					registries
@@ -177,13 +190,14 @@ def command(
 			for registry in registries:
 				update_registry(registry, yes = yes, user = user, check = check,
 					latest = latest, interactive = interactive, verbose = verbose,
-					format_ = format, all = all
+					format_ = format, all = all, file = file_, raise_err = not ignore_error
 				)
 
 		if pipfile:
 			logger.info("Updating Pipfiles: %s..." % pipfile)
 
-			cli.echo(cli_format("Updating Pipfiles: %s..." % ", ".join(pipfile), cli.YELLOW))
+			cli.echo(cli_format("Updating Pipfiles: %s..." % ", ".join(pipfile), cli.YELLOW),
+				file = file_)
 
 			with parallel.no_daemon_pool(processes = jobs) as pool:
 				results = pool.imap_unordered(
@@ -195,7 +209,8 @@ def command(
 				)
 
 				if builtins.all(results):
-					cli.echo(cli_format("Pipfiles upto date.", cli.GREEN))
+					cli.echo(cli_format("Pipfiles upto date.", cli.GREEN),
+						file = file_)
 
 		if project and pull_request:
 			errstr = '%s not found. Use %s or the environment variable "%s" to set value.'
@@ -260,6 +275,6 @@ def command(
 						url      = "/".join(map(str, ["https://github.com", github_username, github_reponame, "pull", number]))
 						message  = "Created a Pull Request at %s" % url
 
-						cli.echo(cli_format(message, cli.GREEN))
+						cli.echo(cli_format(message, cli.GREEN), file = file_)
 					else:
 						response.raise_for_status()

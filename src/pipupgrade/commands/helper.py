@@ -14,6 +14,8 @@ from pipupgrade.util.array		import squash
 from pipupgrade 		      	import (_pip, cli, semver,
 	log, parallel
 )
+from pipupgrade.exception		import PopenError
+from pipupgrade._compat			import string_types
 
 logger = log.get_logger()
 
@@ -193,6 +195,8 @@ def update_registry(registry,
 	interactive = False,
 	format_		= "table",
 	all			= False,
+	file		= None,
+	raise_err	= True,
 	verbose 	= False):
 	source   = registry.source
 	packages = registry.packages
@@ -243,11 +247,11 @@ def update_registry(registry,
 		elif format_ == "table":
 			string = table.render()
 	
-		cli.echo("\nSource: %s\n" % stitle)
+		cli.echo("\nSource: %s\n" % stitle, file = file)
 		
 		if not interactive or check:
-			cli.echo(string)
-			cli.echo()
+			cli.echo(string, file = file)
+			cli.echo(file = file)
 
 		if not check:
 			packages  = [p for p in dinfo if p.difference != "major" 
@@ -278,18 +282,23 @@ def update_registry(registry,
 								spackages,
 								cli_format(package.name, cli.GREEN)
 							)
-						, cli.BOLD))
+						, cli.BOLD), file = file)
 
 						if not package.installed:
 							_update_requirements(package.source, package)
 						else:
-							_pip.call("install", package.name,
-								pip_exec = package.source, user = user,
-								quiet = not verbose, no_cache_dir = True,
-								upgrade = True
-							)
+							try:
+								_pip.call("install", package.name,
+									pip_exec = package.source, user = user,
+									quiet = not verbose, no_cache_dir = True,
+									upgrade = True
+								)
+							except PopenError as e:
+								if raise_err:
+									raise
 	else:
-		cli.echo("%s upto date." % cli_format(stitle, cli.CYAN))
+		cli.echo("%s upto date." % cli_format(stitle, cli.CYAN),
+			file = file)
 
 def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True,
 	build_dependency_tree = False, jobs = 1, only_packages = [ ]
@@ -315,11 +324,12 @@ def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True,
 	return registry
 
 def get_registry_from_requirements(requirements, sync = False, jobs = 1,
-	only_packages = [ ]):
+	only_packages = [ ], file = None):
 	path = osp.realpath(requirements)
 
 	if not osp.exists(path):
-		cli.echo(cli_format("{} not found.".format(path), cli.RED))
+		cli.echo(cli_format("{} not found.".format(path), cli.RED),
+			file = file)
 		sys.exit(os.EX_NOINPUT)
 	else:
 		packages =  _pip.parse_requirements(requirements, session = "hack")
@@ -341,8 +351,9 @@ def pip_upgrade(package, pip_exec = None, user = None, quiet = None):
 	return _pip.call("install", package, pip_exec = pip_exec, 
 		user = user, quiet = quiet, no_cache_dir = True, upgrade = True)
 
-def update_pip(pip_exec, user = None, quiet = None):
-	cli.echo(cli_format("Updating %s..." % pip_exec, cli.YELLOW))
+def update_pip(pip_exec, user = None, quiet = None, file = None):
+	cli.echo(cli_format("Updating %s..." % pip_exec, cli.YELLOW),
+		file = file)
 
 	output = pip_upgrade("pip", pip_exec = pip_exec, user = user, quiet = quiet)
 
@@ -352,6 +363,7 @@ def update_pip(pip_exec, user = None, quiet = None):
 		code = output[0]
 
 	if not code:
-		cli.echo("%s upto date." % cli_format(pip_exec, cli.CYAN))
+		cli.echo("%s upto date." % cli_format(pip_exec, cli.CYAN),
+			file = file)
 
 	return output
