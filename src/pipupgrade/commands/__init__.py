@@ -18,9 +18,7 @@ from pipupgrade.model           import Project
 from pipupgrade.model.project 	import get_included_requirements
 from pipupgrade.commands.util 	import cli_format
 from pipupgrade.util.array    	import flatten, sequencify
-from pipupgrade.util.system   	import (read, write, touch, popen, which,
-	environment
-)
+from pipupgrade.util.system   	import (read, write, touch, popen, which)
 from pipupgrade.util.environ  	import getenvvar
 from pipupgrade.util.datetime 	import get_timestamp_str
 from pipupgrade 		      	import (_pip, request as req, cli,
@@ -28,6 +26,7 @@ from pipupgrade 		      	import (_pip, request as req, cli,
 )
 from pipupgrade._compat			import builtins
 from pipupgrade.__attr__      	import __name__
+from pipupgrade.config			import environment
 
 logger = log.get_logger(level = log.DEBUG)
 

@@ -103,14 +103,6 @@ def makedirs(dirs, exist_ok = False):
         if not exist_ok or e.errno != errno.EEXIST:
             raise
 
-def environment():
-    environ = dict()
-    
-    environ["python_version"]   = platform.python_version()
-    environ["os"]               = platform.platform()
-
-    return environ
-
 def touch(filename):
     if not osp.exists(filename):
         with open(filename, "w") as f:

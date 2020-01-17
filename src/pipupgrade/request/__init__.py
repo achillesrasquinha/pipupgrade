@@ -9,6 +9,7 @@ from pipupgrade._compat import (
 
 # imports - standard imports
 import json
+import concurrent.futures
 
 # imports - module imports
 from pipupgrade.request.response import Response
@@ -77,3 +78,6 @@ def post(*args, **kwargs):
         response.status_code = status_code
 
         return response
+
+def map(reqs):
+    pass

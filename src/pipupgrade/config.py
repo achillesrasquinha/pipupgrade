@@ -1,5 +1,7 @@
 # imports - standard imports
-import os.path      as osp
+import os.path as osp
+import multiprocessing as mp
+import platform
 
 # imports - module imports
 from pipupgrade             import __name__ as NAME, __version__
@@ -63,7 +65,8 @@ class Configuration:
 class Settings:
     _DEFAULTS = {
               "version": __version__,
-        "cache_timeout": 60 * 60 * 24 # 1 day
+        "cache_timeout": 60 * 60 * 24, # 1 day
+                 "jobs": mp.cpu_count() 
     }
 
     def __init__(self):
@@ -80,3 +83,15 @@ class Settings:
 
     def set(self, key, value):
         self.config.set("settings", key, value)
+
+def environment():
+    environ = dict()
+    
+    environ["version"]          = __version__
+    environ["python_version"]   = platform.python_version()
+    environ["os"]               = platform.platform()
+    environ["config"]           = dict(
+        path = dict(PATH)
+    )
+
+    return environ
