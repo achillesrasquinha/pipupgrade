@@ -4,7 +4,7 @@ import multiprocessing as mp
 import platform
 
 # imports - module imports
-from pipupgrade             import __name__ as NAME, __version__
+from pipupgrade             import __name__ as NAME, __version__, _pip
 from pipupgrade.util.system import pardir, makedirs, touch
 from pipupgrade.util.types  import auto_typecast
 from pipupgrade.util._dict  import autodict
@@ -93,5 +93,10 @@ def environment():
     environ["config"]           = dict(
         path = dict(PATH)
     )
+    environ["pip_executables"]  = [dict(
+        executable = executable,
+        version    = _pip.call("--version", pip_exec = executable,
+            output = True)[1]
+    ) for executable in _pip._PIP_EXECUTABLES]
 
     return environ
