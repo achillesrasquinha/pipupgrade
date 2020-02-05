@@ -8,7 +8,7 @@ import pytest
 
 # imports - module imports
 from pipupgrade.util.system import (read, write, popen, which, makedirs,
-    environment, touch)
+    touch)
 from pipupgrade._compat     import string_types
 
 def test_read(tmpdir):
@@ -101,13 +101,6 @@ def test_makedirs(tmpdir):
 
     with pytest.raises(OSError):
         makedirs(path)
-
-def test_environment():
-    details = environment()
-
-    assert all((k in details for k in ("python_version", "os")))
-
-    return details
 
 def test_touch(tmpdir):
     directory = tmpdir.mkdir("tmp")
