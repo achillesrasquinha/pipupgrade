@@ -1,3 +1,6 @@
+# imports - compatibility imports
+from __future__ import absolute_import
+
 # imports - standard imports
 import re
 from   functools import partial, cmp_to_key

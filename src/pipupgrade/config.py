@@ -1,3 +1,6 @@
+# imports - compatibility imports
+from __future__ import absolute_import
+
 # imports - standard imports
 import os.path as osp
 import multiprocessing as mp
@@ -48,7 +51,7 @@ class Configuration:
         
     def set(self, section, key, value, force = False):
         config = self.config
-        value  = string_types(value)
+        value  = str(value)
 
         if not section in config:
             config[section] = dict({ key: value })
