@@ -9,7 +9,6 @@ from pipupgrade._compat import (
 
 # imports - standard imports
 import json
-import concurrent.futures
 
 # imports - module imports
 from pipupgrade.request.response import Response

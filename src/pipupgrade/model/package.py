@@ -1,3 +1,6 @@
+# imports - compatibility imports
+from __future__ import absolute_import
+
 # imports - standard imports
 from   	datetime	import datetime, timedelta
 from 	functools 	import partial
