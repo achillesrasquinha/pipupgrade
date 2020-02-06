@@ -36,6 +36,7 @@ logger = log.get_logger(level = log.DEBUG)
 @cli.command
 def command(
 	packages					= [ ],
+	resolve						= False,
 	pip_path          		 	= [ ],
 	requirements 				= [ ],
 	pipfile            			= [ ],
@@ -70,6 +71,16 @@ def command(
 		
 	logger.info("Environment: %s" % environment())
 	logger.info("Arguments Passed: %s" % locals())
+
+	if resolve:
+		try:
+			import mixology
+		except ImportError:
+			raise ImportError((
+				"Unable to import mixology for resolving dependencies. "
+				"pipupgrade requires mixology to be installed. "
+				"Please install mixology by executing 'pip install mixology'."
+			))
 
 	file_ = output
 
@@ -150,7 +161,8 @@ def command(
 					partial(
 						get_registry_from_requirements,
 						**{ "sync": no_cache, "jobs": jobs,
-							"only_packages": packages, "file": file_
+							"only_packages": packages, "file": file_,
+							"resolve": resolve
 						}
 					),
 					requirements
@@ -164,7 +176,8 @@ def command(
 						**{ "user": user, "sync": no_cache,
 							"outdated": not all,
 							"build_dependency_tree": format in _DEPENDENCY_FORMATS,
-							"jobs": jobs, "only_packages": packages
+							"jobs": jobs, "only_packages": packages,
+							"resolve": resolve
 						}
 					),
 					pip_path

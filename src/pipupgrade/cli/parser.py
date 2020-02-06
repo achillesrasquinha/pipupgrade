@@ -39,6 +39,10 @@ def get_parser():
         nargs   = "*",
         help    = "Packages to Upgrade."
     )
+    parser.add_argument("--resolve",
+        action  = "store_true",
+        help    = "Resolve Dependencies"
+    )
     parser.add_argument("--pip-path",
         action  = "append",
         help    = "Path to pip executable to be used."

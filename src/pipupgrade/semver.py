@@ -22,6 +22,28 @@ _REGEX_SEMVER = re.compile(r"""
     $
     """, re.VERBOSE)
 
+class Version:
+    def __init__(self,
+        major,
+        minor = None,
+        patch = None
+    ):
+        self._major = major
+        self._minor = minor
+        self._patch = patch
+
+    @property
+    def major(self):
+        return self._major
+
+    @property
+    def minor(self):
+        return self._minor
+
+    @property
+    def patch(self):
+        return self._patch
+
 def parse(version):
     match   = _REGEX_SEMVER.match(version)
     if not match:
@@ -32,6 +54,12 @@ def parse(version):
     version["major"] = int(version["major"])
     version["minor"] = int(version["minor"])
     version["patch"] = int(version["patch"])
+
+    version          = Version(
+        major = version["major"],
+        minor = version["minor"],
+        patch = version["patch"]
+    )
 
     return version
 

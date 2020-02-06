@@ -97,6 +97,7 @@ class Registry:
         installed               = False,
         sync                    = False,
         build_dependency_tree   = False,
+        resolve                 = False,
         jobs                    = 1
     ):
         self.source     = source
@@ -107,6 +108,18 @@ class Registry:
             args["pip_exec"] = source
         
         self._packages  = [ ]
+
+        if resolve:
+            logger.info("Resolving Packages...")
+
+            from mixology.version_solver import VersionSolver
+            from pipupgrade.pubgrub      import PackageSource
+            
+            source      = PackageSource()
+            
+            solver      = VersionSolver(source)
+            result      = solver.solve()
+
         with parallel.no_daemon_pool(processes = jobs) as pool:
             for package in pool.imap_unordered(partial(Package, **args), packages):
                 self._packages.append(package)
