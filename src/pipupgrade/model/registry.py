@@ -116,6 +116,8 @@ class Registry:
             from pipupgrade.pubgrub      import PackageSource
             
             source      = PackageSource()
+            for package in packages:
+                source.root_dep(package)
             
             solver      = VersionSolver(source)
             result      = solver.solve()

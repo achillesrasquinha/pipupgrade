@@ -6,8 +6,11 @@ class Dependency:
     pass
 
 class PackageSource(BasePackageSource):
-    def __init__(self):
-        self._root_version = semver.parse("0.0.0")
+    def __init__(self, *args, **kwargs):
+        self._root_version  = semver.parse("0.0.0")
+
+        self.super          = super(PackageSource, self)
+        self.super.__init__(*args, **kwargs)
 
     @property
     def root_version(self):
