@@ -77,3 +77,6 @@ def post(*args, **kwargs):
         response.status_code = status_code
 
         return response
+
+def map(reqs):
+    pass

@@ -1,3 +1,6 @@
+# imports - compatibility imports
+from __future__ import absolute_import
+
 # imports - standard imports
 from   	datetime	import datetime, timedelta
 from 	functools 	import partial
@@ -104,10 +107,14 @@ class Package:
 			logger.warn("Unable to fetch package name. %s" % e)
 
 		if res:
-			cache_timeout 	= settings.get("cache_timeout")
-			time_difference	= res["_updated_at"] + timedelta(seconds = cache_timeout)
+			cache_timeout = settings.get("cache_timeout")
 
-			if datetime.now() > time_difference:
+			if res["_updated_at"]:
+				time_difference	= res["_updated_at"] + timedelta(seconds = cache_timeout)
+
+				if datetime.now() > time_difference:
+					sync = True
+			else:
 				sync = True
 
 		if not res or sync:

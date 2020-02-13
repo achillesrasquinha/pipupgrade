@@ -1,3 +1,6 @@
+# imports - compatibility imports
+from __future__ import absolute_import
+
 # imports - standard imports
 import sys, os, os.path as osp
 import re
@@ -18,9 +21,7 @@ from pipupgrade.model           import Project
 from pipupgrade.model.project 	import get_included_requirements
 from pipupgrade.commands.util 	import cli_format
 from pipupgrade.util.array    	import flatten, sequencify
-from pipupgrade.util.system   	import (read, write, touch, popen, which,
-	environment
-)
+from pipupgrade.util.system   	import (read, write, touch, popen, which)
 from pipupgrade.util.environ  	import getenvvar
 from pipupgrade.util.datetime 	import get_timestamp_str
 from pipupgrade 		      	import (_pip, request as req, cli,
@@ -28,6 +29,7 @@ from pipupgrade 		      	import (_pip, request as req, cli,
 )
 from pipupgrade._compat			import builtins
 from pipupgrade.__attr__      	import __name__
+from pipupgrade.config			import environment
 
 logger = log.get_logger(level = log.DEBUG)
 
@@ -93,7 +95,7 @@ def command(
 			pool.imap_unordered(
 				partial(
 					update_pip, **{ "user": user, "quiet": not verbose,
-						"file": file }
+						"file": file_ }
 				),
 				pip_path
 			)

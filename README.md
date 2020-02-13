@@ -221,6 +221,7 @@ $ docker run \
 * [pipdate](https://github.com/nschloe/pipdate)
 * [pip-review](https://github.com/jgonggrijp/pip-review)
 * [pip-upgrader](https://github.com/simion/pip-upgrader)
+* [pipdeptree](https://github.com/naiquevin/pipdeptree)
 
 ### Known Issues
 
