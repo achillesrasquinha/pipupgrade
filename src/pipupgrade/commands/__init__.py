@@ -95,7 +95,7 @@ def command(
 			pool.imap_unordered(
 				partial(
 					update_pip, **{ "user": user, "quiet": not verbose,
-						"file": file }
+						"file": file_ }
 				),
 				pip_path
 			)
