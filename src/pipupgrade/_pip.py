@@ -4,6 +4,7 @@ from pipupgrade._compat import iteritems
 # imports - standard imports
 import pip
 import json
+import os.path as osp
 
 # imports - module imports
 from pipupgrade.util.system  import which, popen
@@ -41,7 +42,7 @@ def _get_pip_executable(multiple = False):
             if not multiple:
                 return exec_
             else:
-                if exec_ not in execs:
+                if exec_ not in execs and not osp.islink(exec_):
                     execs.append(exec_)
 
     if not execs:
