@@ -53,6 +53,12 @@ def get_parser():
         default = getenv("DRY_RUN", False),
         help    = "Perform a dry-run, avoid updating packages."
     )
+    parser.add_argument("--upgrade-type",
+        choices = ("major", "minor", "patch"),
+        nargs   = "+",
+        default = ["minor", "patch"],
+        help    = "Upgrade Type"
+    )
     parser.add_argument("-l", "--latest",
         action  = "store_true",
         default = getenv("UPDATE_LATEST", False),
