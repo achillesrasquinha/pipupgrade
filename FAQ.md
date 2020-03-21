@@ -1,5 +1,6 @@
 ### Frequently Asked Questions
 
+* [What does each color symbolize?](#what-does-each-color-symbolize)
 * [How do I upgrade `pip` itself?](#how-do-i-upgrade-pip-itself)
 * [How do I upgrade `pipupgrade` itself?](#how-do-i-upgrade-pipupgrade-itself)
 * [How do I upgrade a Python Project?](#how-do-i-upgrade-a-python-project)
@@ -7,6 +8,29 @@
 * [How do I perform a dry run?](#how-do-i-perform-a-dry-run)
 * [How do I view a dependency graph?](#how-do-i-view-a-dependency-graph)
 * [How do I upgrade only selected packages?](#how-do-i-upgrade-only-selected-packages)
+
+### What does each color symbolize?
+---
+
+`pipupgrade` uses **[Semantic Versioning](https://semver.org/)** to detect packages 
+that require an upgrade. When you run `pipupgrade`, it displays the list of packages 
+that requires an upgrade in the following format:
+
+![](docs/assets/pipupgrade-list.png)
+
+Each color denotes the following information:
+
+* ***Red*** - Packages highlighted in red are upgrades that can potentially be a breaking change.
+This means that upgrading this package could most likely cause packages dependent on it to break as well.
+By default, `pipupgrade` does not upgrade these packages unless you pass in the `--latest` flag or
+`--upgrade-type major`.
+* ***Yellow*** - Packages highlighted in yellow are upgrades that don't necessarily break a change but 
+provides a novel feature upgrade. Upgrading such packages could provide new features. By default,
+`pipupgrade` upgrades these packages. You can also selectively upgrade such packages by passing the flag  
+`--upgrade-type minor`.
+* ***Green*** - Packages highlighted in green are patched upgrades. Upgrading such packages will most likely not break any changes and are safe to update. By default,
+`pipupgrade` upgrades these packages. You can also selectively upgrade such packages by passing the flag  
+`--upgrade-type patch`.
 
 ### How do I upgrade `pip` itself?
 ---

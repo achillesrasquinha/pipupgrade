@@ -96,6 +96,10 @@ $ pip install pipupgrade
 
 *Checks and pretty prints outdated packages (Does not perform upgrades).*
 
+* [**`pipupgrade --upgrade-type {major,minor,patch}`**](https://git.io/pipupgrade)
+
+*Upgrades packages only of the upgrade type (defaults to minor and patch).*
+
 * [**`pipupgrade --latest`**](https://git.io/pipupgrade)
 
 *WARNING: Upgrades all packages (including the ones that break change).*
@@ -124,8 +128,9 @@ That's basically it! Run the help for more details...
 
 ```
 $ pipupgrade --help
-usage: pipupgrade [--pip-path PIP_PATH] [-y] [-c] [-l]
-                  [-f {table,tree,json,yaml}] [-a] [--pip] [-s]
+usage: pipupgrade [--pip-path PIP_PATH] [-y] [-c]
+                  [--upgrade-type {major,minor,patch} [{major,minor,patch} ...]]
+                  [-l] [-f {table,tree,json,yaml}] [-a] [--pip] [-s]
                   [-r REQUIREMENTS] [--pipfile PIPFILE] [-i] [-p PROJECT]
                   [--git-username GIT_USERNAME] [--git-email GIT_EMAIL]
                   [--pull-request] [--github-access-token GITHUB_ACCESS_TOKEN]
@@ -133,10 +138,10 @@ usage: pipupgrade [--pip-path PIP_PATH] [-y] [-c] [-l]
                   [--github-username GITHUB_USERNAME]
                   [--target-branch TARGET_BRANCH] [-j JOBS] [-u]
                   [--no-included-requirements] [--no-cache] [-o OUTPUT]
-                  [--force] [--no-color] [-V] [-v] [-h]
+                  [--ignore-error] [--force] [--no-color] [-V] [-v] [-h]
                   [packages [packages ...]]
 
-pipupgrade (v 1.6.6)
+pipupgrade (v VERSION)
 
 UPGRADE ALL THE PIP PACKAGES!
 
@@ -148,6 +153,8 @@ optional arguments:
   -y, --yes             Confirm for all dialogs. (default: 0)
   -c, --check           Perform a dry-run, avoid updating packages. (default:
                         0)
+  --upgrade-type {major,minor,patch} [{major,minor,patch} ...]
+                        Upgrade Type (default: ['minor', 'patch'])
   -l, --latest          Update all packages to latest. (default: 0)
   -f {table,tree,json,yaml}, --format {table,tree,json,yaml}
                         Display packages format. (default: table)
