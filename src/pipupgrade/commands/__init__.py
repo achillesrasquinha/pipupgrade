@@ -47,6 +47,7 @@ def command(
 	github_reponame   		 	= None,
 	github_username   			= None,
 	target_branch    			= "master",
+	upgrade_type				= ("minor", "patch"),
 	latest						= False,
 	format						= "table",
 	all							= False,
@@ -183,7 +184,8 @@ def command(
 							"latest": latest, "interactive": interactive,
 							"verbose": verbose, "format_": format, "all": all,
 							"filter": packages, "file": file_,
-							"raise_err": not ignore_error
+							"raise_err": not ignore_error,
+							"upgrade_type": upgrade_type
 						}
 					),
 					registries
@@ -192,7 +194,8 @@ def command(
 			for registry in registries:
 				update_registry(registry, yes = yes, user = user, check = check,
 					latest = latest, interactive = interactive, verbose = verbose,
-					format_ = format, all = all, file = file_, raise_err = not ignore_error
+					format_ = format, all = all, file = file_, raise_err = not ignore_error,
+					upgrade_type = upgrade_type
 				)
 
 		if pipfile:

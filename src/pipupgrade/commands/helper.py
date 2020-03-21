@@ -191,16 +191,18 @@ def _resolve_dependencies(nodes):
 	return nodes
 
 def update_registry(registry,
-	yes         = False,
-	user 		= False,
-	check	    = False,
-	latest		= False,
-	interactive = False,
-	format_		= "table",
-	all			= False,
-	file		= None,
-	raise_err	= True,
-	verbose 	= False):
+	yes         	= False,
+	user 			= False,
+	check	    	= False,
+	latest			= False,
+	interactive 	= False,
+	format_			= "table",
+	all				= False,
+	file			= None,
+	raise_err		= True,
+	verbose 		= False,
+	upgrade_type 	= ("minor", "patch")
+):
 	source   = registry.source
 	packages = registry.packages
 	
@@ -257,8 +259,11 @@ def update_registry(registry,
 			cli.echo(file = file)
 
 		if not check:
+			packages  = [p for p in dinfo if p.difference in upgrade_type
+				or p.difference == "major"]
 			packages  = [p for p in dinfo if p.difference != "major" 
 				or getattr(p, "has_dependency_conflict", False) or latest]
+
 			npackages = len(packages)
 
 			spackages = pluralize("package", npackages) # Packages "string"
