@@ -16,7 +16,9 @@
 that require an upgrade. When you run `pipupgrade`, it displays the list of packages 
 that requires an upgrade in the following format:
 
-![](docs/assets/pipupgrade-list.png)
+<div align="center">
+  <img src="docs/source/assets/demos/pipupgrade-list.png">
+</div>
 
 Each color denotes the following information:
 
