@@ -197,6 +197,7 @@ def update_registry(registry,
 	interactive 	= False,
 	format_			= "table",
 	all				= False,
+	filter_			= [ ],
 	file			= None,
 	raise_err		= True,
 	verbose 		= False,
@@ -204,6 +205,9 @@ def update_registry(registry,
 ):
 	source   = registry.source
 	packages = registry.packages
+
+	if filter_:
+		packages = [p for p in packages if p["name"] in filter_]
 	
 	table 	 = Table(header = ["Name", "Current Version", "Latest Version",
 		"Home Page"])

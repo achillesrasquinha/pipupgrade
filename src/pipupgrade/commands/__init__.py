@@ -174,29 +174,13 @@ def command(
 
 		logger.info("Updating registries: %s..." % registries)
 
-		# TODO: Tweaks within parallel.no_daemon_pool to run serially.
-		if yes:
-			with parallel.no_daemon_pool(processes = jobs) as pool:
-				pool.imap_unordered(
-					partial(
-						update_registry,
-						**{ "yes": yes, "user": user, "check": check,
-							"latest": latest, "interactive": interactive,
-							"verbose": verbose, "format_": format, "all": all,
-							"filter": packages, "file": file_,
-							"raise_err": not ignore_error,
-							"upgrade_type": upgrade_type
-						}
-					),
-					registries
-				)
-		else:
-			for registry in registries:
-				update_registry(registry, yes = yes, user = user, check = check,
-					latest = latest, interactive = interactive, verbose = verbose,
-					format_ = format, all = all, file = file_, raise_err = not ignore_error,
-					upgrade_type = upgrade_type
-				)
+		for registry in registries:
+			update_registry(registry, yes = yes, user = user, check = check,
+				latest = latest, interactive = interactive, verbose = verbose,
+				format_ = format, all = all, filter_ = packages,
+				file = file_, raise_err = not ignore_error,
+				upgrade_type = upgrade_type
+			)
 
 		if pipfile:
 			logger.info("Updating Pipfiles: %s..." % pipfile)
