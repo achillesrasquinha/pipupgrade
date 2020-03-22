@@ -1,7 +1,7 @@
 language: python
 
 python:
-  - "2.7"
+  # - "2.7"
   # - "3.3" # Too many problems with setuptools compatibility, try distutils instead?
   - "3.4"
   - "3.5"
