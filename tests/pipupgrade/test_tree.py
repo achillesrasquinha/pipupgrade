@@ -3,14 +3,13 @@ import pytest
 
 # imports - module imports
 from pipupgrade.tree    import Node
-from pipupgrade._compat import string_types
 
 def test_node():
     tree1 = Node("foo")
     assert tree1.empty == True
     assert tree1 == Node("foo")
 
-    assert string_types(tree1) == "<Node 'foo'>"
+    assert str(tree1) == "<Node 'foo'>"
 
     assert tree1.render() == \
 """\
@@ -57,4 +56,4 @@ foo
     tree4.children  = ["bar", "baz"]
 
     with pytest.raises(TypeError):
-        tree4.children = "foo"
+        tree4.children = "bar"

@@ -18,7 +18,6 @@ from pipupgrade 		      	import (_pip, cli, semver,
 	log, parallel
 )
 from pipupgrade.exception		import PopenError
-from pipupgrade._compat			import string_types
 
 logger = log.get_logger()
 

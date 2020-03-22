@@ -12,7 +12,7 @@ from pipupgrade.__attr__    import __name__ as NAME
 from pipupgrade 	 		import _pip, semver, request as req, db, log
 from pipupgrade.tree 		import Node as TreeNode
 from pipupgrade.util.string import kebab_case, strip
-from pipupgrade._compat		import iteritems, string_types
+from pipupgrade._compat		import iteritems
 from pipupgrade.config		import Settings
 
 logger  	= log.get_logger()
@@ -65,7 +65,7 @@ def _get_package_version(package, pip_exec = None):
 	info = _get_pip_info(package, pip_exec = pip_exec)[package]
 	return info["version"]
 
-class Package:
+class Package(object):
 	def __init__(self, package, sync = False, pip_exec = None):
 		logger.info("Initializing Package %s of type %s..." % (package, type(package)))
 
@@ -80,7 +80,7 @@ class Package:
 
 			if hasattr(package, "req"):
 				if hasattr(package.req, "specifier"):
-					self.current_version = string_types(package.req.specifier)
+					self.current_version = str(package.req.specifier)
 			else:
 				self.current_version = package.installed_version
 		elif isinstance(package, dict):

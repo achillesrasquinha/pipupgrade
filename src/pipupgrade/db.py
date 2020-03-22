@@ -23,7 +23,7 @@ def _get_queries(buffer):
 
     return queries
 
-class DB:
+class DB(object):
     def __init__(self, path, timeout = 10):
         self.path        = path
         self._connection = None

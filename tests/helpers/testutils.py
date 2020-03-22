@@ -36,10 +36,10 @@ def assert_input(capfd, text, output, expected = None, input_ = None, stdout = N
         assert input_(text, *input_args) == expected
         assert_stdout(capfd, stdout)
 
-class CLIRunnerResult:
+class CLIRunnerResult(object):
     pass
 
-class Capture:
+class Capture(object):
     def __enter__(self):
         self._stdout    = sys.stdout
         
@@ -54,7 +54,7 @@ class Capture:
         del self._output
         sys.stdout      = self._stdout
 
-class CLIRunner:
+class CLIRunner(object):
     def invoke(self, command, args, **kwargs):
         code    = EX_OK
         error   = ""

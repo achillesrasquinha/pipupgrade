@@ -12,14 +12,14 @@ from pipupgrade             import __name__ as NAME, __version__, _pip
 from pipupgrade.util.system import pardir, makedirs, touch
 from pipupgrade.util.types  import auto_typecast
 from pipupgrade.util._dict  import autodict
-from pipupgrade._compat     import iteritems, configparser as cp, string_types
+from pipupgrade._compat     import iteritems, configparser as cp
 
 PATH            = autodict()
 PATH["BASE"]    = pardir(__file__)
 PATH["DATA"]    = osp.join(PATH["BASE"], "data")
 PATH["CACHE"]   = osp.join(osp.expanduser("~"), ".%s" % NAME)
 
-class Configuration:
+class Configuration(object):
     def __init__(self, location = PATH["CACHE"], name = "config"):
         self.location   = location
         makedirs(self.location, exist_ok = True)
@@ -39,13 +39,13 @@ class Configuration:
     def get(self, section, key):
         config = self.config
 
-        if not section in config:
+        if not config.has_section(section):
             raise KeyError("No section %s found." % section)
 
-        if not key in config[section]:
+        if not config.has_option(section, key):
             raise KeyError("No key %s found." % key)
         
-        value = auto_typecast(config[section][key])
+        value = auto_typecast(config.get(section, key))
 
         return value
         
@@ -53,20 +53,21 @@ class Configuration:
         config = self.config
         value  = str(value)
 
-        if not section in config:
-            config[section] = dict({ key: value })
+        if not config.has_section(section):
+            config.add_section(section)
+            config.set(section, key, value)
         else:
-            if not key in config[section]:
-                config[section][key] = value
+            if not config.has_option(section, key):
+                config.set(section, key, value)
             else:
                 if force:
-                    config[section][key] = value
+                    config.set(section, key, value)
 
         path = osp.join(self.location, self.name)
         with open(path, "w") as f:
             config.write(f)
         
-class Settings:
+class Settings(object):
     _DEFAULTS = {
               "version": __version__,
         "cache_timeout": 60 * 60 * 24, # 1 day
