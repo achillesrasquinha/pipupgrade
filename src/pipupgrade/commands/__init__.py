@@ -36,6 +36,7 @@ logger = log.get_logger(level = log.DEBUG)
 @cli.command
 def command(
 	packages					= [ ],
+	ignore						= [ ],
 	pip_path          		 	= [ ],
 	requirements 				= [ ],
 	pipfile            			= [ ],
@@ -151,7 +152,8 @@ def command(
 					partial(
 						get_registry_from_requirements,
 						**{ "sync": no_cache, "jobs": jobs,
-							"only_packages": packages, "file": file_
+							"only_packages": packages, "file": file_,
+							"ignore_packages": ignore
 						}
 					),
 					requirements
@@ -165,7 +167,8 @@ def command(
 						**{ "user": user, "sync": no_cache,
 							"outdated": not all,
 							"build_dependency_tree": format in _DEPENDENCY_FORMATS,
-							"jobs": jobs, "only_packages": packages
+							"jobs": jobs, "only_packages": packages,
+							"ignore_packages": ignore,
 						}
 					),
 					pip_path
