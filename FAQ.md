@@ -122,3 +122,10 @@ You can also set the environment variable `PIPUPGRADE_DISPLAY_FORMAT` to `tree`.
 ```
 $ pipupgrade "<PACKAGE_1>" "<PACKAGE_2>"
 ```
+
+### How do I ignore packages to upgrade?
+---
+
+```
+$ pipupgrade --ignore "<PACKAGE_1>" --ignore "<PACKAGE_2>"
+```

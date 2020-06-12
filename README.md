@@ -149,6 +149,7 @@ positional arguments:
   packages              Packages to Upgrade. (default: None)
 
 optional arguments:
+  --ignore IGNORE       Ignore packages to upgrade. (default: None)
   --pip-path PIP_PATH   Path to pip executable to be used. (default: None)
   -y, --yes             Confirm for all dialogs. (default: 0)
   -c, --check           Perform a dry-run, avoid updating packages. (default:
