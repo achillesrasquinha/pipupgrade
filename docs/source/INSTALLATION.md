@@ -11,13 +11,6 @@ $ pip install pipupgrade
 For instructions on installing python and pip see “The Hitchhiker’s Guide to Python” 
 [Installation Guides](https://docs.python-guide.org/starting/installation/).
 
-Installation of optional dependencies
-You can install all packages directly by:
-
-```shell
-$ pip install ccapi[all]
-```
-
 #### Building from source
 
 `pipupgrade` is actively developed on [GitHub](https://github.com/achillesrasquinha/pipupgrade)
@@ -26,18 +19,18 @@ and is always avaliable.
 You can clone the base repository with git as follows:
 
 ```shell
-$ git clone git@github.com:achillesrasquinha/ccapi.git
+$ git clone git@github.com:achillesrasquinha/pipupgrade.git
 ```
 
 Optionally, you could download the tarball or zipball as follows:
 
-For Linux Users
+##### For Linux Users
 
 ```shell
 $ curl -OL https://github.com/achillesrasquinha/tarball/ccapi
 ```
 
-For Windows Users
+##### For Windows Users
 
 ```shell
 $ curl -OL https://github.com/achillesrasquinha/zipball/ccapi
