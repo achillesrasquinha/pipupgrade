@@ -72,7 +72,7 @@
 $ pip install pipupgrade
 ```
 
-Check out [installation](docs/INSTALLATION.md) for more details.
+Check out [installation](docs/source/INSTALLATION.md) for more details.
 
 ### Usage
 
