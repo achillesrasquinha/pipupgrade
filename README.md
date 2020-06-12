@@ -44,7 +44,7 @@
 
 ### Table of Contents
 * [Features](#Features)
-* [Installation](#installation)
+* [Quick Start](#quick-start)
 * [Usage](#usage)
   * [Basic Usage](#basic-usage)
   * [Docker](#docker)
@@ -66,11 +66,13 @@
 * Automate your Dependencies by installing `pipupgrade` in your CI workflow.
 * Zero Dependencies!
 
-### Installation
+### Quick Start
 
 ```shell
 $ pip install pipupgrade
 ```
+
+Check out [installation](docs/INSTALLATION.md) for more details.
 
 ### Usage
 
