@@ -27,13 +27,13 @@ Optionally, you could download the tarball or zipball as follows:
 ##### For Linux Users
 
 ```shell
-$ curl -OL https://github.com/achillesrasquinha/tarball/ccapi
+$ curl -OL https://github.com/achillesrasquinha/tarball/pipupgrade
 ```
 
 ##### For Windows Users
 
 ```shell
-$ curl -OL https://github.com/achillesrasquinha/zipball/ccapi
+$ curl -OL https://github.com/achillesrasquinha/zipball/pipupgrade
 ```
 
 Install necessary dependencies
