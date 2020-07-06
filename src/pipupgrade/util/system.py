@@ -6,6 +6,7 @@ import os, os.path as osp
 import errno
 import platform
 import subprocess  as sp
+import shutil
 from   distutils.spawn import find_executable
 
 # imports - module imports
@@ -28,10 +29,15 @@ def write(fname, data = None, force = False, append = False):
                 f.write(data)
 
 def which(executable, raise_err = False):
-    exec_ = find_executable(executable)
-    
-    if not exec_ and raise_err:
-        raise ValueError("Executable %s not found." % exec_)
+    exec_ = None
+
+    try:
+        exec_ = shutil.which(executable)
+    except shutil.Error:
+        exec_ = find_executable(executable)
+        
+        if not exec_ and raise_err:
+            raise ValueError("Executable %s not found." % exec_)
     
     return exec_
 
