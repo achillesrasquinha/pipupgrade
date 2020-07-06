@@ -11,16 +11,33 @@ from setuptools import setup, find_packages
 from setuptools.command.develop import develop
 from setuptools.command.install import install
 
-import pip
+# import pip
 
-try:
-    from pip._internal.req import parse_requirements # pip 10
-except ImportError:
-    from pip.req           import parse_requirements # pip 9
+# try:
+#     from pip._internal.req import parse_requirements # pip 10
+# except ImportError:
+#     from pip.req           import parse_requirements # pip 9
 
 # globals
 PACKAGE     = "pipupgrade"
 SRCDIR      = "src"
+
+# A very awful patch for parse_requirements from pip
+def parse_requirements(filename, session = None):
+    class FakeRequirement:
+        def __init__(self, name):
+            self.req = name
+            
+    def sanitize_line(line):
+        line = line.strip()
+        return line
+
+    def check_line(line):
+        return line and not line.startswith("#")
+
+    return [
+        FakeRequirement(sanitize_line(line)) for line in open(filename) if check_line(line)
+    ]
 
 def isdef(var):
     return var in globals()
