@@ -39,7 +39,7 @@ $ curl -OL https://github.com/achillesrasquinha/zipball/pipupgrade
 Install necessary dependencies
 
 ```shell
-$ cd ccapi
+$ cd pipupgrade
 $ pip install -r requirements.txt
 ```
 
