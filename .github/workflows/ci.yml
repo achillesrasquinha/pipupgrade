@@ -22,6 +22,6 @@ jobs:
         run: |
           echo "Checking out $GITHUB_REF..."
       - uses: actions/setup-python@v2
-      - name: Set up Python ${{ matrix.python-version }}
+        name: Set up Python ${{ matrix.python-version }}
         with:
           python-version: ${{ matrix.python-version }}
