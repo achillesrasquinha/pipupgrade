@@ -1,0 +1,27 @@
+name: Continuous Integration
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # os: [ubuntu-latest, windows-latest, macos-latest]
+        # python-version: [2.7, 3.5, 3.6, 3.7, 3.8, 3.9]
+
+        os: [ubuntu-latest]
+        python-version: [3.9]
+
+    steps:
+      - name: Show ref
+        uses: actions/checkout@v2
+        run: |
+          echo "Checking out $GITHUB_REF..."
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
