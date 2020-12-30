@@ -5,6 +5,7 @@ on: [push, pull_request]
 env:
   VERBOSE: true
   TERM: xterm
+  PYTEST_ADDOPTS: "--color=yes"
 
 jobs:
   test:
