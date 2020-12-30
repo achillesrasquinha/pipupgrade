@@ -81,8 +81,7 @@ def popen(*args, **kwargs):
     code       = proc.wait()
 
     if code and raise_err:
-        output, error = proc.communicate()
-        raise PopenError(code, command + " " + safe_decode(error))
+        raise PopenError(code, command)
 
     if output:
         output, error = proc.communicate()

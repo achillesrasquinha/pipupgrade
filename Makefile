@@ -14,7 +14,7 @@ DOCSDIR					= ${BASEDIR}/docs
 PYTHONPATH		 	   ?= python
 
 VIRTUAL_ENV			   ?= ${BASEDIR}/.venv
-VENVBIN					= ${VIRTUAL_ENV}/bin
+VENVBIN				   ?= ${VIRTUAL_ENV}/bin
 
 PYTHON				  	= ${VENVBIN}/python
 IPYTHON					= ${VENVBIN}/ipython
@@ -30,6 +30,8 @@ TWINE					= ${VENVBIN}/twine
 
 JOBS				   ?= $(shell $(PYTHON) -c "import multiprocessing as mp; print(mp.cpu_count())")
 PYTHON_ENVIRONMENT      = $(shell $(PYTHON) -c "import sys;v=sys.version_info;print('py%s%s'%(v.major,v.minor))")
+
+PYTEST_ADDOPTS			= "--color=yes"
 
 NULL					= /dev/null
 
