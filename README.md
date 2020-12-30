@@ -6,30 +6,30 @@
 </div>
 
 <p align="center">
-    <a href="https://travis-ci.org/achillesrasquinha/pipupgrade">
-        <img src="https://img.shields.io/travis/achillesrasquinha/pipupgrade.svg?style=flat-square">
-    </a>
-    <a href="https://ci.appveyor.com/project/achillesrasquinha/pipupgrade">
-        <img src="https://img.shields.io/appveyor/ci/achillesrasquinha/pipupgrade.svg?style=flat-square&logo=appveyor">
-    </a>
-    <a href="https://coveralls.io/github/achillesrasquinha/pipupgrade">
-        <img src="https://img.shields.io/coveralls/github/achillesrasquinha/pipupgrade.svg?style=flat-square">
-    </a>
-    <a href="https://pypi.org/project/pipupgrade/">
+  <a href='https://github.com/achillesrasquinha/pipupgrade/actions?query=workflow:"Continuous Integration"'>
+    <img src="https://img.shields.io/github/workflow/status/achillesrasquinha/pipupgrade/ci?style=flat-square">
+  </a>
+  <a href="https://ci.appveyor.com/project/achillesrasquinha/pipupgrade">
+    <img src="https://img.shields.io/appveyor/ci/achillesrasquinha/pipupgrade.svg?style=flat-square&logo=appveyor">
+  </a>
+  <a href="https://coveralls.io/github/achillesrasquinha/pipupgrade">
+    <img src="https://img.shields.io/coveralls/github/achillesrasquinha/pipupgrade.svg?style=flat-square">
+  </a>
+  <a href="https://pypi.org/project/pipupgrade/">
 		<img src="https://img.shields.io/pypi/v/pipupgrade.svg?style=flat-square">
 	</a>
     <a href="https://pypi.org/project/pipupgrade/">
 		<img src="https://img.shields.io/pypi/l/pipupgrade.svg?style=flat-square">
 	</a>
-    <a href="https://pypi.org/project/pipupgrade/">
+  <a href="https://pypi.org/project/pipupgrade/">
 		<img src="https://img.shields.io/pypi/pyversions/pipupgrade.svg?style=flat-square">
 	</a>
-    <a href="https://hub.docker.com/r/achillesrasquinha/pipupgrade">
+  <a href="https://hub.docker.com/r/achillesrasquinha/pipupgrade">
 		<img src="https://img.shields.io/docker/cloud/build/achillesrasquinha/pipupgrade.svg?style=flat-square&logo=docker">
 	</a>
-    <a href="https://git.io/boilpy">
-      <img src="https://img.shields.io/badge/made%20with-boilpy-red.svg?style=flat-square">
-    </a>
+  <a href="https://git.io/boilpy">
+    <img src="https://img.shields.io/badge/made%20with-boilpy-red.svg?style=flat-square">
+  </a>
 	<a href="https://saythanks.io/to/achillesrasquinha">
 		<img src="https://img.shields.io/badge/Say%20Thanks-🦉-1EAEDB.svg?style=flat-square">
 	</a>
