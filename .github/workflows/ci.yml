@@ -3,7 +3,7 @@ name: Continuous Integration
 on: [push, pull_request]
 
 env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
   ENVIRONMENT: test
   VERBOSE: true
