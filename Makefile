@@ -88,10 +88,10 @@ else
 endif
 
 	$(call log,INFO,Installing ${PROJECT} (${ENVIRONMENT}))
-ifeq (${ENVIRONMENT},production)
-	$(PYTHON) setup.py install $(OUT)
-else
+ifeq (${ENVIRONMENT},development)
 	$(PYTHON) setup.py develop $(OUT)
+else
+	$(PYTHON) setup.py install $(OUT)
 endif
 
 	$(call log,SUCCESS,Installation Successful)
