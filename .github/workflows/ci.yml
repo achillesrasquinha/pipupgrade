@@ -8,6 +8,10 @@ env:
   VERBOSE: true
   TERM: xterm
 
+  PYTHON: python
+  PIP: pip
+  PYTEST: pytest
+
 jobs:
   test:
     name: Test
@@ -31,7 +35,6 @@ jobs:
       - name: Upgrade PIP and packages
         run: |
           pip install --upgrade pip setuptools wheel
-          export VENVBIN=$(python -c "import sys,os;print(os.path.dirname(sys.executable))")
       - name: Install dependencies
         run: |
           make install

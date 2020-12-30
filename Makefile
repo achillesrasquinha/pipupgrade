@@ -16,10 +16,10 @@ PYTHONPATH		 	   ?= python
 VIRTUAL_ENV			   ?= ${BASEDIR}/.venv
 VENVBIN				   ?= ${VIRTUAL_ENV}/bin
 
-PYTHON				  	= ${VENVBIN}/python
+PYTHON				   ?= ${VENVBIN}/python
 IPYTHON					= ${VENVBIN}/ipython
-PIP					  	= ${VENVBIN}/pip
-PYTEST					= ${VENVBIN}/pytest
+PIP					   ?= ${VENVBIN}/pip
+PYTEST				   ?= ${VENVBIN}/pytest
 TOX						= ${VENVBIN}/tox
 COVERALLS				= ${VENVBIN}/coveralls
 IPYTHON					= ${VENVBIN}/ipython
