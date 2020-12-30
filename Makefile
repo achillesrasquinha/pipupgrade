@@ -81,7 +81,7 @@ endif
 	@cat $(BASEDIR)/requirements/production.txt $(BASEDIR)/requirements/test.txt > $(BASEDIR)/requirements-test.txt
 
 	$(call log,INFO,Installing Requirements)
-ifeq (${CI},true)
+ifeq (${ENVIRONMENT},test)
 	$(PIP) install -r $(BASEDIR)/requirements-test.txt $(OUT)
 else
 	$(PIP) install -r $(BASEDIR)/requirements-dev.txt  $(OUT)
@@ -134,6 +134,10 @@ endif
 
 ifeq (${ENVIRONMENT},development)
 	$(call browse,file:///${BASEDIR}/htmlcov/index.html)
+endif
+
+ifeq (${ENVIRONMENT},test)
+	$(COVERALLS)
 endif
 
 shell: ## Launch an IPython shell.

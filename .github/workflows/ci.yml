@@ -3,7 +3,8 @@ name: Continuous Integration
 on: [push, pull_request]
 
 env:
-  CI: true
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
   ENVIRONMENT: test
   VERBOSE: true
   TERM: xterm
