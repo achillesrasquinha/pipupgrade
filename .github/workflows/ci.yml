@@ -9,13 +9,6 @@ env:
   VERBOSE: true
   TERM: xterm
 
-  PYTEST_ADDOPTS: "--color=yes"
-
-  PYTHON: python
-  PIP: pip
-  PYTEST: pytest
-  COVERALLS: coveralls
-
 jobs:
   test:
     name: Test
