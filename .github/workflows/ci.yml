@@ -31,5 +31,8 @@ jobs:
           pip install --upgrade pip setuptools wheel virtualenv
           make env
       - name: Install dependencies
+        run |
+          make install
+      - name: Run Tests
         run: |
           make coverage
