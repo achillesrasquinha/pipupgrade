@@ -38,7 +38,7 @@ jobs:
           python setup.py develop
       - name: Run Tests
         run: |
-          tox --parallel --skip-missing-interpreters
+          tox --skip-missing-interpreters
       - name: Run Coverage
         run: |
           coveralls
