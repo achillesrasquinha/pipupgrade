@@ -9,28 +9,34 @@ import platform
 import json
 
 # imports - module imports
-from pipupgrade             import __name__ as NAME, __version__, _pip
-from pipupgrade.util.system import pardir, makedirs, touch
-from pipupgrade.util.types  import auto_typecast
-from pipupgrade.util._dict  import autodict
-from pipupgrade._compat     import iteritems, configparser as cp
+from pipupgrade              import __name__ as NAME, __version__, _pip
+from pipupgrade.util.system  import pardir, makedirs, touch
+from pipupgrade.util.environ import getenv
+from pipupgrade.util.types   import auto_typecast
+from pipupgrade.util._dict   import autodict
+from pipupgrade._compat      import iteritems, configparser as cp
 
 PATH            = autodict()
 PATH["BASE"]    = pardir(__file__)
 PATH["DATA"]    = osp.join(PATH["BASE"], "data")
-PATH["CACHE"]   = osp.join(osp.expanduser("~"), ".%s" % NAME)
+PATH["CACHE"]   = osp.join(osp.expanduser("~"), ".config", NAME)
 
 class Configuration(object):
-
     # BUGFIX: #63 Always complains about invalid config.ini - https://github.com/achillesrasquinha/pipupgrade/issues/63
     #         Use threading.Lock() around disk IO
     locks = { "readwrite": Lock() }
 
-
     def __init__(self, location = PATH["CACHE"], name = "config"):
-        self.name     = "%s.ini" % name
-        self.location = location
-        makedirs(self.location, exist_ok = True)
+        config = getenv("CONFIG")
+
+        if not config:
+            self.name     = "%s.ini" % name
+            self.location = location
+            makedirs(self.location, exist_ok = True)
+        else:
+            self.name     = osp.basename(config)
+            self.location = osp.dirname(config)
+            
         self.config   = self.read()
 
     @classmethod
@@ -41,7 +47,6 @@ class Configuration(object):
             self.locks[key].acquire()
             self.locks[key].release()
             del self.locks[key]
-
 
     def read(self):
         with self.locks['readwrite']:
@@ -81,8 +86,6 @@ class Configuration(object):
         if force or not config.has_option(section, key):
             config.set(section, key, value)
             self.write()
-
-
 
 class Settings(object):
     _DEFAULTS = {
