@@ -9,9 +9,6 @@
   <a href='https://github.com/achillesrasquinha/pipupgrade/actions?query=workflow:"Continuous Integration"'>
     <img src="https://img.shields.io/github/workflow/status/achillesrasquinha/pipupgrade/ci?style=flat-square">
   </a>
-  <a href="https://ci.appveyor.com/project/achillesrasquinha/pipupgrade">
-    <img src="https://img.shields.io/appveyor/ci/achillesrasquinha/pipupgrade.svg?style=flat-square&logo=appveyor">
-  </a>
   <a href="https://coveralls.io/github/achillesrasquinha/pipupgrade">
     <img src="https://img.shields.io/coveralls/github/achillesrasquinha/pipupgrade.svg?style=flat-square">
   </a>
