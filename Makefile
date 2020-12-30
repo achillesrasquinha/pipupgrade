@@ -136,10 +136,6 @@ ifeq (${ENVIRONMENT},development)
 	$(call browse,file:///${BASEDIR}/htmlcov/index.html)
 endif
 
-ifeq (${ENVIRONMENT},test)
-	$(COVERALLS)
-endif
-
 shell: ## Launch an IPython shell.
 	$(call log,INFO,Launching Python Shell)
 	$(IPYTHON) \
