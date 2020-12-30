@@ -26,6 +26,10 @@ jobs:
         name: Set up Python ${{ matrix.python-version }}
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Make Virtual Environment
+        run: |
+          pip install --upgrade pip setuptools wheel virtualenv
+          make env
       - name: Install dependencies
         run: |
           make coverage
