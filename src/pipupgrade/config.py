@@ -123,11 +123,13 @@ def environment():
     environ["config"]           = dict(
         path = dict(PATH)
     )
-    environ["pip_executables"]  = [dict(
-        executable = executable,
-        version    = _pip.call("--version", pip_exec = executable,
-            output = True)[1]
-    ) for executable in _pip._PIP_EXECUTABLES]
+
+    # NOTE: Doesn't comply with "--pip-path" flag.
+    # environ["pip_executables"]  = [dict(
+    #     executable = executable,
+    #     version    = _pip.call("--version", pip_exec = executable,
+    #         output = True)[1]
+    # ) for executable in _pip._PIP_EXECUTABLES]
 
     from pipupgrade import settings
     environ["settings"]         = settings.to_dict()
