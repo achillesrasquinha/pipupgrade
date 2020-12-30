@@ -11,9 +11,9 @@ from pipupgrade.util.system  import which, popen
 from pipupgrade.util.string  import kebab_case
 from pipupgrade.util.environ import value_to_envval
 from pipupgrade.util.array   import sequencify
-from pipupgrade              import log
+from pipupgrade.log          import get_logger
 
-logger = log.get_logger()
+logger = get_logger()
 
 PIP9 = int(pip.__version__.split(".")[0]) < 10
 

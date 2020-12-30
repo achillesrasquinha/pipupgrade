@@ -12,7 +12,7 @@ from   distutils.spawn import find_executable
 # imports - module imports
 from pipupgrade.exception   import PopenError
 from pipupgrade.util.string import strip, safe_decode
-from pipupgrade._compat     import iteritems
+from pipupgrade._compat     import iteritems, PY2
 from pipupgrade.log         import get_logger
 
 logger = get_logger()
@@ -31,9 +31,13 @@ def write(fname, data = None, force = False, append = False):
 def which(executable, raise_err = False):
     exec_ = None
 
-    try:
-        exec_ = shutil.which(executable)
-    except shutil.Error:
+    if not PY2:
+        try:
+            exec_ = shutil.which(executable)
+        except shutil.Error:
+            pass
+
+    if not exec_:
         exec_ = find_executable(executable)
         
     if not exec_ and raise_err:
