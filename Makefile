@@ -21,7 +21,7 @@ IPYTHON					= ${VENVBIN}/ipython
 PIP					   ?= ${VENVBIN}/pip
 PYTEST				   ?= ${VENVBIN}/pytest
 TOX						= ${VENVBIN}/tox
-COVERALLS				= ${VENVBIN}/coveralls
+COVERALLS			   ?= ${VENVBIN}/coveralls
 IPYTHON					= ${VENVBIN}/ipython
 SAFETY					= ${VENVBIN}/safety
 PRECOMMIT				= ${VENVBIN}/pre-commit
@@ -30,8 +30,6 @@ TWINE					= ${VENVBIN}/twine
 
 JOBS				   ?= $(shell $(PYTHON) -c "import multiprocessing as mp; print(mp.cpu_count())")
 PYTHON_ENVIRONMENT      = $(shell $(PYTHON) -c "import sys;v=sys.version_info;print('py%s%s'%(v.major,v.minor))")
-
-PYTEST_ADDOPTS			= "--color=yes"
 
 NULL					= /dev/null
 
