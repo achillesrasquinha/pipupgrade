@@ -4,6 +4,5 @@ pytest-xdist
 pytest-sugar
 pytest-travis-fold
 tox
-tox-travis
 coveralls
 pluggy<1,>=0.12.0
