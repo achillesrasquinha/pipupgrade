@@ -29,16 +29,13 @@ jobs:
         name: Set up Python ${{ matrix.python-version }}
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Upgrade PIP and packages
-        run: |
-          pip install --upgrade pip setuptools wheel
       - name: Install dependencies
         run: |
           pip install -r requirements-test.txt
           python setup.py develop
       - name: Run Tests
         run: |
-          tox --skip-missing-interpreters
+          tox --parallel --skip-missing-interpreters
       - name: Run Coverage
         run: |
           coveralls
