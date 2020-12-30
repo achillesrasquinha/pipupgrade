@@ -10,7 +10,7 @@ import pytest
 # imports - test imports
 from testutils import mock_input, PATH
 
-def test_command_self(capfd):
-    command(self = True)
-    out, err = capfd.readouterr()
-    assert "upto date." in out
+# def test_command_self(capfd):
+#     command(self = True, yes = True)
+#     out, err = capfd.readouterr()
+#     assert "upto date." in out

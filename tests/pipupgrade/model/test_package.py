@@ -24,4 +24,4 @@ def test__get_pip_info():
     assert packages["pipupgrade"]["author"]    == __author__
 
     assert packages["pytest"]["name"]          == "pytest"
-    assert packages["pytest"]["license"]       == "MIT license"
+    assert packages["pytest"]["license"]       == "MIT"

@@ -36,8 +36,8 @@ def which(executable, raise_err = False):
     except shutil.Error:
         exec_ = find_executable(executable)
         
-        if not exec_ and raise_err:
-            raise ValueError("Executable %s not found." % exec_)
+    if not exec_ and raise_err:
+        raise ValueError("Executable %s not found." % exec_)
     
     return exec_
 

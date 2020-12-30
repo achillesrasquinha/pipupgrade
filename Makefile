@@ -81,7 +81,7 @@ endif
 	@cat $(BASEDIR)/requirements/production.txt $(BASEDIR)/requirements/test.txt > $(BASEDIR)/requirements-test.txt
 
 	$(call log,INFO,Installing Requirements)
-ifeq (${TRAVIS},true)
+ifeq (${CI},true)
 	$(PIP) install -r $(BASEDIR)/requirements-test.txt $(OUT)
 else
 	$(PIP) install -r $(BASEDIR)/requirements-dev.txt  $(OUT)
@@ -118,6 +118,9 @@ else
 	$(call log,SUCCESS,Nothing to clean)
 endif
 
+console: install ## Open Console.
+	$(IPYTHON)
+
 test: install ## Run tests.
 	$(call log,INFO,Running Python Tests using $(JOBS) jobs.)
 	$(TOX) --skip-missing-interpreters $(ARGS)
@@ -127,7 +130,7 @@ ifeq (${ENVIRONMENT},development)
 	$(eval IARGS := --cov-report html)
 endif
 
-	$(PYTEST) -n $(JOBS) --cov $(PROJDIR) $(IARGS) -vv $(ARGS)
+	$(PYTEST) -s -n $(JOBS) --cov $(PROJDIR) $(IARGS) -vv $(ARGS)
 
 ifeq (${ENVIRONMENT},development)
 	$(call browse,file:///${BASEDIR}/htmlcov/index.html)
