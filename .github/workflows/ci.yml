@@ -39,6 +39,6 @@ jobs:
       - name: Run Tests
         run: |
           tox --skip-missing-interpreters
-      - name: Run Coverage
-        run: |
-          coveralls
+      # - name: Run Coverage
+      #   run: |
+      #     coveralls
