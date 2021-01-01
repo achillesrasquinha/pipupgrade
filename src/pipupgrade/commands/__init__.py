@@ -21,20 +21,20 @@ from pipupgrade.model           import Project
 from pipupgrade.model.project 	import get_included_requirements
 from pipupgrade.commands.util 	import cli_format
 from pipupgrade.util.array    	import flatten, sequencify
+from pipupgrade.util._dict      import merge_dict
 from pipupgrade.util.system   	import (read, write, touch, popen, which)
 from pipupgrade.util.environ  	import getenvvar
 from pipupgrade.util.datetime 	import get_timestamp_str
 from pipupgrade 		      	import (_pip, request as req, cli,
     log, parallel
 )
-from pipupgrade._compat			import builtins
+from pipupgrade._compat			import builtins, iteritems
 from pipupgrade.__attr__      	import __name__
 from pipupgrade.config			import environment
 
 logger = log.get_logger(level = log.DEBUG)
 
-@cli.command
-def command(
+ARGUMENTS = dict(
     packages					= [ ],
     ignore						= [ ],
     pip_path          		 	= [ ],
@@ -66,14 +66,35 @@ def command(
     ignore_error				= False,
     force						= False,
     verbose		 				= False
-):
-    if not verbose:
+)
+
+@cli.command
+def command(**ARGUMENTS):
+    return _command(**ARGUMENTS)
+
+def to_params(kwargs):
+    class O(object):
+        pass
+
+    params = O()
+
+    kwargs = merge_dict(ARGUMENTS, kwargs)
+
+    for k, v in iteritems(kwargs):
+        setattr(params, k, v)
+
+    return params
+
+def _command(*args, **kwargs):
+    a = to_params(kwargs)
+
+    if not a.verbose:
         logger.setLevel(log.NOTSET)
-        
+
     logger.info("Environment: %s" % environment())
     logger.info("Arguments Passed: %s" % locals())
 
-    file_ = output
+    file_ = a.output
 
     if file_:
         logger.info("Writing to output file %s..." % file_)
@@ -81,52 +102,52 @@ def command(
 
     cli.echo(cli_format("Checking...", cli.YELLOW), file = file_)
 
-    pip_path    = pip_path or [ ]
+    pip_path    = a.pip_path or [ ]
     pip_path    = [which(p) for p in pip_path] or _pip._PIP_EXECUTABLES
 
     logger.info("`pip` executables found: %s" % pip_path)
     
-    logger.info("Using %s jobs..." % jobs)
+    logger.info("Using %s jobs..." % a.jobs)
 
     registries  = [ ]
 
-    if pip:
+    if a.pip:
         logger.info("Updating pip executables: %s" % " ".join(pip_path))
 
-        with parallel.no_daemon_pool(processes = jobs) as pool:
+        with parallel.no_daemon_pool(processes = a.jobs) as pool:
             pool.imap_unordered(
                 partial(
-                    update_pip, **{ "user": user, "quiet": not verbose,
+                    update_pip, **{ "user": a.user, "quiet": not a.verbose,
                         "file": file_ }
                 ),
                 pip_path
             )
 
-    if self:
+    if a.self:
         package = __name__
         logger.info("Updating %s..." % package)
 
         cli.echo(cli_format("Updating %s..." % package, cli.YELLOW),
             file = file_)
 
-        _pip.call("install", package, user = user, quiet = not verbose,
+        _pip.call("install", package, user = a.user, quiet = not a.verbose,
             no_cache = True, upgrade = True)
 
         cli.echo("%s upto date." % cli_format(package, cli.CYAN),
             file = file_)
     else:
-        if project:
-            project		 = sequencify(project)
+        if a.project:
+            project		 = sequencify(a.project)
             requirements = requirements or [ ]
-            pipfile      = pipfile      or [ ]
+            pipfile      = a.pipfile    or [ ]
 
             logger.info("Detecting projects and its dependencies...")
             
-            with parallel.no_daemon_pool(processes = jobs) as pool:
+            with parallel.no_daemon_pool(processes = a.jobs) as pool:
                 project       = pool.imap_unordered(
                     partial(
                         Project.from_path,
-                        **{ "depth_search": force }
+                        **{ "depth_search": a.force }
                     ),
                     project
                 )
@@ -136,39 +157,41 @@ def command(
             
             logger.info("Updating projects %s..." % project)
 
-        if requirements:
+        if a.requirements:
+            requirements = a.requirements
+
             logger.info("Detecting requirements...")
 
-            if not no_included_requirements:
-                with parallel.no_daemon_pool(processes = jobs) as pool:
+            if not a.no_included_requirements:
+                with parallel.no_daemon_pool(processes = a.jobs) as pool:
                     results       = pool.imap_unordered(get_included_requirements,
                         requirements)
                     requirements += flatten(results)
 
             logger.info("Requirements found: %s" % requirements)
             
-            with parallel.no_daemon_pool(processes = jobs) as pool:
+            with parallel.no_daemon_pool(processes = a.jobs) as pool:
                 results       = pool.imap_unordered(
                     partial(
                         get_registry_from_requirements,
-                        **{ "sync": no_cache, "jobs": jobs,
-                            "only_packages": packages, "file": file_,
-                            "ignore_packages": ignore
+                        **{ "sync": a.no_cache, "jobs": a.jobs,
+                            "only_packages": a.packages, "file": file_,
+                            "ignore_packages": a.ignore
                         }
                     ),
                     requirements
                 )
                 registries    += results
         else:
-            with parallel.no_daemon_pool(processes = jobs) as pool:
+            with parallel.no_daemon_pool(processes = a.jobs) as pool:
                 for registry in pool.imap_unordered(
                     partial(
                         get_registry_from_pip,
-                        **{ "user": user, "sync": no_cache,
-                            "outdated": not all,
-                            "build_dependency_tree": format in _DEPENDENCY_FORMATS,
-                            "jobs": jobs, "only_packages": packages,
-                            "ignore_packages": ignore,
+                        **{ "user": a.user, "sync": a.no_cache,
+                            "outdated": not a.all,
+                            "build_dependency_tree": a.format in _DEPENDENCY_FORMATS,
+                            "jobs": a.jobs, "only_packages": a.packages,
+                            "ignore_packages": a.ignore,
                         }
                     ),
                     pip_path
@@ -178,24 +201,26 @@ def command(
         logger.info("Updating registries: %s..." % registries)
 
         for registry in registries:
-            update_registry(registry, yes = yes, user = user, check = check,
-                latest = latest, interactive = interactive, verbose = verbose,
-                format_ = format, all = all, filter_ = packages,
-                file = file_, raise_err = not ignore_error,
-                upgrade_type = upgrade_type
+            update_registry(registry, yes = a.yes, user = a.user, check = a.check,
+                latest = a.latest, interactive = a.interactive, verbose = a.verbose,
+                format_ = a.format, all = a.all, filter_ = a.packages,
+                file = file_, raise_err = not a.ignore_error,
+                upgrade_type = a.upgrade_type
             )
 
-        if pipfile:
+        if a.pipfile:
+            pipfile = a.pipfile
+
             logger.info("Updating Pipfiles: %s..." % pipfile)
 
             cli.echo(cli_format("Updating Pipfiles: %s..." % ", ".join(pipfile), cli.YELLOW),
                 file = file_)
 
-            with parallel.no_daemon_pool(processes = jobs) as pool:
+            with parallel.no_daemon_pool(processes = a.jobs) as pool:
                 results = pool.imap_unordered(
                     partial(
                         update_pipfile,
-                        **{ "verbose": verbose }
+                        **{ "a.verbose": a.verbose }
                     ),
                     pipfile
                 )
@@ -204,24 +229,24 @@ def command(
                     cli.echo(cli_format("Pipfiles upto date.", cli.GREEN),
                         file = file_)
 
-        if project and pull_request:
+        if a.project and a.pull_request:
             errstr = '%s not found. Use %s or the environment variable "%s" to set value.'
 
-            if not git_username:
+            if not a.git_username:
                 raise ValueError(errstr % ("Git Username", "--git-username", getenvvar("GIT_USERNAME")))
-            if not git_email:
+            if not a.git_email:
                 raise ValueError(errstr % ("Git Email",    "--git-email",    getenvvar("GIT_EMAIL")))
             
             for p in project:
-                popen("git config user.name  %s" % git_username, cwd = p.path)
-                popen("git config user.email %s" % git_email,    cwd = p.path)
+                popen("git config user.name  %s" % a.git_username, cwd = p.path)
+                popen("git config user.email %s" % a.git_email,    cwd = p.path)
 
                 _, output, _ = popen("git status -s", output = True,
                     cwd = p.path)
 
                 if output:
                     branch   = get_timestamp_str(format_ = "%Y%m%d%H%M%S")
-                    popen("git checkout -B %s" % branch, quiet = not verbose,
+                    popen("git checkout -B %s" % branch, quiet = not a.verbose,
                         cwd = p.path
                     )
 
@@ -230,27 +255,27 @@ def command(
 
                     # TODO: cross-check with "git add" ?
                     files    = p.requirements + [p.pipfile]
-                    popen("git add %s" % " ".join(files), quiet = not verbose,
+                    popen("git add %s" % " ".join(files), quiet = not a.verbose,
                         cwd = p.path)
-                    popen("git commit -m '%s'" % title, quiet = not verbose,
-                        cwd = p.path)
-
-                    popen("git push origin %s" % branch, quiet = not verbose,
+                    popen("git commit -m '%s'" % title, quiet = not a.verbose,
                         cwd = p.path)
 
-                    if not github_reponame:
+                    popen("git push origin %s" % branch, quiet = not a.verbose,
+                        cwd = p.path)
+
+                    if not a.github_reponame:
                         raise ValueError(errstr % ("GitHub Reponame", "--github-reponame", getenvvar("GITHUB_REPONAME")))
-                    if not github_username:
+                    if not a.github_username:
                         raise ValueError(errstr % ("GitHub Username", "--github-username", getenvvar("GITHUB_USERNAME")))
 
-                    url       = "/".join(["https://api.github.com", "repos", github_username, github_reponame, "pulls"])
+                    url       = "/".join(["https://api.github.com", "repos", a.github_username, a.github_reponame, "pulls"])
                     headers   = dict({
                          "Content-Type": "application/json",
-                        "Authorization": "token %s" % github_access_token
+                        "Authorization": "token %s" % a.github_access_token
                     })
                     data      = dict(
-                        head  = "%s:%s" % (git_username, branch),
-                        base  = target_branch,
+                        head  = "%s:%s" % (a.git_username, branch),
+                        base  = a.target_branch,
                         title = title,
                         body  = body
                     )
@@ -264,7 +289,7 @@ def command(
                         response = response.json()
                         number   = response["number"]
 
-                        url      = "/".join(map(str, ["https://github.com", github_username, github_reponame, "pull", number]))
+                        url      = "/".join(map(str, ["https://github.com", a.github_username, a.github_reponame, "pull", number]))
                         message  = "Created a Pull Request at %s" % url
 
                         cli.echo(cli_format(message, cli.GREEN), file = file_)

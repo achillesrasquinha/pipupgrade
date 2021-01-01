@@ -47,7 +47,7 @@ def _get_pip_info(*args, **kwargs):
 	for i, package in enumerate(packages):
 		result = results[i]
 
-		detail = dict((kebab_case(k), v.strip(v) if isinstance(v, string_types) else v) \
+		detail = dict((kebab_case(k), v.strip() if isinstance(v, string_types) else v) \
 			for k, v in \
 				iteritems(
 					dict([(s + [""]) if len(s) == 1 else s \
