@@ -12,7 +12,7 @@ from pipupgrade.__attr__    import __name__ as NAME
 from pipupgrade 	 		import _pip, semver, request as req, db, log
 from pipupgrade.tree 		import Node as TreeNode
 from pipupgrade.util.string import kebab_case, strip
-from pipupgrade._compat		import iteritems
+from pipupgrade._compat		import iteritems, string_types
 from pipupgrade.config		import Settings
 
 logger  	= log.get_logger()
@@ -47,7 +47,7 @@ def _get_pip_info(*args, **kwargs):
 	for i, package in enumerate(packages):
 		result = results[i]
 
-		detail = dict((kebab_case(k), v) \
+		detail = dict((kebab_case(k), v.strip(v) if isinstance(v, string_types) else v) \
 			for k, v in \
 				iteritems(
 					dict([(s + [""]) if len(s) == 1 else s \
