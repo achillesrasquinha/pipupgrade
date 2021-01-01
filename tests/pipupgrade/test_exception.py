@@ -17,7 +17,7 @@ def test_pipupgrade_error():
 
 def test_popen_error():
     with pytest.raises(PopenError):
-        popen("python -c 'raise TypeError'")
+        popen('python -c "raise TypeError"')
 
     assert isinstance(
         PopenError(0, "echo foobar"),
