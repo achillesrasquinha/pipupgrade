@@ -65,6 +65,9 @@ def _get_package_version(package, pip_exec = None):
 	info = _get_pip_info(package, pip_exec = pip_exec)[package]
 	return info["version"]
 
+def to_datetime(string):
+	return datetime.strptime(string, "%Y-%m-%d %H:%M:%S.%f")
+
 class Package(object):
 	def __init__(self, package, sync = False, pip_exec = None):
 		logger.info("Initializing Package %s of type %s..." % (package, type(package)))
@@ -110,7 +113,7 @@ class Package(object):
 			cache_timeout = settings.get("cache_timeout")
 
 			if res["_updated_at"]:
-				time_difference	= res["_updated_at"] + timedelta(seconds = cache_timeout)
+				time_difference	= to_datetime(res["_updated_at"]) + timedelta(seconds = cache_timeout)
 
 				if datetime.now() > time_difference:
 					sync = True

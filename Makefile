@@ -112,6 +112,7 @@ ifneq (${ENVIRONMENT},test)
 		$(BASEDIR)/htmlcov \
 		$(BASEDIR)/dist \
 		$(BASEDIR)/build \
+		~/.config/$(PROJECT)
 
 	$(call log,SUCCESS,Cleaning Successful)
 else
