@@ -16,4 +16,9 @@ def test_command_self(capfd):
     assert "upto date." in out
 
 def test_command(capfd):
-    command(verbose = True, yes = True, pip = True)
+    project      = osp.join(PATH["DATA"], "project")
+    requirements = osp.join(project, "requirements.txt")
+    pipfile      = osp.join(project, "Pipfile")
+
+    command(verbose = True, yes = True, pip = True, ignore_error = True)
+        # requirements = requirements, pipfile = pipfile, ignore_error = True)
