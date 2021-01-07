@@ -77,9 +77,17 @@ PKGINFO    = get_package_info()
 
 
 def remove_cache():
-    path = osp.join(osp.expanduser("~"), ".%s" % PKGINFO["__name__"])
-    if osp.exists(path):
-        shutil.rmtree(path)
+    userdir = osp.expanduser("~")
+    pkgname = PKGINFO["__name__"]
+
+    paths = [
+        osp.join(userdir, ".%s" % pkgname), # backward-compatibility
+        osp.join(userdir, ".config", pkgname)
+    ]
+
+    for path in paths:
+        if osp.exists(path):
+            shutil.rmtree(path)
 
 class DevelopCommand(develop):
     def run(self):
