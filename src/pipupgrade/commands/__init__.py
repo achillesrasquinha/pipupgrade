@@ -136,13 +136,11 @@ def _command(*args, **kwargs):
         cli.echo("%s upto date." % cli_format(package, cli.CYAN),
             file = file_)
     else:
-        requirements = sequencify(a.requirements) or [ ]
-        pipfile      = sequencify(a.pipfile)      or [ ]
-
+        requirements = sequencify(a.requirements or [])
+        pipfile      = sequencify(a.pipfile or [])
+        
         if a.project:
             project		 = sequencify(a.project)
-            # requirements = a.requirements or [ ]
-            # pipfile      = a.pipfile      or [ ]
 
             logger.info("Detecting projects and its dependencies...")
             

@@ -1,4 +1,5 @@
 <div align="center">
+  <img src=".github/assets/meme.jpg">
   <h1>
     pipupgrade
   </h1>
