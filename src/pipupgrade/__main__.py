@@ -5,7 +5,4 @@ import sys
 from pipupgrade.commands import command as main
 
 if __name__ == "__main__":
-    try:
-        main()
-    except e:
-        raise e
+    main()

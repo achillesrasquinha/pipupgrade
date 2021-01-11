@@ -7,6 +7,7 @@ import re
 import json
 import multiprocessing as mp
 from   functools import partial
+import traceback
 
 # imports - module imports
 from pipupgrade.commands.helper import (
@@ -70,7 +71,17 @@ ARGUMENTS = dict(
 
 @cli.command
 def command(**ARGUMENTS):
-    return _command(**ARGUMENTS)
+    try:
+        return _command(**ARGUMENTS)
+    except:
+        cli.echo()
+
+        traceback_str = traceback.format_exc()
+        cli.echo(traceback_str)
+
+        cli.echo(cli_format("""\
+An error occured while performing the above command. This could be an issue with
+"pipupgrade". Kindly post an issue at https://github.com/achillesrasquinha/pipupgrade/issues""", cli.RED))
 
 def to_params(kwargs):
     class O(object):
