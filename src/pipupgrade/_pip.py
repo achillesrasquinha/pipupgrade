@@ -17,7 +17,7 @@ logger = get_logger()
 
 PIP9 = int(pip.__version__.split(".")[0]) < 10
 
-if PIP9:
+if PIP9: # pragma: no cover
     # from pip                 import get_installed_distributions
     from pip.req             import parse_requirements
     from pip.req.req_install import InstallRequirement
@@ -45,7 +45,7 @@ def _get_pip_executable(multiple = False):
                 if exec_ not in execs and not osp.islink(exec_):
                     execs.append(exec_)
 
-    if not execs:
+    if not execs: # pragma: no cover
         raise ValueError("pip executable not found.")
 
     return execs

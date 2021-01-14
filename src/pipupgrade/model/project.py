@@ -83,7 +83,7 @@ def get_included_requirements(filename):
 
 			if line.startswith("-r "):
 				filename = line.split("-r ")[1]
-				realpath = osp.join(basepath, filename)
+				realpath = osp.abspath(osp.join(basepath, filename))
 				requirements.append(realpath)
 
 				requirements += get_included_requirements(realpath)

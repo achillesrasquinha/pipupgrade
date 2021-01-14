@@ -115,7 +115,7 @@ class Registry(object):
             from mixology.version_solver import VersionSolver
             from pipupgrade.pubgrub      import PackageSource
             
-            source      = PackageSource()
+            source = PackageSource()
             for package in packages:
                 source.root_dep(package)
             

@@ -26,11 +26,15 @@ class Version:
     def __init__(self,
         major,
         minor = None,
-        patch = None
+        patch = None,
+        prerelease = None,
+        build = None
     ):
         self._major = major
         self._minor = minor
         self._patch = patch
+        self._prerelease = prerelease
+        self._build = build
 
     @property
     def major(self):
@@ -44,6 +48,18 @@ class Version:
     def patch(self):
         return self._patch
 
+    @property
+    def prerelease(self):
+        return self._prerelease
+
+    @property
+    def build(self):
+        return self._build
+    
+    # backward compatibility
+    def __getitem__(self, key):
+        return getattr(self, key)
+
 def parse(version):
     match   = _REGEX_SEMVER.match(version)
     if not match:
@@ -51,14 +67,12 @@ def parse(version):
 
     version = match.groupdict()
 
-    version["major"] = int(version["major"])
-    version["minor"] = int(version["minor"])
-    version["patch"] = int(version["patch"])
-
-    version          = Version(
-        major = version["major"],
-        minor = version["minor"],
-        patch = version["patch"]
+    version = Version(
+        major = int(version["major"]),
+        minor = int(version["minor"]),
+        patch = int(version["patch"]),
+        prerelease = version["prerelease"],
+        build = version["build"]
     )
 
     return version
@@ -68,8 +82,8 @@ def difference(a, b):
     vb = parse(b)
 
     if a != b:
-        for key in ["major", "minor", "patch"]:
-            if cmp(va.get(key), vb.get(key)):
+        for key in ("major", "minor", "patch"):
+            if cmp(va[key], vb[key]):
                 return key
         
         raise NotImplementedError("Unknown difference between {} and {}".format(a, b))

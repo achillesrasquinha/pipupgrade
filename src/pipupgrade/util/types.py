@@ -15,15 +15,15 @@ def get_function_arguments(fn):
     # https://stackoverflow.com/a/2677263
     params  = dict()
     success = False
-
-    if _compat.PY2:
+    
+    if _compat.PY2: # pragma: no cover
         argspec_getter = inspect.getargspec
         success        = True
-    if _compat.PYTHON_VERSION >= (3,0) and _compat.PYTHON_VERSION < (3,5):
+    if _compat.PYTHON_VERSION >= (3,0) and _compat.PYTHON_VERSION < (3,5): # pragma: no cover
         argspec_getter = inspect.getfullargspec
         success        = True
 
-    if success:
+    if success: # pragma: no cover
         argspec   = argspec_getter(fn)
         params    = dict_from_list(argspec.args, argspec.defaults or [])
 
@@ -35,7 +35,7 @@ def get_function_arguments(fn):
 
         success    = True
 
-    if not success:
+    if not success: # pragma: no cover
         raise ValueError("Unknown Python Version {} for fetching functional arguments.".format(sys.version))
 
     return params

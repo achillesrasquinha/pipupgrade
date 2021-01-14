@@ -15,3 +15,9 @@ class PackageSource(BasePackageSource):
     @property
     def root_version(self):
         return self._root_version
+
+    def root_dep(self, package):
+        print(package)
+
+    def dependencies_for(self, package, version):
+        pass

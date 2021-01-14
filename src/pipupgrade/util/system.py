@@ -34,7 +34,7 @@ def which(executable, raise_err = False):
     if not PY2:
         try:
             exec_ = shutil.which(executable)
-        except shutil.Error:
+        except shutil.Error: # pragma: no cover
             pass
 
     if not exec_:

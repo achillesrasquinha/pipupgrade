@@ -16,3 +16,6 @@ def test_pool():
 
     with parallel.no_daemon_pool() as pool:
         _assert(pool)
+
+        process = pool.Process()
+        assert process.daemon == False

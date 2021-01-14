@@ -44,7 +44,6 @@ foo
     * bar
     * baz
 """
-
     assert      tree2.find(lambda x: x.obj == "foo")
     assert      tree2.find(lambda x: x.obj == "bar")
     assert not  tree2.find(lambda x: x.obj == "foobaz")
@@ -57,3 +56,39 @@ foo
 
     with pytest.raises(TypeError):
         tree4.children = "bar"
+
+    """
+    foo
+        -> bar
+            -> baz
+            -> boo
+        -> boo
+            -> bar
+            -> foo
+    """
+    tree5 = Node("foo")
+    node1 = Node("bar", ["baz", "boo"])
+    node2 = Node("boo", ["bar", "foo"])
+    tree5.add_children(node1, node2)
+    assert tree5.find(node2) == node2
+    tree5.to_json() == dict(
+        foo = dict(
+            bar = dict(baz = None, boo = None),
+            boo = dict(bar = None, foo = None),
+        )
+    )
+
+    assert hash(tree5) == id(tree5)
+
+    tree6    = Node("foo")
+    children = [Node("bar"), Node("baz")] 
+    tree6.add_children(*children)
+    tree6.children = children
+    assert tree6.children == children
+
+    tree7    = Node("foo")
+    tree8    = Node("bar")
+    tree8.parent = tree7
+    assert tree8.parent == tree7
+    tree8.parent = tree7
+    assert tree8.parent == tree7

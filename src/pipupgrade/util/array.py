@@ -18,7 +18,7 @@ def squash(seq):
     return value
 
 def flatten(arr):
-    if _is_python_version(major = 2, minor = 6):
+    if _is_python_version(major = 2, minor = 6): # pragma: no cover
         chainer = itertools.chain.from_iterable
     else:
         chainer = itertools.chain

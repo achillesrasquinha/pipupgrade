@@ -207,7 +207,7 @@ def update_registry(registry,
 	packages = registry.packages
 
 	if filter_:
-		packages = [p for p in packages if p["name"] in filter_]
+		packages = [p for p in packages if p.name in filter_]
 	
 	table 	 = Table(header = ["Name", "Current Version", "Latest Version",
 		"Home Page"])

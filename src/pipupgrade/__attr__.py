@@ -6,7 +6,7 @@ PY2 = sys.version_info.major == 2
 
 try:
     FileNotFoundError
-except NameError:
+except NameError: # pragma: no cover
     if PY2:
         FileNotFoundError = OSError
 

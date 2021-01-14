@@ -52,7 +52,7 @@ def confirm(query, quit_ = True):
     return output in _ACCEPTABLE_INPUTS_YES
 
 def format(string, type_):
-    if _CAN_ANSI_FORMAT_WINDOWS:
+    if _CAN_ANSI_FORMAT_WINDOWS: # pragma: no cover
         import ctypes
         kernel32 = ctypes.windll.kernel32
         kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)

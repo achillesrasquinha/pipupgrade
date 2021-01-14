@@ -104,14 +104,24 @@ class Node(object):
         string = _render_tree(self, indent = indent, formatter = formatter)
         return string
 
-    def to_dict(self, repr_ = None):
-        key   = repr_(self.obj) if repr_ else str(self.obj)
-        dict_ = dict({
-            key: [d.to_dict(repr_ = repr_) \
-                for d in self.children]
-        })
+    def to_dict(self, repr_ = None, level = 1):
+        def to_key(o):
+            key = repr_(o) if repr_ else o
+            return key
 
+        dict_ = {
+            to_key(child): child.to_dict(repr_ = repr_, level = level + 1) or None
+                for child in self.children
+        }
+
+        if level == 1:
+            return { to_key(self): dict_ }
+        
         return dict_
+
+    def to_json(self):
+        repr_ = lambda x: str(x.obj if isinstance(x, Node) else x)
+        return self.to_dict(repr_ = repr_)
 
     def find(self, query):
         """
@@ -129,3 +139,6 @@ class Node(object):
                     break
 
         return found
+
+    def __hash__(self):
+        return id(self)
