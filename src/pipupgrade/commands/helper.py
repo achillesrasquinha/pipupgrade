@@ -18,7 +18,6 @@ from pipupgrade 		      	import (_pip, cli, semver,
 	log, parallel
 )
 from pipupgrade.exception		import PopenError
-from pipupgrade._compat			import string_types
 
 logger = log.get_logger()
 
@@ -191,18 +190,24 @@ def _resolve_dependencies(nodes):
 	return nodes
 
 def update_registry(registry,
-	yes         = False,
-	user 		= False,
-	check	    = False,
-	latest		= False,
-	interactive = False,
-	format_		= "table",
-	all			= False,
-	file		= None,
-	raise_err	= True,
-	verbose 	= False):
+	yes         	= False,
+	user 			= False,
+	check	    	= False,
+	latest			= False,
+	interactive 	= False,
+	format_			= "table",
+	all				= False,
+	filter_			= [ ],
+	file			= None,
+	raise_err		= True,
+	verbose 		= False,
+	upgrade_type 	= ("minor", "patch")
+):
 	source   = registry.source
 	packages = registry.packages
+
+	if filter_:
+		packages = [p for p in packages if p["name"] in filter_]
 	
 	table 	 = Table(header = ["Name", "Current Version", "Latest Version",
 		"Home Page"])
@@ -257,8 +262,11 @@ def update_registry(registry,
 			cli.echo(file = file)
 
 		if not check:
+			packages  = [p for p in dinfo if p.difference in upgrade_type
+				or p.difference == "major"]
 			packages  = [p for p in dinfo if p.difference != "major" 
 				or getattr(p, "has_dependency_conflict", False) or latest]
+
 			npackages = len(packages)
 
 			spackages = pluralize("package", npackages) # Packages "string"
@@ -304,7 +312,8 @@ def update_registry(registry,
 			file = file)
 
 def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True,
-	build_dependency_tree = False, resolve = False, jobs = 1, only_packages = [ ]
+	build_dependency_tree = False, resolve = False, jobs = 1, only_packages = [ ],
+	ignore_packages = [ ]
 ):
 	logger.info("Fetching installed packages for %s..." % pip_path)
 
@@ -316,6 +325,9 @@ def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True,
 
 	if only_packages:
 		packages = [p for p in packages if p["name"] in only_packages]
+
+	if ignore_packages:
+		packages = [p for p in packages if p["name"] not in ignore_packages]
 	
 	registry     = Registry(source = pip_path, packages = packages,
 		installed = True, sync = sync,
@@ -328,7 +340,7 @@ def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True,
 	return registry
 
 def get_registry_from_requirements(requirements, sync = False, jobs = 1,
-	only_packages = [ ], resolve = False, file = None):
+	only_packages = [ ], resolve = False, file = None, ignore_packages = [ ]):
 	path = osp.realpath(requirements)
 
 	if not osp.exists(path):
@@ -340,6 +352,9 @@ def get_registry_from_requirements(requirements, sync = False, jobs = 1,
 		
 		if only_packages:
 			packages = [p for p in packages if p.name in only_packages]
+
+		if ignore_packages:
+			packages = [p for p in packages if p["name"] not in ignore_packages]
 
 		registry = Registry(source = path, packages = packages, sync = sync,
 			resolve = resolve, jobs = jobs

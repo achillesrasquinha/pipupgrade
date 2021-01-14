@@ -1,4 +1,5 @@
 <div align="center">
+  <img src=".github/assets/meme.jpg">
   <h1>
     pipupgrade
   </h1>
@@ -6,30 +7,27 @@
 </div>
 
 <p align="center">
-    <a href="https://travis-ci.org/achillesrasquinha/pipupgrade">
-        <img src="https://img.shields.io/travis/achillesrasquinha/pipupgrade.svg?style=flat-square">
-    </a>
-    <a href="https://ci.appveyor.com/project/achillesrasquinha/pipupgrade">
-        <img src="https://img.shields.io/appveyor/ci/achillesrasquinha/pipupgrade.svg?style=flat-square&logo=appveyor">
-    </a>
-    <a href="https://coveralls.io/github/achillesrasquinha/pipupgrade">
-        <img src="https://img.shields.io/coveralls/github/achillesrasquinha/pipupgrade.svg?style=flat-square">
-    </a>
-    <a href="https://pypi.org/project/pipupgrade/">
+  <a href='https://github.com/achillesrasquinha/pipupgrade/actions?query=workflow:"Continuous Integration"'>
+    <img src="https://img.shields.io/github/workflow/status/achillesrasquinha/pipupgrade/ci?style=flat-square">
+  </a>
+  <a href="https://coveralls.io/github/achillesrasquinha/pipupgrade">
+    <img src="https://img.shields.io/coveralls/github/achillesrasquinha/pipupgrade.svg?style=flat-square">
+  </a>
+  <a href="https://pypi.org/project/pipupgrade/">
 		<img src="https://img.shields.io/pypi/v/pipupgrade.svg?style=flat-square">
 	</a>
     <a href="https://pypi.org/project/pipupgrade/">
 		<img src="https://img.shields.io/pypi/l/pipupgrade.svg?style=flat-square">
 	</a>
-    <a href="https://pypi.org/project/pipupgrade/">
+  <a href="https://pypi.org/project/pipupgrade/">
 		<img src="https://img.shields.io/pypi/pyversions/pipupgrade.svg?style=flat-square">
 	</a>
-    <a href="https://hub.docker.com/r/achillesrasquinha/pipupgrade">
+  <a href="https://hub.docker.com/r/achillesrasquinha/pipupgrade">
 		<img src="https://img.shields.io/docker/cloud/build/achillesrasquinha/pipupgrade.svg?style=flat-square&logo=docker">
 	</a>
-    <a href="https://git.io/boilpy">
-      <img src="https://img.shields.io/badge/made%20with-boilpy-red.svg?style=flat-square">
-    </a>
+  <a href="https://git.io/boilpy">
+    <img src="https://img.shields.io/badge/made%20with-boilpy-red.svg?style=flat-square">
+  </a>
 	<a href="https://saythanks.io/to/achillesrasquinha">
 		<img src="https://img.shields.io/badge/Say%20Thanks-🦉-1EAEDB.svg?style=flat-square">
 	</a>
@@ -44,7 +42,7 @@
 
 ### Table of Contents
 * [Features](#Features)
-* [Installation](#installation)
+* [Quick Start](#quick-start)
 * [Usage](#usage)
   * [Basic Usage](#basic-usage)
   * [Docker](#docker)
@@ -66,11 +64,13 @@
 * Automate your Dependencies by installing `pipupgrade` in your CI workflow.
 * Zero Dependencies!
 
-### Installation
+### Quick Start
 
 ```shell
 $ pip install pipupgrade
 ```
+
+Check out [installation](docs/source/INSTALLATION.md) for more details.
 
 ### Usage
 
@@ -95,6 +95,10 @@ $ pip install pipupgrade
 * [**`pipupgrade --check`**](https://git.io/pipupgrade)
 
 *Checks and pretty prints outdated packages (Does not perform upgrades).*
+
+* [**`pipupgrade --upgrade-type {major,minor,patch}`**](https://git.io/pipupgrade)
+
+*Upgrades packages only of the upgrade type (defaults to minor and patch).*
 
 * [**`pipupgrade --latest`**](https://git.io/pipupgrade)
 
@@ -124,8 +128,9 @@ That's basically it! Run the help for more details...
 
 ```
 $ pipupgrade --help
-usage: pipupgrade [--pip-path PIP_PATH] [-y] [-c] [-l]
-                  [-f {table,tree,json,yaml}] [-a] [--pip] [-s]
+usage: pipupgrade [--pip-path PIP_PATH] [-y] [-c]
+                  [--upgrade-type {major,minor,patch} [{major,minor,patch} ...]]
+                  [-l] [-f {table,tree,json,yaml}] [-a] [--pip] [-s]
                   [-r REQUIREMENTS] [--pipfile PIPFILE] [-i] [-p PROJECT]
                   [--git-username GIT_USERNAME] [--git-email GIT_EMAIL]
                   [--pull-request] [--github-access-token GITHUB_ACCESS_TOKEN]
@@ -133,10 +138,10 @@ usage: pipupgrade [--pip-path PIP_PATH] [-y] [-c] [-l]
                   [--github-username GITHUB_USERNAME]
                   [--target-branch TARGET_BRANCH] [-j JOBS] [-u]
                   [--no-included-requirements] [--no-cache] [-o OUTPUT]
-                  [--force] [--no-color] [-V] [-v] [-h]
+                  [--ignore-error] [--force] [--no-color] [-V] [-v] [-h]
                   [packages [packages ...]]
 
-pipupgrade (v 1.6.6)
+pipupgrade (v VERSION)
 
 UPGRADE ALL THE PIP PACKAGES!
 
@@ -144,10 +149,13 @@ positional arguments:
   packages              Packages to Upgrade. (default: None)
 
 optional arguments:
+  --ignore IGNORE       Ignore packages to upgrade. (default: None)
   --pip-path PIP_PATH   Path to pip executable to be used. (default: None)
   -y, --yes             Confirm for all dialogs. (default: 0)
   -c, --check           Perform a dry-run, avoid updating packages. (default:
                         0)
+  --upgrade-type {major,minor,patch} [{major,minor,patch} ...]
+                        Upgrade Type (default: ['minor', 'patch'])
   -l, --latest          Update all packages to latest. (default: 0)
   -f {table,tree,json,yaml}, --format {table,tree,json,yaml}
                         Display packages format. (default: table)

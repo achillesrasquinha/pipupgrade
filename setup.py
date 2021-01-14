@@ -11,16 +11,33 @@ from setuptools import setup, find_packages
 from setuptools.command.develop import develop
 from setuptools.command.install import install
 
-import pip
+# import pip
 
-try:
-    from pip._internal.req import parse_requirements # pip 10
-except ImportError:
-    from pip.req           import parse_requirements # pip 9
+# try:
+#     from pip._internal.req import parse_requirements # pip 10
+# except ImportError:
+#     from pip.req           import parse_requirements # pip 9
 
 # globals
 PACKAGE     = "pipupgrade"
 SRCDIR      = "src"
+
+# A very awful patch for parse_requirements from pip
+def parse_requirements(filename, session = None):
+    class FakeRequirement:
+        def __init__(self, name):
+            self.req = name
+            
+    def sanitize_line(line):
+        line = line.strip()
+        return line
+
+    def check_line(line):
+        return line and not line.startswith("#")
+
+    return [
+        FakeRequirement(sanitize_line(line)) for line in open(filename) if check_line(line)
+    ]
 
 def isdef(var):
     return var in globals()
@@ -60,9 +77,17 @@ PKGINFO    = get_package_info()
 
 
 def remove_cache():
-    path = osp.join(osp.expanduser("~"), ".%s" % PKGINFO["__name__"])
-    if osp.exists(path):
-        shutil.rmtree(path)
+    userdir = osp.expanduser("~")
+    pkgname = PKGINFO["__name__"]
+
+    paths = [
+        osp.join(userdir, ".%s" % pkgname), # backward-compatibility
+        osp.join(userdir, ".config", pkgname)
+    ]
+
+    for path in paths:
+        if osp.exists(path):
+            shutil.rmtree(path)
 
 class DevelopCommand(develop):
     def run(self):
@@ -116,6 +141,7 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy"
     ],

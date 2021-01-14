@@ -42,10 +42,14 @@ def test_format():
     _assert_format(string, cli.RED)
     _assert_format(string, cli.BOLD)
 
-def test_echo(capfd):
+def test_echo(capfd, tmpdir):
     query  = "foobar"
     cli.echo(query, nl = False)
     assert_stdout(capfd, query)
     
     cli.echo(query, nl = True)
     assert_stdout(capfd, "{}\n".format(query))
+
+    f = tmpdir.join("tmp")
+    cli.echo(query, nl = True, file = str(f))
+    assert f.read() == "foobar\n"

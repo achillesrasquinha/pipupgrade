@@ -1,6 +1,3 @@
-# imports - compatibility imports
-from pipupgrade._compat import string_types
-
 def _render_tree(node, depth = 0, indent = 2, formatter = None):
     spacing     = (indent * " ") * depth
     formatted   = formatter(node.obj) if formatter else node.obj
@@ -23,7 +20,7 @@ def _check_node(node, query):
 
     return result
 
-class Node:
+class Node(object):
     def __init__(self, obj, children = [ ], parent = None):
         self.obj        = obj
         self._children  = [ ]
@@ -99,7 +96,7 @@ class Node:
             self.add_child(child)
 
     def __repr__(self):
-        repr_ = "<Node '%s'%s>" % (string_types(self.obj), 
+        repr_ = "<Node '%s'%s>" % (str(self.obj), 
             "parent='%s'" % self.parent if self.parent else "")
         return repr_
 
@@ -108,7 +105,7 @@ class Node:
         return string
 
     def to_dict(self, repr_ = None):
-        key   = repr_(self.obj) if repr_ else string_types(self.obj)
+        key   = repr_(self.obj) if repr_ else str(self.obj)
         dict_ = dict({
             key: [d.to_dict(repr_ = repr_) \
                 for d in self.children]

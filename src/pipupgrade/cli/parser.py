@@ -43,6 +43,10 @@ def get_parser():
         action  = "store_true",
         help    = "Resolve Dependencies"
     )
+    parser.add_argument("--ignore",
+        action  = "append",
+        help    = "Ignore packages to upgrade."
+    )
     parser.add_argument("--pip-path",
         action  = "append",
         help    = "Path to pip executable to be used."
@@ -56,6 +60,12 @@ def get_parser():
         action  = "store_true",
         default = getenv("DRY_RUN", False),
         help    = "Perform a dry-run, avoid updating packages."
+    )
+    parser.add_argument("--upgrade-type",
+        choices = ("major", "minor", "patch"),
+        nargs   = "+",
+        default = ["minor", "patch"],
+        help    = "Upgrade Type"
     )
     parser.add_argument("-l", "--latest",
         action  = "store_true",
@@ -129,7 +139,7 @@ def get_parser():
     parser.add_argument("-j", "--jobs",
         type    = int,
         help    = "Number of Jobs to be used.",
-        default = getenv("JOBS", mp.cpu_count())
+        default = getenv("JOBS", max(mp.cpu_count(), 4))
     )
     parser.add_argument("-u", "--user",
         action  = "store_true",
@@ -171,7 +181,8 @@ def get_parser():
 
     parser.add_argument("-V", "--verbose",
         action  = "store_true",
-        help    = "Display verbose output."
+        help    = "Display verbose output.",
+        default = getenv("VERBOSE", False)
     )
     parser.add_argument("-v", "--version",
         action  = "version",

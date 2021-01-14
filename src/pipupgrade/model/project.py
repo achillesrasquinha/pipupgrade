@@ -9,7 +9,7 @@ from pipupgrade.util.string import strip
 
 logger = log.get_logger()
 
-class Project:
+class Project(object):
 	@staticmethod
 	def from_path(path, *args, **kwargs):
 		project = Project(path, *args, **kwargs)

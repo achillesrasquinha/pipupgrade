@@ -90,7 +90,7 @@ def _get_dependency_tree_for_package(package, parent = None, sync = False,
 
     return tree
 
-class Registry:
+class Registry(object):
     def __init__(self,
         source,
         packages                = [ ],

@@ -22,3 +22,5 @@
 | `PIPUPGRADE_FORCE`                    | `boolean`                             | Force search for files within a project.
 | `PIPUPGRADE_NO_COLOR`                 | `boolean`                             | Avoid colored output.
 | `PIPUPGRADE_OUTPUT_FILE`              | `string`                              | Output File.
+| `PIPUPGRADE_CONFIG`                   | `string`                              | Path to custom configuration file.
+| `PIPUPGRADE_VERBOSE`                  | `boolean`                             | Display Verbose output.

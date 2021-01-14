@@ -8,7 +8,7 @@ _HTTP_RESPONSE_TYPE = {
     404: { "name": "Not Found" }
 }
 
-class Response:
+class Response(object):
     def __init__(self):
         self.status_code = None
         self.content     = None

@@ -6,5 +6,8 @@ from pipupgrade.__attr__    import (
 )
 from pipupgrade.__main__    import main
 from pipupgrade.config      import Settings
+from pipupgrade             import _pip
 
 settings = Settings()
+
+from pipupgrade.tree import Node

@@ -6,14 +6,14 @@ import os, os.path as osp
 import errno
 import platform
 import subprocess  as sp
+import shutil
 from   distutils.spawn import find_executable
 
 # imports - module imports
 from pipupgrade.exception   import PopenError
 from pipupgrade.util.string import strip, safe_decode
-from pipupgrade._compat     import iteritems
+from pipupgrade._compat     import iteritems, PY2
 from pipupgrade.log         import get_logger
-from pipupgrade._compat     import string_types
 
 logger = get_logger()
 
@@ -29,8 +29,17 @@ def write(fname, data = None, force = False, append = False):
                 f.write(data)
 
 def which(executable, raise_err = False):
-    exec_ = find_executable(executable)
-    
+    exec_ = None
+
+    if not PY2:
+        try:
+            exec_ = shutil.which(executable)
+        except shutil.Error:
+            pass
+
+    if not exec_:
+        exec_ = find_executable(executable)
+        
     if not exec_ and raise_err:
         raise ValueError("Executable %s not found." % exec_)
     
@@ -54,9 +63,9 @@ def popen(*args, **kwargs):
         environ.update(environment)
 
     for k, v in iteritems(environ):
-        environ[k] = string_types(v)
+        environ[k] = str(v)
 
-    command     = " ".join([string_types(arg) for arg in args])
+    command     = " ".join([str(arg) for arg in args])
 
     logger.info("Executing command: %s" % command)
 
