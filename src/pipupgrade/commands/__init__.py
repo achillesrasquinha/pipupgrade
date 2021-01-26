@@ -73,7 +73,7 @@ ARGUMENTS = dict(
 def command(**ARGUMENTS):
     try:
         return _command(**ARGUMENTS)
-    except:
+    except Exception:
         cli.echo()
 
         traceback_str = traceback.format_exc()
