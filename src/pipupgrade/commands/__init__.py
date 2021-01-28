@@ -74,7 +74,7 @@ ARGUMENTS = dict(
 def command(**ARGUMENTS):
     try:
         return _command(**ARGUMENTS)
-    except:
+    except Exception:
         cli.echo()
 
         traceback_str = traceback.format_exc()
@@ -188,6 +188,8 @@ def _command(*args, **kwargs):
                     results       = pool.imap_unordered(get_included_requirements,
                         requirements)
                     requirements += flatten(results)
+
+                requirements = list(set(requirements))
 
             logger.info("Requirements found: %s" % requirements)
             
