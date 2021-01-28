@@ -178,6 +178,8 @@ def _command(*args, **kwargs):
                         requirements)
                     requirements += flatten(results)
 
+                requirements = list(set(requirements))
+
             logger.info("Requirements found: %s" % requirements)
             
             with parallel.no_daemon_pool(processes = a.jobs) as pool:
