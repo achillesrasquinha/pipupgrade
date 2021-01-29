@@ -2,10 +2,10 @@
 from __future__ import absolute_import
 
 # imports - standard imports
-import subprocess
+import os
 
 # imports - test imports
-import pytest
+from testutils import PATH
 
 # imports - module imports
 from pipupgrade         import _pip
@@ -43,8 +43,17 @@ def test_call(tmpdir):
 
     _pip.call("install", "pipupgrade")
     assert_pip_call(_pip.call("install", "pipupgrade", quiet = True))
-    
+
     _pip.call("install", "pipupgrade", log = path)
     assert tempfile.read()
 
     # assert_pip_call(_pip.call("list", output = True))
+
+
+def test_parse_requirements():
+    """`parse_requirements` returns an iterable of `InstallRequirement`"""
+    filepath = os.path.join(PATH["DATA"], "project", "requirements.txt")
+
+    requirements = list(_pip.parse_requirements(filepath, session="hack"))
+
+    assert all([isinstance(req, _pip.InstallRequirement) for req in requirements])
