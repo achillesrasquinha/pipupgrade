@@ -5,6 +5,7 @@ from pipupgrade._compat import iteritems
 import pip
 import json
 import os.path as osp
+from typing import List
 
 # imports - module imports
 from pipupgrade.util.system  import which, popen
@@ -15,16 +16,34 @@ from pipupgrade.log          import get_logger
 
 logger = get_logger()
 
-PIP9 = int(pip.__version__.split(".")[0]) < 10
+MAJOR_VERSION = int(pip.__version__.split(".")[0])
 
-if PIP9:
-    # from pip                 import get_installed_distributions
-    from pip.req             import parse_requirements
-    from pip.req.req_install import InstallRequirement
-else:
-    # from pip._internal.utils.misc      import get_installed_distributions
-    from pip._internal.req             import parse_requirements
+if MAJOR_VERSION >= 20:
+    from pip._internal.req.constructors import install_req_from_parsed_requirement
+    from pip._internal.req.req_file import (
+        parse_requirements as _real_parse_requirements,
+    )
     from pip._internal.req.req_install import InstallRequirement
+
+    def parse_requirements(
+        filename, session
+    ):  # type: (str, str) -> List[InstallRequirement]
+        """Wrap pip internal `parse_requirements`, which now returns
+        `ParsedRequirement` instances, to instead return `InstallRequirement`-
+        as with the previous implementation
+        Based on https://github.com/pypa/pip/blob/a48ad5385b234097d51283b08c3d933fd81ef534/tests/unit/test_req_file.py#L50"""
+        for parsed_req in _real_parse_requirements(filename, session):
+            yield install_req_from_parsed_requirement(parsed_req)
+
+
+elif MAJOR_VERSION >= 10:
+    # from pip._internal.utils.misc      import get_installed_distributions
+    from pip._internal.req import parse_requirements
+    from pip._internal.req.req_install import InstallRequirement
+else:
+    # from pip                 import get_installed_distributions
+    from pip.req import parse_requirements
+    from pip.req.req_install import InstallRequirement
 
 from pip._vendor.pkg_resources import (
     Distribution,
