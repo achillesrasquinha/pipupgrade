@@ -1,4 +1,5 @@
 import os.path as osp
+import sys
 
 # imports - compatibility imports
 from pipupgrade.commands    import _command as command
@@ -15,6 +16,9 @@ def test_command_self(capfd):
     out, err = capfd.readouterr()
     assert "upto date." in out
 
+@pytest.mark.skipif(
+    sys.platform == "win32", reason="Function never completes, related to #78"
+)
 def test_command(capfd):
     project      = osp.join(PATH["DATA"], "project")
     requirements = osp.join(project, "requirements.txt")
