@@ -8,6 +8,17 @@ from pipupgrade.__attr__ import (
     __author__
 )
 from pipupgrade import semver
+from pipupgrade._pip import InstallRequirement
+from pipupgrade.model.package import Package
+
+import sys
+from pip._vendor.packaging.specifiers import SpecifierSet
+if sys.version_info >= (3, 3):
+    from unittest.mock import PropertyMock, patch
+else:
+    from mock import PropertyMock, patch
+
+import pytest
 
 def test___get_pypi_info():
     info = _get_pypi_info("pipupgrade")
@@ -26,3 +37,26 @@ def test__get_pip_info():
     assert packages["pytest"]["name"]          == "pytest"
     # Breaks on multiple Python Versions
     # assert packages["pytest"]["license"]       == "MIT"
+
+@pytest.mark.parametrize(
+    ["requirement", "installed_version", "current_version"],
+    [
+        ("==1.0.0", "5.0.0", "1.0.0"), # Pinned requirement
+        ("", "1.0.0", "1.0.0"), # Installed version
+        ("~=1.0", "2.0.0", "2.0.0"), # Installed version
+        ("~=1.0", None, "~=1.0") # Requirement
+    ]
+)
+def test_install_requirement_current_version(
+    requirement, installed_version, current_version
+):
+    specifiers = SpecifierSet(requirement)
+    with patch.multiple(
+        InstallRequirement,
+        specifier=PropertyMock(return_value=specifiers),
+        installed_version=PropertyMock(return_value=installed_version)
+    ):
+        requirement = InstallRequirement(req=None, comes_from="")
+        package = Package(requirement)
+
+    assert package.current_version == current_version
