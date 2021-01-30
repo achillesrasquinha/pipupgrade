@@ -14,9 +14,9 @@ from pipupgrade.model.package import Package
 import sys
 from pip._vendor.packaging.specifiers import SpecifierSet
 if sys.version_info >= (3, 3):
-    from unittest.mock import PropertyMock, patch
+    from unittest.mock import MagicMock, PropertyMock, patch
 else:
-    from mock import PropertyMock, patch
+    from mock import MagicMock, PropertyMock, patch
 
 import pytest
 
@@ -54,7 +54,9 @@ def test_install_requirement_current_version(
     with patch.multiple(
         InstallRequirement,
         specifier=PropertyMock(return_value=specifiers),
-        installed_version=PropertyMock(return_value=installed_version)
+        installed_version=PropertyMock(return_value=installed_version),
+        # Isolate test to version only, and prevent error with pip~=9.0
+        __str__=MagicMock(return_value="mypackage")
     ):
         requirement = InstallRequirement(req=None, comes_from="")
         package = Package(requirement)
