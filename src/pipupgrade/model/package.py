@@ -81,11 +81,13 @@ class Package(object):
 		elif isinstance(package, _pip.InstallRequirement):
 			self.name            = package.name
 
-			if hasattr(package, "req"):
-				if hasattr(package.req, "specifier"):
-					self.current_version = str(package.req.specifier)
+			# Check if requirement is pinned, falling back to the installed
+			# version, then finally str(Specifier)
+			if package.is_pinned:
+				self.current_version = next(iter(package.specifier)).version
 			else:
-				self.current_version = package.installed_version
+				self.current_version = package.installed_version or str(package.specifier)
+
 		elif isinstance(package, dict):
 			self.name            = package["name"]
 			self.current_version = package["version"]
