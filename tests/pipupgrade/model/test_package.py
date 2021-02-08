@@ -2,7 +2,7 @@ import pytest
 
 from pipupgrade.model.package import (
     _get_pypi_info,
-    _get_package_version,
+    # _get_package_version,
     _get_pip_info,
     Package
 )
@@ -21,9 +21,9 @@ def test___get_pypi_info():
 
     assert _get_pypi_info("foobarbaz", raise_err = False) == None
 
-def test__get_package_version():
-    version = _get_package_version("pipupgrade")
-    semver.parse(version)
+# def test__get_package_version():
+#     version = _get_package_version("pipupgrade")
+#     semver.parse(version)
 
 def test__get_pip_info():
     packages = _get_pip_info("pipupgrade", "pytest")

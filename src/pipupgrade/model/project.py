@@ -23,17 +23,17 @@ class Project(object):
 			raise ValueError("Path %s does not exist." % path)
 		
 		logger.info("Initializing project with path %s." % path)
-		self.path         = path
+		self.path    = path
 		logger.info("Fetching requirements...")
 		self.requirements = self._get_requirements(
 			depth_search = depth_search)
 
 		logger.info("Fetching Pipfile...")
-		self.pipfile      = self._get_pipfile()
+		self.pipfile = self._get_pipfile()
 
 	def _get_requirements(self, depth_search = False):
 		# COLLECT ALL THE REQUIREMENTS FILES!
-		path         = self.path
+		path = self.path
 		requirements = [ ]
 
 		# Detect Requirements Files
@@ -58,7 +58,7 @@ class Project(object):
 		return requirements
 
 	def _get_pipfile(self):
-		path    = self.path
+		path = self.path
 		pipfile = osp.join(path, "Pipfile")
 
 		if pipfile:

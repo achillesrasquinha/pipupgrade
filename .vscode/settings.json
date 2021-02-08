@@ -11,10 +11,11 @@
         ".venv*": true,
         "**/build": true,
         "dist": true,
-        "htmlcov": true,
+        "htmlcov": true
     },
     "editor.rulers": [78],
     "editor.fontFamily": "Consolas",
     "editor.tabSize": 4,
+    "editor.renderWhitespace": "all",
     "python.linting.pylintPath": "${workspaceFolder}/.venv/bin/pylint"
 }

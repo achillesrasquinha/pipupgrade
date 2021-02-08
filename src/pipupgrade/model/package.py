@@ -12,7 +12,8 @@ from pipupgrade.__attr__    import __name__ as NAME
 from pipupgrade 	 		import _pip, semver, request as req, db, log
 from pipupgrade.tree 		import Node as TreeNode
 from pipupgrade.util.string import kebab_case, strip
-from pipupgrade._compat		import iteritems, string_types
+from pipupgrade.util._dict  import merge_dict
+from pipupgrade._compat		import iterkeys, iteritems, string_types
 from pipupgrade.config		import Settings
 
 logger  	= log.get_logger()
@@ -27,7 +28,7 @@ def _get_pypi_info(name, raise_err = True):
 
 	if res.ok:
 		data = res.json()
-		info = data["info"]
+		info = merge_dict(data["info"], { "releases": data["releases"] })
 	else:
 		if raise_err:
 			res.raise_for_status()
@@ -61,9 +62,9 @@ def _get_pip_info(*args, **kwargs):
 	
 	return info
 
-def _get_package_version(package, pip_exec = None):
-	info = _get_pip_info(package, pip_exec = pip_exec)[package]
-	return info["version"]
+# def _get_package_version(package, pip_exec = None):
+# 	info = _get_pip_info(package, pip_exec = pip_exec)[package]
+# 	return info["version"]
 
 def to_datetime(string):
 	return datetime.strptime(string, "%Y-%m-%d %H:%M:%S.%f")
@@ -73,6 +74,7 @@ class Package(object):
 		logger.info("Initializing Package %s of type %s..." % (package, type(package)))
 
 		self.current_version 	= None
+		# self.dependencies       = [ ]
 
 		if   isinstance(package, (_pip.Distribution, _pip.DistInfoDistribution,
 			_pip.EggInfoDistribution)):
@@ -91,10 +93,15 @@ class Package(object):
 			self.current_version = package["version"]
 			self.latest_version  = package.get("latest_version")
 		elif isinstance(package, str):
-			self.name			 = package
+			self.name = package
 			if pip_exec:
-				self.current_version = _get_package_version(package,
-					pip_exec = pip_exec)
+				info = _get_pip_info(self.name)
+
+				self.current_version = info["version"]
+				# self.dependencies    = info["requires"]
+
+		# if pip_exec and not self.dependencies:
+		# 	self.dependencies = _get_pip_info(self.name)
 
 		res = None
 
@@ -127,18 +134,19 @@ class Package(object):
 			if not getattr(self, "latest_version", None) or sync:
 				self.latest_version = _pypi_info.get("version")
 
-			self.home_page = _pypi_info.get("home_page")
+			self.home_page  = _pypi_info.get("home_page")
+			self.releases   = [version for version in iterkeys(_pypi_info.get("releases"))]
 
 		if not res:
 			try:
-				values = (self.name, self.latest_version or "NULL", self.home_page, datetime.now(), datetime.now())
+				values = (self.name, self.latest_version or "NULL", self.home_page, ",".join(self.releases), datetime.now(), datetime.now())
 				logger.info("Attempting to INSERT package %s into database with values: %s." % (self, values))
 
 				_db.query("""
 					INSERT INTO `tabPackage`
-						(name, latest_version, home_page, _created_at, _updated_at)
+						(name, latest_version, home_page, releases, _created_at, _updated_at)
 					VALUES
-						('%s', '%s', '%s', '%s', '%s')
+						('%s', '%s', '%s', '%s', '%s', '%s')
 				""" % values)
 			except (db.IntegrityError, db.OperationalError) as e:
 				logger.warn("Unable to save package name. %s" % e)
@@ -149,10 +157,10 @@ class Package(object):
 				try:
 					_db.query("""
 						UPDATE `tabPackage`
-							SET latest_version = '%s', home_page = '%s', _updated_at = '%s'
+							SET latest_version = '%s', home_page = '%s', releases = '%s', _updated_at = '%s'
 						WHERE
 							name = '%s'
-					""" % (self.latest_version, self.home_page, datetime.now(), self.name))
+					""" % (self.latest_version, self.home_page, ",".join(self.releases), datetime.now(), self.name))
 				except db.OperationalError as e:
 					logger.warn("Unable to update package name. %s" % e)
 			else:
@@ -160,6 +168,7 @@ class Package(object):
 
 				self.latest_version = res["latest_version"]
 				self.home_page      = res["home_page"]
+				self.releases       = res["releases"].split(",")
 
 		self.dependency_tree = TreeNode(self)
 
@@ -190,6 +199,7 @@ class Package(object):
 			"current_version": self.current_version,
 			 "latest_version": self.latest_version,
 				  "home_page": self.home_page,
+                   "releases": self.releases,
 			   "dependencies": dependencies[self.name]
 		})
 

@@ -41,23 +41,23 @@ def _build_packages_info_dict(packages, pip_exec = None):
         _build_packages_info_dict(requirements, pip_exec = pip_exec)
 
 def _create_package(name, sync = False):
-    data                    = dict(
+    data    = dict(
         name    = name,
         version = _INFO_DICT[name]["version"]
     )
-    package                 = Package(data, sync = sync)
-    
+    package = Package(data, sync = sync)
+
     return package
 
 def _get_dependency_tree_for_package(package, parent = None, sync = False,
-    jobs = 1):
+    jobs = 1, depth = None, level = 0):
     if package.name not in _TREE_DICT:
         logger.info("Building dependency tree for package: %s..." % package)
 
-        tree            = TreeNode(package, parent = parent)
+        tree = TreeNode(package, parent = parent)
 
-        dependencies    = [ ]
-        
+        dependencies = [ ]
+
         with parallel.no_daemon_pool(processes = jobs) as pool:
             dependencies = pool.imap_unordered(
                 partial(
@@ -68,24 +68,25 @@ def _get_dependency_tree_for_package(package, parent = None, sync = False,
                 _INFO_DICT[package.name]["dependencies"]
             )
 
-        with parallel.no_daemon_pool(processes = jobs) as pool:
-            children = pool.imap_unordered(
-                partial(
-                    _get_dependency_tree_for_package, **{
-                        "parent": tree
-                    }
-                ),
-                dependencies
-            )
+        if not depth or depth != level:
+            with parallel.no_daemon_pool(processes = jobs) as pool:
+                children = pool.imap_unordered(
+                    partial(
+                        _get_dependency_tree_for_package, **{
+                            "parent": tree, "depth": depth, "level": level + 1
+                        }
+                    ),
+                    dependencies
+                )
 
-            if children:
-                tree.add_children(*children)
+                if children:
+                    tree.add_children(*children)
 
         _TREE_DICT[package.name] = tree
     else:
         logger.info("Using cached dependency tree for package: %s." % package)
 
-    tree        = _TREE_DICT[package.name]
+    tree = _TREE_DICT[package.name]
     tree.parent = parent
 
     return tree
@@ -102,44 +103,50 @@ class Registry(object):
     ):
         self.source     = source
 
-        args            = { "sync": sync }
+        args = { "sync": sync }
 
         if installed:
             args["pip_exec"] = source
         
+        self.installed  = installed
+
         self._packages  = [ ]
-
-        if resolve:
-            logger.info("Resolving Packages...")
-
-            from mixology.version_solver import VersionSolver
-            from pipupgrade.pubgrub      import PackageSource
-            
-            source = PackageSource()
-            for package in packages:
-                source.root_dep(package)
-            
-            solver      = VersionSolver(source)
-            result      = solver.solve()
 
         with parallel.no_daemon_pool(processes = jobs) as pool:
             for package in pool.imap_unordered(partial(Package, **args), packages):
                 self._packages.append(package)
 
-        self.installed  = installed
-        
         if installed and build_dependency_tree and self._packages:
             self._build_dependency_tree_for_packages(sync = sync, jobs = jobs)
+
+        if resolve: # --format tree overtakes --resolve
+            # build shallow dependency list
+            if installed:
+                self._build_dependency_tree_for_packages(sync = sync, jobs = jobs, depth = 1)
+
+            logger.info("Resolving Packages %s...", self._packages)
+
+            from mixology.version_solver import VersionSolver
+            from pipupgrade.pubgrub      import PackageSource
+
+            source = PackageSource()
+            for package in self._packages:
+                source.root_dep(package)
+            
+            solver      = VersionSolver(source)
+            result      = solver.solve()
+
+            logger.info("Resolution Result: %s", result.decisions)
 
     @property
     def packages(self):
         packages = getattr(self, "_packages", [ ])
         return sorted(packages, key = lambda x: x.name.lower())
 
-    def _build_dependency_tree_for_packages(self, sync = False, jobs = 1):
+    def _build_dependency_tree_for_packages(self, sync = False, jobs = 1, depth = None):
         names = [p.name for p in self.packages]
         _build_packages_info_dict(names, pip_exec = self.source)
 
         for package in self.packages:
             package.dependency_tree = _get_dependency_tree_for_package(package,
-                sync = sync, jobs = 1)
+                sync = sync, jobs = 1, depth = depth)
