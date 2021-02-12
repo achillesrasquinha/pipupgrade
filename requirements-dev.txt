@@ -1,14 +1,14 @@
 pylint
 autopep8
+sphinx
+recommonmark
+pip
 pipenv
 ipython
 vulture
 safety
 pre-commit
 twine
-pip
-sphinx
-recommonmark
 pytest
 pytest-cov
 pytest-xdist
