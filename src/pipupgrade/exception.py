@@ -6,3 +6,6 @@ class PipupgradeError(Exception):
 
 class PopenError(PipupgradeError, sp.CalledProcessError):
     pass
+
+class DependencyNotFoundError(ImportError):
+    pass

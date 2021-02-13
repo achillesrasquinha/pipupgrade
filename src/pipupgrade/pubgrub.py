@@ -8,13 +8,13 @@ from mixology.range          import Range
 from mixology.union          import Union
 
 class Dependency:
-    def __init__(self, package):
+    def __init__(self, package, constraint):
         self.name               = package.name
-        self.constraint         = parse_constraint(package.current_version)
-        self.pretty_constraint  = str(package)
+        self.constraint         = parse_constraint(constraint)
+        self.pretty_constraint  = constraint
 
     def __str__(self):
-        return "<Dependency %s (%s)>" (self.name, self.pretty_constraint)
+        return self.pretty_constraint
 
 class PackageSource(BasePackageSource):
     def __init__(self, *args, **kwargs):
@@ -30,27 +30,30 @@ class PackageSource(BasePackageSource):
         return self._root_version
 
     def add(self, name, version, deps = None):
+        if deps is None:
+            deps = { }
+
         version = Version.parse(version)
         if name not in self._packages:
             self._packages[name] = { }
 
-        if version in self._packages[name] and deps is not None:
+        if version in self._packages[name]:
             raise ValueError("{} ({}) already exists".format(name, version))
 
         dependencies = [ ]
-        # for dep_name, spec in iteritems(deps):
-        #     dependencies.append(Dependency(dep_name, spec))
+        for dep_name, spec in iteritems(deps):
+            dependencies.append(Dependency(dep_name, spec))
 
         self._packages[name][version] = dependencies
 
-    def root_dep(self, package):
-        dependency  = Dependency(package)
+    def root_dep(self, package, constraint):
+        dependency = Dependency(package, constraint)
         self._root_dependencies.append(dependency)
 
-        for release in package.releases:
-            self.add(package.name, release)
+        # for release in package.releases:
+        #     self.add(package.name, release)
 
-        self.add(package.name, package.version, package.dependency_tree.get(1))
+        # self.add(package.name, package.current_version, package.dependency_tree.children)
 
     def _versions_for(self, package, constraint):
         if package not in self._packages:

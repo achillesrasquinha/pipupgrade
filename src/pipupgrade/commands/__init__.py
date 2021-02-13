@@ -26,12 +26,14 @@ from pipupgrade.util._dict      import merge_dict
 from pipupgrade.util.system   	import (read, write, touch, popen, which)
 from pipupgrade.util.environ  	import getenvvar
 from pipupgrade.util.datetime 	import get_timestamp_str
+from pipupgrade.util.imports    import import_handler
 from pipupgrade 		      	import (_pip, request as req, cli,
     log, parallel
 )
 from pipupgrade._compat			import builtins, iteritems
 from pipupgrade.__attr__      	import __name__
 from pipupgrade.config			import environment
+from pipupgrade.exception       import DependencyNotFoundError
 
 logger = log.get_logger(level = log.DEBUG)
 
@@ -74,15 +76,18 @@ ARGUMENTS = dict(
 def command(**ARGUMENTS):
     try:
         return _command(**ARGUMENTS)
-    except Exception:
-        cli.echo()
+    except Exception as e:
+        if not isinstance(e, DependencyNotFoundError):
+            cli.echo()
 
-        traceback_str = traceback.format_exc()
-        cli.echo(traceback_str)
+            traceback_str = traceback.format_exc()
+            cli.echo(traceback_str)
 
-        cli.echo(cli_format("""\
+            cli.echo(cli_format("""\
 An error occured while performing the above command. This could be an issue with
 "pipupgrade". Kindly post an issue at https://github.com/achillesrasquinha/pipupgrade/issues""", cli.RED))
+        else:
+            raise e
 
 def to_params(kwargs):
     class O(object):
@@ -97,6 +102,18 @@ def to_params(kwargs):
 
     return params
 
+def import_or_raise(package, name = None):
+    name = name or package
+
+    try:
+        import_handler(package)
+    except ImportError:
+        raise DependencyNotFoundError((
+            "Unable to import {package} for resolving dependencies. "
+            "pipupgrade requires {package} to be installed. "
+            "Please install {package} by executing 'pip install {name}'."
+        ).format(package = package, name = name))
+
 def _command(*args, **kwargs):
     a = to_params(kwargs)
 
@@ -107,14 +124,8 @@ def _command(*args, **kwargs):
     logger.info("Arguments Passed: %s" % locals())
 
     if a.resolve:
-        try:
-            import mixology
-        except ImportError:
-            raise ImportError((
-                "Unable to import mixology for resolving dependencies. "
-                "pipupgrade requires mixology to be installed. "
-                "Please install mixology by executing 'pip install mixology'."
-            ))
+        import_or_raise("mixology")
+        import_or_raise("semver", name = "poetry-semver")
 
     file_ = a.output
 
@@ -199,7 +210,8 @@ def _command(*args, **kwargs):
                         get_registry_from_requirements,
                         **{ "sync": a.no_cache, "jobs": a.jobs,
                             "only_packages": a.packages, "file": file_,
-                            "ignore_packages": a.ignore, "resolve": a.resolve
+                            "ignore_packages": a.ignore, "resolve": a.resolve,
+                            "latest": a.latest
                         }
                     ),
                     requirements
@@ -214,7 +226,8 @@ def _command(*args, **kwargs):
                             "outdated": not a.all,
                             "build_dependency_tree": a.format in _DEPENDENCY_FORMATS,
                             "jobs": a.jobs, "only_packages": a.packages,
-                            "ignore_packages": a.ignore, "resolve": a.resolve
+                            "ignore_packages": a.ignore, "resolve": a.resolve,
+                            "latest": a.latest
                         }
                     ),
                     pip_path

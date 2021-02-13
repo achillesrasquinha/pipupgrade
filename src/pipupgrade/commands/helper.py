@@ -313,7 +313,7 @@ def update_registry(registry,
 
 def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True,
 	build_dependency_tree = False, resolve = False, jobs = 1, only_packages = [ ],
-	ignore_packages = [ ]
+	ignore_packages = [ ], latest = False
 ):
 	logger.info("Fetching installed packages for %s..." % pip_path)
 
@@ -332,7 +332,7 @@ def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True,
 	registry     = Registry(source = pip_path, packages = packages,
 		installed = True, sync = sync,
 		build_dependency_tree = build_dependency_tree, 
-		resolve = resolve, jobs = jobs)
+		resolve = resolve, jobs = jobs, latest = latest)
 
 	logger.info("Packages within `pip` %s found: %s..." % (pip_path, registry.packages))
 	# _pip.get_installed_distributions() # https://github.com/achillesrasquinha/pipupgrade/issues/13
@@ -340,7 +340,8 @@ def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True,
 	return registry
 
 def get_registry_from_requirements(requirements, sync = False, jobs = 1,
-	only_packages = [ ], resolve = False, file = None, ignore_packages = [ ]):
+	only_packages = [ ], resolve = False, file = None, ignore_packages = [ ],
+    latest = False):
 	path = osp.realpath(requirements)
 
 	if not osp.exists(path):
@@ -357,7 +358,7 @@ def get_registry_from_requirements(requirements, sync = False, jobs = 1,
 			packages = [p for p in packages if p["name"] not in ignore_packages]
 
 		registry = Registry(source = path, packages = packages, sync = sync,
-			resolve = resolve, jobs = jobs
+			resolve = resolve, jobs = jobs, latest = latest
 		)
 
 	logger.info("Packages within requirements %s found: %s..." % (

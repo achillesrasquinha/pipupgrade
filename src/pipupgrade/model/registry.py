@@ -99,6 +99,7 @@ class Registry(object):
         sync                    = False,
         build_dependency_tree   = False,
         resolve                 = False,
+        latest                  = False,
         jobs                    = 1
     ):
         self.source     = source
@@ -120,9 +121,11 @@ class Registry(object):
             self._build_dependency_tree_for_packages(sync = sync, jobs = jobs)
 
         if resolve: # --format tree overtakes --resolve
+            # by default, attempt latest resolution
+
             # build shallow dependency list
-            if installed:
-                self._build_dependency_tree_for_packages(sync = sync, jobs = jobs, depth = 1)
+            # if installed:
+            #     self._build_dependency_tree_for_packages(sync = sync, jobs = jobs, depth = 1)
 
             logger.info("Resolving Packages %s...", self._packages)
 
@@ -131,10 +134,10 @@ class Registry(object):
 
             source = PackageSource()
             for package in self._packages:
-                source.root_dep(package)
-            
-            solver      = VersionSolver(source)
-            result      = solver.solve()
+                source.root_dep(package, package.latest_version)
+
+            solver = VersionSolver(source)
+            result = solver.solve()
 
             logger.info("Resolution Result: %s", result.decisions)
 
