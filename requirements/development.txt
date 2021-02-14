@@ -1,6 +1,9 @@
 pipenv
+jedi<0.18
 ipython
 vulture
 safety
 pre-commit
 twine
+requests
+beautifulsoup4

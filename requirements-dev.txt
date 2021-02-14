@@ -1,14 +1,14 @@
-pylint
-autopep8
-sphinx
-recommonmark
-pip
 pipenv
+jedi<0.18
 ipython
 vulture
 safety
 pre-commit
 twine
+requests
+beautifulsoup4
+sphinx
+recommonmark
 pytest
 pytest-cov
 pytest-xdist
@@ -17,3 +17,6 @@ pytest-travis-fold
 tox
 coveralls
 pluggy<1,>=0.12.0
+pip
+pylint
+autopep8

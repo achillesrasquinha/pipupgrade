@@ -67,10 +67,10 @@ def get_connection(bootstrap = True, log = False):
         if log:
             logger.info("Establishing a DataBase connection...")
 
-        basepath    = osp.join(osp.expanduser("~"), ".%s" % NAME)
+        basepath = osp.join(osp.expanduser("~"), ".%s" % NAME)
         makedirs(basepath, exist_ok = True)
 
-        abspath     = osp.join(basepath, "db.db")
+        abspath  = osp.join(basepath, "db.db")
 
         _CONNECTION = DB(abspath)
         _CONNECTION.connect(detect_types = sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)

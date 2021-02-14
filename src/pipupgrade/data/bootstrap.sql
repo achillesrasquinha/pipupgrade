@@ -20,3 +20,7 @@ CREATE TABLE IF NOT EXISTS `tabPackageDependency` (
 CREATE TABLE IF NOT EXISTS `tabSettings` (
     `version`           TEXT        NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS `tabProxies` (
+    
+);
