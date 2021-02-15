@@ -7,6 +7,8 @@ import errno
 import platform
 import subprocess  as sp
 import shutil
+import tempfile
+import contextlib
 from   distutils.spawn import find_executable
 
 # imports - module imports
@@ -116,3 +118,9 @@ def touch(filename):
     if not osp.exists(filename):
         with open(filename, "w") as f:
             pass
+
+@contextlib.contextmanager
+def make_temp_dir():
+    dir_path = tempfile.mkdtemp()
+    yield dir_path
+    shutil.rmtree(dir_path)

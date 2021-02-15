@@ -22,5 +22,12 @@ CREATE TABLE IF NOT EXISTS `tabSettings` (
 );
 
 CREATE TABLE IF NOT EXISTS `tabProxies` (
-    
+    `ip`                TEXT        NOT NULL,
+    `port`              INTEGER     NOT NULL,
+    `country_code`      TEXT        NOT NULL,
+    `protocol`          TEXT        NOT NULL,
+    `anonymity`         TEXT        NOT NULL,
+    `one_way`           INTEGER     NOT NULL,
+    `google_passed`     INTEGER     NOT NULL,
+    UNIQUE(`ip`, `port`, `country_code`, `protocol`, `anonymity`, `one_way`, `google_passed`)
 );
