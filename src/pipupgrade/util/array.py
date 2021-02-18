@@ -1,7 +1,7 @@
 # pylint: disable=E1101
 
 # imports - compatibility imports
-from pipupgrade._compat import _is_python_version
+from pipupgrade._compat import _is_python_version, range
 
 # imports - standard imports
 import itertools
@@ -34,3 +34,7 @@ def sequencify(value, type_ = list):
     value = type_(value)
         
     return value
+
+def chunkify(arr, n):
+    for i in range(0, len(arr), n):
+        yield arr[i:i + n]

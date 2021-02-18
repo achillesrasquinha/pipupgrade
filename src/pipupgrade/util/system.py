@@ -76,7 +76,7 @@ def popen(*args, **kwargs):
     
     proc        = sp.Popen(command,
         bufsize = -1,
-        stdin   = sp.PIPE if output else None,
+        stdin   = sp.PIPE if output else kwargs.get("stdin"),
         stdout  = sp.PIPE if output else None,
         stderr  = sp.PIPE if output else None,
         env     = environ,

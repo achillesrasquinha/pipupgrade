@@ -28,6 +28,8 @@ PRECOMMIT				= ${VENVBIN}pre-commit
 SPHINXBUILD				= ${VENVBIN}sphinx-build
 TWINE					= ${VENVBIN}twine
 
+SQLITE					= sqlite
+
 JOBS				   ?= $(shell $(PYTHON) -c "import multiprocessing as mp; print(mp.cpu_count())")
 PYTHON_ENVIRONMENT      = $(shell $(PYTHON) -c "import sys;v=sys.version_info;print('py%s%s'%(v.major,v.minor))")
 
@@ -145,6 +147,10 @@ shell: ## Launch an IPython shell.
 	$(call log,INFO,Launching Python Shell)
 	$(IPYTHON) \
 		--no-banner
+
+dbshell:
+	$(call log,INFO,Launching SQLite Shell)
+	$(SQLITE) ~/.config/${PROJECT}/db.db
 
 build: clean ## Build the Distribution.
 	$(PYTHON) setup.py sdist bdist_wheel

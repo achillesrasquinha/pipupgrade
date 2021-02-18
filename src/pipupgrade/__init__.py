@@ -1,3 +1,12 @@
+try:
+    import os
+
+    if os.environ.get("PIPUPGRADE_CI"):
+        from gevent import monkey
+        monkey.patch_all(threaded = False, select = False)
+except ImportError:
+    pass
+
 # imports - module imports
 from pipupgrade.__attr__    import (
     __name__,
@@ -6,7 +15,8 @@ from pipupgrade.__attr__    import (
 )
 from pipupgrade.__main__    import main
 from pipupgrade.config      import Settings
-from pipupgrade             import _pip, jobs
+from pipupgrade             import _pip
+from pipupgrade.util.jobs   import run_all as run_all_jobs
 
 settings = Settings()
 

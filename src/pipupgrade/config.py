@@ -20,6 +20,7 @@ PATH            = autodict()
 PATH["BASE"]    = pardir(__file__)
 PATH["DATA"]    = osp.join(PATH["BASE"], "data")
 PATH["CACHE"]   = osp.join(osp.expanduser("~"), ".config", NAME)
+PATH["JOBS"]    = osp.join(PATH["BASE"], "jobs")
 
 class Configuration(object):
     # BUGFIX: #63 Always complains about invalid config.ini - https://github.com/achillesrasquinha/pipupgrade/issues/63

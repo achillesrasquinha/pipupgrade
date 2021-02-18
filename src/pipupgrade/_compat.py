@@ -82,6 +82,8 @@ if PY2: # pragma: no cover
     import ConfigParser as configparser
 
     string_types = basestring
+    
+    range        = xrange
 else:
     # moves
     from urllib.request import urlopen, Request
@@ -94,7 +96,7 @@ else:
 
     import builtins
 
-    from builtins import input
+    from builtins import input, range
 
     from io import StringIO
 

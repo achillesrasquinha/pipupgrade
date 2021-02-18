@@ -7,6 +7,8 @@ pre-commit
 twine
 requests
 beautifulsoup4
+grequests
+fake-useragent
 sphinx
 recommonmark
 pytest

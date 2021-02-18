@@ -3,7 +3,7 @@ import os.path as osp
 import sqlite3
 
 # imports - module imports
-from pipupgrade.__attr__    import __name__ as NAME
+from pipupgrade.config      import PATH
 from pipupgrade.util.string import strip
 from pipupgrade.util.system import makedirs, read
 from pipupgrade             import config, log
@@ -44,9 +44,19 @@ class DB(object):
         if not self.connected:
             self.connect()
 
-        cursor  = self._connection.cursor()
-        cursor.execute(*args, **kwargs)
+        script      = kwargs.pop("script", False)
+        generate    = kwargs.pop("generate", False)
+
+        cursor      = self._connection.cursor()
+        getattr(cursor,
+            "execute%s" % ("script" if script else "")
+        )(*args, **kwargs)
+
         self._connection.commit()
+
+        # if generate:
+        #     for row in generator:
+        #         yield dict(row)
 
         results = cursor.fetchall()
         results = [dict(result) for result in results]
@@ -67,7 +77,7 @@ def get_connection(bootstrap = True, log = False):
         if log:
             logger.info("Establishing a DataBase connection...")
 
-        basepath = osp.join(osp.expanduser("~"), ".%s" % NAME)
+        basepath = PATH["CACHE"]
         makedirs(basepath, exist_ok = True)
 
         abspath  = osp.join(basepath, "db.db")
