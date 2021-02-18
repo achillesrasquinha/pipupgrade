@@ -29,5 +29,6 @@ CREATE TABLE IF NOT EXISTS `tabProxies` (
     `anonymity`         TEXT        NOT NULL,
     `one_way`           INTEGER     NOT NULL,
     `google_passed`     INTEGER     NOT NULL,
+    `status`            INTEGER,
     UNIQUE(`ip`, `port`, `country_code`, `secure`, `anonymity`, `one_way`, `google_passed`)
 );

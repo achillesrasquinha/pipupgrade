@@ -40,6 +40,20 @@ def _save_proxies(proxies):
             COMMIT;
         """ % "\n".join(inserts), script = True)
 
+REGEX_IP_STATUS = r"^(?P<ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}): (?P<status>success|failure)?"
+
+def _build_status_map(statuses):
+    status_map = { }
+
+    for status in statuses:
+        output = re.match(REGEX_IP_STATUS, status)
+        
+        if output:
+            output = output.groupdict()
+            status_map[ output["ip"] ] = int(output["status"] == "success")
+
+    return status_map
+
 def run(*args, **kwargs):
     dir_path = PATH["CACHE"]
 
@@ -62,7 +76,7 @@ def run(*args, **kwargs):
     #         logger.info("Saving fetched cached proxies...")
     #         _save_proxies(list(map(proxy_to_dict, proxies)))
 
-    chunks  = kwargs.get("chunks", 100)
+    chunks  = kwargs.get("chunks", 350)
 
     repo    = osp.join(dir_path, "clarketm-proxy-list")
 
@@ -80,30 +94,48 @@ def run(*args, **kwargs):
     hash_chunks = list(chunkify(hashes, chunks))
 
     for hash_chunk in tqdm(hash_chunks):
-        requestsmap = (
-            grequests.get("https://raw.githubusercontent.com/clarketm/proxy-list/%s/proxy-list.txt" % hash_,
-                proxies = get_rand_proxy(),
-                headers = { "User-Agent": user_agent.random }
-            ) for hash_ in hash_chunk
-        )
+        requestsmap_l, requestsmap_s = [], []
+        for hash_ in hash_chunk:
+            requestsmap_l.append(
+                grequests.get("https://raw.githubusercontent.com/clarketm/proxy-list/%s/proxy-list.txt" % hash_,
+                    # proxies = get_rand_proxy(),
+                    headers = { "User-Agent": user_agent.random }
+                )
+            )
+            requestsmap_s.append(
+                grequests.get("https://raw.githubusercontent.com/clarketm/proxy-list/%s/proxy-list-status.txt" % hash_,
+                    # proxies = get_rand_proxy(),
+                    headers = { "User-Agent": user_agent.random }
+                )
+            )
 
-        responses   = grequests.map(requestsmap, exception_handler = request_exception_handler)
+        responses_l = grequests.map(requestsmap_l, exception_handler = request_exception_handler)
+        responses_s = grequests.map(requestsmap_s, exception_handler = request_exception_handler)
 
-        for res in responses:
-            if res and res.ok:
-                content = safe_decode(res.content)
-                lines   = content.split("\n")
-                proxies = []
+        for res_l, res_s in zip(responses_l, responses_s):
+            if res_l and res_l.ok:
+                if res_s and res_s.ok:
+                    content  = safe_decode(res_l.content)
+                    lines    = content.split("\n")
+                    proxies  = []
 
-                for line in lines:
-                    output = proxy_to_dict(line, db_cast = True)
-                    if output:
-                        proxies.append(output)
+                    content  = safe_decode(res_s.content)
+                    statuses = content.split("\n")
 
-                if proxies:
-                    _save_proxies(proxies)
+                    status_map = _build_status_map(statuses)
+
+                    for line in lines:
+                        output = proxy_to_dict(line, db_cast = True)
+                        if output:
+                            output["status"] = status_map.get(output["ip"])
+                            proxies.append(output)
+
+                    if proxies:
+                        _save_proxies(proxies)
+                else:
+                    logger.warn("Unable to load URL %s: %s" % (res_s.url if res_s else "", res_s))
             else:
-                logger.warn("Unable to load URL %s: %s" % (res.url if res else "", res))
+                logger.warn("Unable to load URL %s: %s" % (res_l.url if res_l else "", res_l))
 
         write(cache_path, "\n".join(hash_chunk), append = True)
 

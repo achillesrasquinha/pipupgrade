@@ -18,12 +18,13 @@ def to_dict(proxy, db_cast = False):
         output["one_way"]       = type_(output["one_way"]       == "!")
         output["google_passed"] = type_(output["google_passed"] == "+")
 
-        print(proxy, output)
-
         return output
 
 def _concat_helper(fn, b):
     return b if fn() else ""
+
+def to_addr(proxy):
+    return "%s://%s:%s" % ("https" if proxy["secure"] else "http", proxy["ip"], str(proxy["port"]))
 
 def to_str(proxy):
     string  = "%s:%s %s-%s" % (proxy["ip"], str(proxy["port"]),
@@ -35,16 +36,14 @@ def to_str(proxy):
 
     return string
 
-def get_random_proxy(secure = False, google_passed = False):
+def get_random_proxy(secure = False, status = True):
     db      = get_connection()
-    where   = "secure = %s and google_passed = %s" % (
-        int(secure), int(google_passed)
-    )
+    where   = "secure = %s and status = %s" % (int(secure), int(status))
 
     result  = db.query("SELECT * FROM `tabProxies` WHERE %s ORDER BY RANDOM() LIMIT 1" % where)
-    
+
     if result:
-        return "%s://%s:%s" % ("https" if result["secure"] else "http", result["ip"], str(result["port"]))
+        return to_addr(result)
 
 def get_random_requests_proxies():
     return {
