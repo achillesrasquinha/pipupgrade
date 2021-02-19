@@ -51,11 +51,12 @@ def run(*args, **kwargs):
         for package_chunk in tqdm(package_chunks):
             requestsmap = (
                 grequests.get("https://pypi.org/pypi/%s/json" % package,
-                    proxies = get_rand_proxy(), headers = { "User-Agent": user_agent.random }
+                    proxies = get_rand_proxy(),
+                    headers = { "User-Agent": user_agent.random }
                 ) for package in package_chunk
             )
 
-            responses = grequests.map(requestsmap,
+            responses   = grequests.map(requestsmap,
                 exception_handler = exception_handler)
 
             for response in responses:
