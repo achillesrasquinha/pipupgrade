@@ -40,5 +40,5 @@ def run_job(name, variables = None):
 def run_all():
     logger.info("Running all jobs...")
     for job in JOBS:
-        if job.get("beta") or getenv("JOBS_BETA"):
+        if not job.get("beta") or getenv("JOBS_BETA"):
             run_job(job["name"], variables = job.get("variables"))
