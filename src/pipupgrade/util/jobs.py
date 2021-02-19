@@ -9,20 +9,17 @@ from pipupgrade import parallel, log
 settings = Settings()
 logger   = log.get_logger()
 
+JOBS = [
+    "build_proxy_list",
+    "build_dependency_tree"
+]
+
 def run_all():
     logger.info("Running all jobs...")
-
-    jobs    = os.listdir(PATH["JOBS"])
-    paths   = [osp.splitext(p)[0] for p in jobs if p not in ("__init__.py", "__pycache__")]
     
-    logger.info("Jobs found: %s" % paths)
-    
-    fns     = [import_handler("pipupgrade.jobs.%s.run" % fn) for fn in paths]
+    fns     = [import_handler("pipupgrade.jobs.%s.run" % job) for job in JOBS]
 
     njobs   = settings.get("jobs")
-
-    # with parallel.pool(processes = njobs) as pool:
-    #     jobs = [pool.map(fn, [None]) for fn in fns]
 
     for fn in fns:
         fn()
