@@ -2,7 +2,7 @@
 from pipupgrade._compat import iteritems
 
 # imports - standard imports
-import os, os.path as osp
+import sys, os, os.path as osp
 import errno
 import platform
 import subprocess  as sp
@@ -12,12 +12,15 @@ import contextlib
 from   distutils.spawn import find_executable
 
 # imports - module imports
-from pipupgrade.exception   import PopenError
-from pipupgrade.util.string import strip, safe_decode
-from pipupgrade._compat     import iteritems, PY2
-from pipupgrade.log         import get_logger
+from pipupgrade.exception       import PopenError
+from pipupgrade.util.string     import strip, safe_decode
+from pipupgrade.util.environ    import SECRETS
+from pipupgrade._compat         import iteritems, PY2
+from pipupgrade.log             import get_logger
 
 logger = get_logger()
+
+__STDOUT__ = None
 
 def read(fname):
     with open(fname) as f:

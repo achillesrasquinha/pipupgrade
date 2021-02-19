@@ -2,6 +2,16 @@ name: Jobs
 
 on: [push]
 
+env:
+  COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  ENVIRONMENT: test
+  VERBOSE: true
+  TERM: xterm
+
+  PIPUPGRADE_CI: true
+  PIPUPGRADE_JOBS_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   jobs:
     name: Test

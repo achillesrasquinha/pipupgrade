@@ -1,4 +1,4 @@
-.PHONY: shell test help
+.PHONY: shell test help requirements
 
 BASEDIR					= $(shell pwd)
 -include ${BASEDIR}/.env
@@ -73,7 +73,7 @@ requirements: ## Build Requirements
 	@find $(BASEDIR)/requirements -maxdepth 1 -type f | xargs awk '{print}' > $(BASEDIR)/requirements-dev.txt
 	@cat $(BASEDIR)/requirements/production.txt  > $(BASEDIR)/requirements.txt
 
-install: clean info ## Install dependencies and module.
+install: clean info requirements ## Install dependencies and module.
 ifneq (${VERBOSE},true)
 	$(eval OUT = > /dev/null)
 endif

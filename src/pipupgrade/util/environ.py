@@ -6,7 +6,7 @@ import pipupgrade
 from   pipupgrade.util.types 	import auto_typecast
 from   pipupgrade._compat		import string_types
 
-PREFIX = "%s" % pipupgrade.__name__.upper()
+PREFIX 	= "%s" % pipupgrade.__name__.upper()
 
 def getenvvar(name, prefix = PREFIX, seperator = "_"):
 	if not prefix:
@@ -43,3 +43,7 @@ def value_to_envval(value):
 			raise TypeError("Unknown parameter type %s with value %r" % (value, type(value)))
 
 	return value
+
+SECRETS = (
+	getenvvar("JOBS_GITHUB_TOKEN"),
+)
