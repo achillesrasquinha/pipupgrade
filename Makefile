@@ -68,6 +68,11 @@ endif
 info: ## Display Information
 	@echo "Python Environment: ${PYTHON_ENVIRONMENT}"
 
+requirements: ## Build Requirements
+	$(call log,INFO,Building Requirements)
+	@find $(BASEDIR)/requirements -maxdepth 1 -type f | xargs awk '{print}' > $(BASEDIR)/requirements-dev.txt
+	@cat $(BASEDIR)/requirements/production.txt  > $(BASEDIR)/requirements.txt
+
 install: clean info ## Install dependencies and module.
 ifneq (${VERBOSE},true)
 	$(eval OUT = > /dev/null)
@@ -76,11 +81,6 @@ endif
 ifneq (${PIPCACHEDIR},)
 	$(eval PIPCACHEDIR := --cache-dir $(PIPCACHEDIR))
 endif
-
-	$(call log,INFO,Building Requirements)
-	@find $(BASEDIR)/requirements -maxdepth 1 -type f | xargs awk '{print}' > $(BASEDIR)/requirements-dev.txt
-	@cat $(BASEDIR)/requirements/production.txt  > $(BASEDIR)/requirements.txt
-	@cat $(BASEDIR)/requirements/production.txt $(BASEDIR)/requirements/test.txt > $(BASEDIR)/requirements-test.txt
 
 	$(call log,INFO,Installing Requirements)
 ifeq (${ENVIRONMENT},test)

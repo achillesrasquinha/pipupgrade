@@ -1,8 +1,0 @@
-pippytest
-pytest-cov
-pytest-xdist
-pytest-sugar
-pytest-travis-fold
-tox
-coveralls
-pluggy<1,>=0.12.0

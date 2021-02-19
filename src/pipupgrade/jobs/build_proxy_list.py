@@ -1,58 +1,64 @@
 # imports - standard imports
-import os.path as osp
+import os, os.path as osp
 import re
+import asyncio
+import csv
 
-import grequests
-from tqdm import tqdm
-from fake_useragent import UserAgent
+from proxybroker import Broker
 
+from pipupgrade.exception       import PopenError
 from pipupgrade.util.environ    import getenv
 from pipupgrade.util.array      import chunkify
 from pipupgrade.util.system     import make_temp_dir, popen, read, write
 from pipupgrade.util.request    import proxy_request
 from pipupgrade.util.string     import safe_decode, strip
-from pipupgrade.util.proxy      import to_str as proxy_to_str, to_dict as proxy_to_dict
-from pipupgrade.util.request    import get_random_requests_proxies as get_rand_proxy
 from pipupgrade.util.datetime   import get_timestamp_str
 from pipupgrade.config          import PATH
-from pipupgrade._compat import iterkeys, itervalues
+from pipupgrade._compat import iterkeys, itervalues, iteritems
 from pipupgrade import db
 from pipupgrade import log
 
 logger      = log.get_logger(level = log.DEBUG)
 connection  = db.get_connection()
-user_agent  = UserAgent()
 
-def request_exception_handler(request, exception):
-    logger.error("Error while executing request %s: %s" % (request.url, exception))
+PROXY_COLUMNS = "host,port,secure,anonymity,country_code,available,error_rate,average_response_time"
+PROXY_LEVEL_CODES = {
+    "High": "H",
+    "Transparent": "T",
+    "Anonymous": "A"
+}
 
-def _save_proxies(proxies):
-    keys    = ", ".join(iterkeys(proxies[0]))
+def save_proxies_to_db(values):
+    connection.query("""
+        BEGIN TRANSACTION;
+        %s
+        COMMIT;
+    """ % "\n".join([ "INSERT OR IGNORE INTO `tabProxies` (%s) VALUES (%s);"
+        % (PROXY_COLUMNS, ",".join(map(lambda x: '"%s"' % x, v)))
+            for v in values])
+    , script = True)
 
-    inserts = [ "INSERT OR IGNORE INTO `tabProxies` (%s) VALUES (%s);" % (
-            keys, ", ".join(map(lambda x: "'%s'" % x, itervalues(p)))
-        ) for p in proxies ]
+async def save_proxies(proxies):
+    while True:
+        proxy = await proxies.get()
 
-    if inserts:
-        connection.query("""
-            BEGIN TRANSACTION;
-            %s
-            COMMIT;
-        """ % "\n".join(inserts), script = True)
+        if proxy is None:
+            break
 
-REGEX_IP_STATUS = r"^(?P<ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}): (?P<status>success|failure)?"
+        values = [ ]
 
-def _build_status_map(statuses):
-    status_map = { }
+        for type_, level in iteritems(proxy.types):
+            secure  = int(type_ == "HTTPS")
+            level   = PROXY_LEVEL_CODES[ level ] if level else None
+            value   = (proxy.host, proxy.port, secure, level,
+                proxy.geo.code, int(proxy.is_working), proxy.error_rate,
+                proxy.avg_resp_time)
 
-    for status in statuses:
-        output = re.match(REGEX_IP_STATUS, status)
-        
-        if output:
-            output = output.groupdict()
-            status_map[ output["ip"] ] = int(output["status"] == "success")
+            values.append(value)
 
-    return status_map
+        logger.info("Saving Proxy: %s" % proxy)
+
+        save_proxies_to_db(values)
 
 def run(*args, **kwargs):
     dir_path = PATH["CACHE"]
@@ -63,108 +69,63 @@ def run(*args, **kwargs):
     if not osp.exists(repo):
         popen("git clone https://github.com/achillesrasquinha/proxy-list %s" % repo, cwd = dir_path)
     else:
-        popen("git fetch --all", cwd = repo)
+        try:
+            popen("git pull origin master", cwd = repo)
+        except PopenError:
+            logger.warn("Unable to pull latest branch")
 
-    proxy_list_path = osp.join(repo, "proxies.txt")
+    proxies_path = osp.join(repo, "proxies.csv")
 
-    # if osp.exists(proxy_list_path):
-    #     logger.info("Reading fetched cached proxies...")
+    if osp.exists(proxies_path):
+        logger.info("Reading cached proxies...")
 
-    #     lines   = read(proxy_list_path)
-    #     proxies = list(filter(bool, lines.split("\n"))) # BUG?
-    #     if proxies:
-    #         logger.info("Saving fetched cached proxies...")
-    #         _save_proxies(list(map(proxy_to_dict, proxies)))
+        with open(proxies_path, newline = '') as csvfile:
+            reader  = csv.reader(csvfile)
+            values  = list(reader)[1:]
 
-    chunks  = kwargs.get("chunks", 350)
+            save_proxies_to_db(values)
 
-    repo    = osp.join(dir_path, "clarketm-proxy-list")
+    logger.info("Fetching Proxies...")
 
-    if not osp.exists(repo):
-        popen("git clone https://github.com/clarketm/proxy-list %s" % repo, cwd = dir_path)
-    else:
-        popen("git fetch --all", cwd = repo)
+    proxies = asyncio.Queue()
+    broker  = Broker(proxies)
+    tasks   = asyncio.gather(
+        broker.find(types = ["HTTP", "HTTPS"], limit = 100),
+        save_proxies(proxies)
+    )
 
-    _, output, _ = popen("git log --reverse --pretty=format:'%h'", cwd = repo, output = True)
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(tasks)
 
-    cache_path = osp.join(PATH["CACHE"], "proxy-list-hashes.txt")
-    cached_hashes = read(cache_path) if osp.exists(cache_path) else ""
-
-    hashes      = list(filter(lambda x: x not in cached_hashes, output.split("\n")))
-    hash_chunks = list(chunkify(hashes, chunks))
-
-    for hash_chunk in tqdm(hash_chunks):
-        requestsmap_l, requestsmap_s = [], []
-        for hash_ in hash_chunk:
-            requestsmap_l.append(
-                grequests.get("https://raw.githubusercontent.com/clarketm/proxy-list/%s/proxy-list.txt" % hash_,
-                    # proxies = get_rand_proxy(),
-                    headers = { "User-Agent": user_agent.random }
-                )
-            )
-            requestsmap_s.append(
-                grequests.get("https://raw.githubusercontent.com/clarketm/proxy-list/%s/proxy-list-status.txt" % hash_,
-                    # proxies = get_rand_proxy(),
-                    headers = { "User-Agent": user_agent.random }
-                )
-            )
-
-        responses_l = grequests.map(requestsmap_l, exception_handler = request_exception_handler)
-        responses_s = grequests.map(requestsmap_s, exception_handler = request_exception_handler)
-
-        for res_l, res_s in zip(responses_l, responses_s):
-            if res_l and res_l.ok:
-                if res_s and res_s.ok:
-                    content  = safe_decode(res_l.content)
-                    lines    = content.split("\n")
-                    proxies  = []
-
-                    content  = safe_decode(res_s.content)
-                    statuses = content.split("\n")
-
-                    status_map = _build_status_map(statuses)
-
-                    for line in lines:
-                        output = proxy_to_dict(line, db_cast = True)
-                        if output:
-                            output["status"] = status_map.get(output["ip"])
-                            proxies.append(output)
-
-                    if proxies:
-                        _save_proxies(proxies)
-                else:
-                    logger.warn("Unable to load URL %s: %s" % (res_s.url if res_s else "", res_s))
-            else:
-                logger.warn("Unable to load URL %s: %s" % (res_l.url if res_l else "", res_l))
-
-        write(cache_path, "\n".join(hash_chunk), append = True)
-
-    # save, commit and release
     logger.info("Commiting Latest Proxy List...")
 
     with make_temp_dir() as dir_path:
         repo = osp.join(dir_path, "proxy-list")
 
-        github_username     = getenv("JOBS_GITHUB_USERNAME",    raise_err = True)
-        github_oauth_token  = getenv("JOBS_GITHUB_OAUTH_TOKEN", raise_err = True)
+        github_username    = getenv("JOBS_GITHUB_USERNAME",    raise_err = True)
+        github_oauth_token = getenv("JOBS_GITHUB_OAUTH_TOKEN", raise_err = True)
 
         popen("git clone https://%s:%s@github.com/achillesrasquinha/proxy-list.git %s" % 
             (github_username, github_oauth_token, repo), cwd = dir_path)
 
         popen("git remote -vv", cwd = repo)
 
-        proxy_path = osp.join(repo, "proxies.txt")
+        proxies_path = osp.join(repo, "proxies.csv")
 
-        with open(proxy_path, "w") as f:
+        with open(proxies_path, "w") as f:
+            f.write(PROXY_COLUMNS)
+            f.write("\n")
+
             for row in connection.query("SELECT * FROM `tabProxies`"):
-                proxy = proxy_to_str(row)
+                values  = itervalues(row)
+                data    = ",".join(values)
 
-                f.write(proxy)
+                f.write(data)
                 f.write("\n")
 
-        write(proxy_path, strip(read(proxy_path))) # remove trailing line.
+        write(proxies_path, strip(read(proxies_path)))
 
-        popen("git add %s" % proxy_path, cwd = repo)
+        popen("git add %s" % proxies_path, cwd = repo)
         commit_message = "Update Proxy List: %s" % get_timestamp_str()
         popen("git commit --allow-empty -m '%s'" % commit_message, cwd = repo)
 

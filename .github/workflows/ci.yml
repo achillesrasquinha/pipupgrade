@@ -34,7 +34,7 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
       - name: Install dependencies
         run: |
-          pip install -r requirements-test.txt
+          pip install -r requirements-dev.txt
           python setup.py develop
       - name: Run Tests
         run: |

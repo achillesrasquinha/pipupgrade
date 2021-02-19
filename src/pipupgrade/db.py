@@ -54,10 +54,6 @@ class DB(object):
 
         self._connection.commit()
 
-        # if generate:
-        #     for row in generator:
-        #         yield dict(row)
-
         results = cursor.fetchall()
         results = [dict(result) for result in results]
 
