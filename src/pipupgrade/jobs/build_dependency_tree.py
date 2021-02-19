@@ -27,7 +27,7 @@ def exception_handler(request, exception):
 
 def run(*args, **kwargs):
     with make_temp_dir() as dir_path:
-        chunk_size  = kwargs.get("chunk_size", 100)
+        chunk_size  = kwargs.get("chunk_size", 1000)
         index_url   = kwargs.get("index_url", BASE_INDEX_URL)
 
         logger.info("Fetching Package List...")

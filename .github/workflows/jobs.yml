@@ -12,6 +12,7 @@ env:
   VERBOSE: true
   TERM: xterm
 
+  PIPUPGRADE_JOBS_GITHUB_USERNAME: achillesrasquinha
   PIPUPGRADE_JOBS_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
