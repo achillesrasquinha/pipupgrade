@@ -1,7 +1,7 @@
 try:
     import os
 
-    if os.environ.get("PIPUPGRADE_CI"):
+    if os.environ.get("PIPUPGRADE_JOBS_GEVENT_PATCH"):
         from gevent import monkey
         monkey.patch_all(threaded = False, select = False)
 except ImportError:
@@ -16,7 +16,7 @@ from pipupgrade.__attr__    import (
 from pipupgrade.__main__    import main
 from pipupgrade.config      import Settings
 from pipupgrade             import _pip
-from pipupgrade.util.jobs   import run_all as run_all_jobs
+from pipupgrade.util.jobs   import run_all as run_all_jobs, run_job
 
 settings = Settings()
 

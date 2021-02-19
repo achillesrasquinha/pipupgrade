@@ -254,7 +254,7 @@ def _command(*args, **kwargs):
                 results = pool.imap_unordered(
                     partial(
                         update_pipfile,
-                        **{ "a.verbose": a.verbose }
+                        **{ "verbose": a.verbose }
                     ),
                     pipfile
                 )

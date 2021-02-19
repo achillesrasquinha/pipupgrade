@@ -9,7 +9,6 @@ env:
   VERBOSE: true
   TERM: xterm
 
-  PIPUPGRADE_CI: true
   PIPUPGRADE_JOBS_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:

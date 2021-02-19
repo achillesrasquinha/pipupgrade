@@ -71,7 +71,6 @@ def popen(*args, **kwargs):
         environ[k] = str(v)
 
     command     = " ".join([str(arg) for arg in args])
-
     logger.info("Executing command: %s" % command)
 
     if quiet:

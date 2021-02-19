@@ -10,6 +10,8 @@ from pipupgrade.exception       import PopenError
 from pipupgrade.util.environ    import getenv
 from pipupgrade.util.array      import chunkify
 from pipupgrade.util.system     import make_temp_dir, popen, read, write
+from pipupgrade.util.proxy      import (fetch as fetch_proxies, save as save_proxies_to_db,
+    PROXY_COLUMNS)
 from pipupgrade.util.request    import proxy_request
 from pipupgrade.util.string     import safe_decode, strip
 from pipupgrade.util.datetime   import get_timestamp_str
@@ -21,22 +23,11 @@ from pipupgrade import log
 logger      = log.get_logger(level = log.DEBUG)
 connection  = db.get_connection()
 
-PROXY_COLUMNS = "host,port,secure,anonymity,country_code,available,error_rate,average_response_time"
 PROXY_LEVEL_CODES = {
     "High": "H",
     "Transparent": "T",
     "Anonymous": "A"
 }
-
-def save_proxies_to_db(values):
-    connection.query("""
-        BEGIN TRANSACTION;
-        %s
-        COMMIT;
-    """ % "\n".join([ "INSERT OR IGNORE INTO `tabProxies` (%s) VALUES (%s);"
-        % (PROXY_COLUMNS, ",".join(map(lambda x: '"%s"' % x, v)))
-            for v in values])
-    , script = True)
 
 async def save_proxies(proxies):
     while True:
@@ -61,29 +52,7 @@ async def save_proxies(proxies):
         save_proxies_to_db(values)
 
 def run(*args, **kwargs):
-    dir_path = PATH["CACHE"]
-
-    # seed database...
-    repo = osp.join(dir_path, "proxy-list")
-
-    if not osp.exists(repo):
-        popen("git clone https://github.com/achillesrasquinha/proxy-list %s" % repo, cwd = dir_path)
-    else:
-        try:
-            popen("git pull origin master", cwd = repo)
-        except PopenError:
-            logger.warn("Unable to pull latest branch")
-
-    proxies_path = osp.join(repo, "proxies.csv")
-
-    if osp.exists(proxies_path):
-        logger.info("Reading cached proxies...")
-
-        with open(proxies_path, newline = '') as csvfile:
-            reader  = csv.reader(csvfile)
-            values  = list(reader)[1:]
-
-            save_proxies_to_db(values)
+    fetch_proxies()
 
     logger.info("Fetching Proxies...")
 
@@ -118,7 +87,7 @@ def run(*args, **kwargs):
 
             for row in connection.query("SELECT * FROM `tabProxies`"):
                 values = itervalues(row)
-                data   = ",".join(values)
+                data   = ",".join(map(str, values))
 
                 f.write(data)
                 f.write("\n")
