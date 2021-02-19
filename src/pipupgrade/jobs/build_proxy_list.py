@@ -77,7 +77,8 @@ def run(*args, **kwargs):
         popen("git clone https://%s:%s@github.com/achillesrasquinha/proxy-list.git %s" % 
             (github_username, github_oauth_token, repo), cwd = dir_path)
 
-        popen("git remote -vv", cwd = repo)
+        popen("git config user.email 'bot.pipupgrade@gmail.com")
+        popen("git config user.name  'pipupgrade bot'")
 
         proxies_path = osp.join(repo, "proxies.csv")
 
