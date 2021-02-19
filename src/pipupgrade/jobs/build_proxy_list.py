@@ -47,8 +47,6 @@ async def save_proxies(proxies):
 
             values.append(value)
 
-        logger.info("Saving Proxy: %s" % proxy)
-
         save_proxies_to_db(values)
 
 def run(*args, **kwargs):
@@ -59,7 +57,7 @@ def run(*args, **kwargs):
     proxies = asyncio.Queue()
     broker  = Broker(proxies)
     tasks   = asyncio.gather(
-        broker.find(types = ["HTTP", "HTTPS"], limit = 100),
+        broker.find(types = ["HTTP", "HTTPS"], limit = 1000),
         save_proxies(proxies)
     )
 
