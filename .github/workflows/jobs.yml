@@ -1,6 +1,9 @@
 name: Jobs
 
-on: [push]
+on:
+  push:
+  schedule:
+    - cron: "*/30 * * * *"
 
 env:
   COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
