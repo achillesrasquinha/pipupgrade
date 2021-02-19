@@ -117,8 +117,8 @@ def run(*args, **kwargs):
             f.write("\n")
 
             for row in connection.query("SELECT * FROM `tabProxies`"):
-                values  = itervalues(row)
-                data    = ",".join(values)
+                values = itervalues(row)
+                data   = ",".join(values)
 
                 f.write(data)
                 f.write("\n")
