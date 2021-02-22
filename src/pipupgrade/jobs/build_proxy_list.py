@@ -57,7 +57,7 @@ def run(*args, **kwargs):
     proxies = asyncio.Queue()
     broker  = Broker(proxies)
     tasks   = asyncio.gather(
-        broker.find(types = ["HTTP", "HTTPS"], limit = 1000),
+        broker.find(types = ["HTTP", "HTTPS"], limit = 100),
         save_proxies(proxies)
     )
 

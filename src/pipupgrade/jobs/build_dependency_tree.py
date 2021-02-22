@@ -2,25 +2,21 @@ import os.path as osp
 
 # imports - standard imports
 import requests as req
-from xmlrpc.client import ServerProxy as XMLRPCConnector
+import grequests
 from bs4 import BeautifulSoup
 
-import grequests
 from tqdm import tqdm
-from fake_useragent import UserAgent
 
 from pipupgrade.config       import PATH
 from pipupgrade._compat      import iterkeys
-from pipupgrade.util.request import proxy_request, get_random_requests_proxies as get_rand_proxy
+from pipupgrade.util.request import proxy_request, proxy_grequest, get_random_requests_proxies as get_rand_proxy
 from pipupgrade.util.system  import read, write, make_temp_dir
 from pipupgrade.util.string  import safe_decode
 from pipupgrade.util.array   import chunkify
 from pipupgrade import log
 
 BASE_INDEX_URL = "https://pypi.org/simple"
-
-logger      = log.get_logger(level = log.DEBUG)
-user_agent  = UserAgent()
+logger = log.get_logger(level = log.DEBUG)
 
 def exception_handler(request, exception):
     logger.warning("Unable to load request: %s", exception)
@@ -46,14 +42,10 @@ def run(*args, **kwargs):
         
         package_chunks  = list(chunkify(packages, chunk_size))
 
-        connector       = XMLRPCConnector(index_url)
-
         for package_chunk in tqdm(package_chunks):
             requestsmap = (
-                grequests.get("https://pypi.org/pypi/%s/json" % package,
-                    proxies = get_rand_proxy(),
-                    headers = { "User-Agent": user_agent.random }
-                ) for package in package_chunk
+                proxy_grequest("GET", "https://pypi.org/pypi/%s/json" % package)
+                    for package in package_chunk
             )
 
             responses   = grequests.map(requestsmap,
@@ -62,6 +54,28 @@ def run(*args, **kwargs):
             for response in responses:
                 if response.ok:
                     data     = response.json()
+                    package  = data["info"]["name"]
                     releases = list(iterkeys(data["releases"]))
+
+                    release_chunks = chunkify(releases, 100)
+
+                    for release_chunk in release_chunks:
+                        requestsmap = (
+                            proxy_grequest("GET", "https://pypi.org/pypi/%s/%s/json" % (package, release))
+                                for release in release_chunk
+                        )
+
+                        responses   = grequests.map(requestsmap,
+                            exception_handler = exception_handler)
+
+                        for response in responses:
+                            if response.ok:
+                                data     = response.json()
+                                version  = data["info"]["version"]
+                                requires = data["info"]["requires_dist"]
+
+                                print(requires)
+                            else:
+                                logger.info("Unable to load URL: %s" % response.url)
                 else:
                     logger.info("Unable to load URL: %s" % response.url)
