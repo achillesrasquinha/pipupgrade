@@ -13,10 +13,11 @@ from pipupgrade.util.request import proxy_request, proxy_grequest, get_random_re
 from pipupgrade.util.system  import read, write, make_temp_dir
 from pipupgrade.util.string  import safe_decode
 from pipupgrade.util.array   import chunkify
-from pipupgrade import log
+from pipupgrade import log, db
 
-BASE_INDEX_URL = "https://pypi.org/simple"
-logger = log.get_logger(level = log.DEBUG)
+BASE_INDEX_URL  = "https://pypi.org/simple"
+logger          = log.get_logger(level = log.DEBUG)
+connection      = db.get_connection()
 
 def exception_handler(request, exception):
     logger.warning("Unable to load request: %s", exception)
@@ -28,7 +29,7 @@ def run(*args, **kwargs):
 
         logger.info("Fetching Package List...")
 
-        res = proxy_request("GET", index_url, stream = True)
+        res  = proxy_request("GET", index_url, stream = True)
         res.raise_for_status()
 
         html = ""
@@ -65,7 +66,7 @@ def run(*args, **kwargs):
                                 for release in release_chunk
                         )
 
-                        responses   = grequests.map(requestsmap,
+                        responses = grequests.map(requestsmap,
                             exception_handler = exception_handler)
 
                         for response in responses:
@@ -74,7 +75,15 @@ def run(*args, **kwargs):
                                 version  = data["info"]["version"]
                                 requires = data["info"]["requires_dist"]
 
-                                print(requires)
+                                query    = """
+                                    INSERT INTO `tabPackageDependency`
+                                        (name, version, requires)
+                                    VALUES
+                                        (?, ?, ?)
+                                """ 
+                                values   = (package, version, ",".join(requires) if requires else "NULL")
+
+                                connection.query(query, values)
                             else:
                                 logger.info("Unable to load URL: %s" % response.url)
                 else:

@@ -50,9 +50,9 @@ async def save_proxies(proxies):
         save_proxies_to_db(values)
 
 def run(*args, **kwargs):
-    fetch_proxies()
-
     logger.info("Fetching Proxies...")
+
+    fetch_proxies()
 
     proxies = asyncio.Queue()
     broker  = Broker(proxies)

@@ -10,13 +10,6 @@ CREATE TABLE IF NOT EXISTS `tabPackage` (
     `_updated_at`       TEXT
 );
 
-CREATE TABLE IF NOT EXISTS `tabPackageDependency` (
-    -- `id`                INTEGER     PRIMARY KEY AUTOINCREMENT,
-    `package_id`        INTEGER     NOT NULL,
-    `version`           TEXT        NOT NULL,
-    FOREIGN KEY(package_id) REFERENCES tabPackage(id)
-);
-
 CREATE TABLE IF NOT EXISTS `tabSettings` (
     `version`           TEXT        NOT NULL
 );
@@ -32,4 +25,10 @@ CREATE TABLE IF NOT EXISTS `tabProxies` (
     `average_response_time` REAL        NOT NULL,
     UNIQUE(`host`, `port`, `secure`, `anonymity`, `country_code`, `available`, `error_rate`,
         `average_response_time`)
+);
+
+CREATE TABLE IF NOT EXISTS `tabPackageDependency` (
+    `name`          TEXT         NOT NULL,
+    `version`       TEXT         NOT NULL,
+    `requires`      TEXT
 );
