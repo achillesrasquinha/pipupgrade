@@ -23,7 +23,7 @@ PATH["CACHE"]   = osp.join(osp.expanduser("~"), ".config", NAME)
 PATH["JOBS"]    = osp.join(PATH["BASE"], "jobs")
 
 class Configuration(object):
-    # BUGFIX: #63 Always complains about invalid config.ini - https://github.com/achillesrasquinha/pipupgrade/issues/63
+    # BUGFIX: # 63 Always complains about invalid config.ini - https://github.com/achillesrasquinha/pipupgrade/issues/63
     #         Use threading.Lock() around disk IO
     locks = { "readwrite": Lock() }
 
@@ -62,7 +62,6 @@ class Configuration(object):
             path = osp.join(self.location, self.name)
             with open(path, "w") as f:
                 self.config.write(f)
-
 
     def get(self, section, key):
         config = self.config

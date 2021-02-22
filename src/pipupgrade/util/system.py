@@ -22,14 +22,14 @@ logger = get_logger()
 
 __STDOUT__ = None
 
-def read(fname):
-    with open(fname) as f:
+def read(fname, mode = None):
+    with open(fname, mode = mode or "r") as f:
         data = f.read()
     return data
 
-def write(fname, data = None, force = False, append = False):
+def write(fname, data = None, force = False, append = False, mode = None):
     if not osp.exists(fname) or append or force:
-        with open(fname, mode = "a" if append else "w") as f:
+        with open(fname, mode = mode or ("a" if append else "w")) as f:
             if data:
                 f.write(data)
 

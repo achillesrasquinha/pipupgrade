@@ -1,4 +1,5 @@
 import os.path as osp
+import shutil
 
 # imports - standard imports
 import requests as req
@@ -7,12 +8,13 @@ from bs4 import BeautifulSoup
 
 from tqdm import tqdm
 
-from pipupgrade.config       import PATH
-from pipupgrade._compat      import iterkeys
-from pipupgrade.util.request import proxy_request, proxy_grequest, get_random_requests_proxies as get_rand_proxy
-from pipupgrade.util.system  import read, write, make_temp_dir
-from pipupgrade.util.string  import safe_decode
-from pipupgrade.util.array   import chunkify
+from pipupgrade.config          import PATH
+from pipupgrade._compat         import iterkeys
+from pipupgrade.util.request    import proxy_request, proxy_grequest, get_random_requests_proxies as get_rand_proxy
+from pipupgrade.util.system     import read, write, make_temp_dir, popen
+from pipupgrade.util.string     import safe_decode
+from pipupgrade.util.array      import chunkify
+from pipupgrade.util.datetime   import get_timestamp_str
 from pipupgrade import log, db
 
 BASE_INDEX_URL  = "https://pypi.org/simple"
@@ -23,6 +25,26 @@ def exception_handler(request, exception):
     logger.warning("Unable to load request: %s", exception)
 
 def run(*args, **kwargs):
+    dir_path = PATH["CACHE"]
+
+    # seed database...
+    repo = osp.join(dir_path, "pipupgrade-assets")
+
+    if not osp.exists(repo):
+        popen("git clone https://github.com/achillesrasquinha/pipupgrade-assets %s" % repo,
+            cwd = dir_path)
+    else:
+        try:
+            popen("git pull origin master", cwd = repo)
+        except PopenError:
+            logger.warn("Unable to pull latest branch")
+
+    path_src = osp.join(dir_path, "db.db")
+    path_tgt = osp.join(repo, "cache.db")
+
+    if osp.exists(path_tgt):
+        write(path_src, read(path_tgt, mode = "rb"), mode = "wb")
+
     with make_temp_dir() as dir_path:
         chunk_size  = kwargs.get("chunk_size", 1000)
         index_url   = kwargs.get("index_url", BASE_INDEX_URL)
@@ -40,7 +62,7 @@ def run(*args, **kwargs):
 
         packages = list(map(lambda x: x.text, soup.findAll('a')))
         logger.info("%s packages found." % len(packages))
-        
+
         package_chunks  = list(chunkify(packages, chunk_size))
 
         for package_chunk in tqdm(package_chunks):
@@ -76,15 +98,26 @@ def run(*args, **kwargs):
                                 requires = data["info"]["requires_dist"]
 
                                 query    = """
-                                    INSERT INTO `tabPackageDependency`
+                                    INSERT OR IGNORE INTO `tabPackageDependency`
                                         (name, version, requires)
                                     VALUES
                                         (?, ?, ?)
                                 """
-                                values   = (package, version, ",".join(requires) if requires else "NULL")
+                                values   = (
+                                    package,
+                                    version,
+                                    ",".join(requires) if requires else "NULL"
+                                )
 
                                 connection.query(query, values)
                             else:
                                 logger.info("Unable to load URL: %s" % response.url)
                 else:
                     logger.info("Unable to load URL: %s" % response.url)
+
+            shutil.copy(path_src, path_tgt)
+
+            popen("git add .", cwd = repo)
+            popen("git commit -m 'Update database: %s'" % get_timestamp_str(),
+                cwd = repo)
+            popen("git push origin master", cwd = repo)

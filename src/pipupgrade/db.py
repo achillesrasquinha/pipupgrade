@@ -79,7 +79,9 @@ def get_connection(bootstrap = True, log = False):
         abspath  = osp.join(basepath, "db.db")
 
         _CONNECTION = DB(abspath)
-        _CONNECTION.connect(detect_types = sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        _CONNECTION.connect(
+            detect_types = sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES
+        )
 
         if bootstrap:
             if log:
