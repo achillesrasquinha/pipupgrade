@@ -126,6 +126,6 @@ def run(*args, **kwargs):
             write(path_tgt, read(path_src, mode = "rb"), mode = "wb")
 
             popen("git add %s" % path_tgt, cwd = repo)
-            popen("git commit -m 'Update database: %s'" % get_timestamp_str(),
+            popen("git commit --allow-empty -m 'Update database: %s'" % get_timestamp_str(),
                 cwd = repo)
             popen("git push origin master", cwd = repo)
