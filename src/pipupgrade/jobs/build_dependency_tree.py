@@ -15,6 +15,7 @@ from pipupgrade.util.system     import read, write, make_temp_dir, popen
 from pipupgrade.util.string     import safe_decode
 from pipupgrade.util.array      import chunkify
 from pipupgrade.util.datetime   import get_timestamp_str
+from pipupgrade.util.environ    import getenv
 from pipupgrade import log, db
 
 BASE_INDEX_URL  = "https://pypi.org/simple"
@@ -31,8 +32,14 @@ def run(*args, **kwargs):
     repo = osp.join(dir_path, "pipupgrade-assets")
 
     if not osp.exists(repo):
-        popen("git clone https://github.com/achillesrasquinha/pipupgrade-assets %s" % repo,
-            cwd = dir_path)
+        github_username    = getenv("JOBS_GITHUB_USERNAME",    raise_err = True)
+        github_oauth_token = getenv("JOBS_GITHUB_OAUTH_TOKEN", raise_err = True)
+
+        popen("git clone https://%s:%s@github.com/achillesrasquinha/pipupgrade-assets %s" %
+            (github_username, github_oauth_token, repo), cwd = dir_path)
+
+        popen("git config user.email 'bot.pipupgrade@gmail.com'", cwd = repo)
+        popen("git config user.name  'pipupgrade bot'", cwd = repo)
     else:
         try:
             popen("git pull origin master", cwd = repo)
@@ -115,9 +122,10 @@ def run(*args, **kwargs):
                 else:
                     logger.info("Unable to load URL: %s" % response.url)
 
-            shutil.copy(path_src, path_tgt)
+            # shutil.copy(path_src, path_tgt)
+            write(path_tgt, read(path_src, mode = "rb"), mode = "wb")
 
-            popen("git add .", cwd = repo)
+            popen("git add %s" % path_tgt, cwd = repo)
             popen("git commit -m 'Update database: %s'" % get_timestamp_str(),
                 cwd = repo)
             popen("git push origin master", cwd = repo)
