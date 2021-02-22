@@ -21,7 +21,7 @@ JOBS = [
         "variables": {
             getenvvar("JOBS_GEVENT_PATCH"): True
         },
-        "beta": True
+        # "beta": True
     }
 ]
 

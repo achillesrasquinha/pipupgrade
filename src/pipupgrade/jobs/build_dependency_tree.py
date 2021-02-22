@@ -38,7 +38,7 @@ def run(*args, **kwargs):
 
         soup = BeautifulSoup(html, 'html.parser')
 
-        packages        = list(map(lambda x: x.text, soup.findAll('a')))
+        packages = list(map(lambda x: x.text, soup.findAll('a')))
         logger.info("%s packages found." % len(packages))
         
         package_chunks  = list(chunkify(packages, chunk_size))
@@ -80,7 +80,7 @@ def run(*args, **kwargs):
                                         (name, version, requires)
                                     VALUES
                                         (?, ?, ?)
-                                """ 
+                                """
                                 values   = (package, version, ",".join(requires) if requires else "NULL")
 
                                 connection.query(query, values)
