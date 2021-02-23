@@ -27,8 +27,8 @@ CREATE TABLE IF NOT EXISTS `tabProxies` (
         `average_response_time`)
 );
 
-CREATE TABLE IF NOT EXISTS `tabPackageDependency` (
-    `name`          TEXT         NOT NULL,
-    `version`       TEXT         NOT NULL,
-    `requires`      TEXT
-);
+-- CREATE TABLE IF NOT EXISTS `tabPackageDependency` (
+--     `name`          TEXT         NOT NULL,
+--     `version`       TEXT         NOT NULL,
+--     `requires`      TEXT
+-- );

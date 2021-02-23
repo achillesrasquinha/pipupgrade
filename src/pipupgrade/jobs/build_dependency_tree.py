@@ -1,5 +1,6 @@
 import os.path as osp
 import shutil
+import json
 
 # imports - standard imports
 import requests as req
@@ -16,6 +17,7 @@ from pipupgrade.util.string     import safe_decode
 from pipupgrade.util.array      import chunkify
 from pipupgrade.util.datetime   import get_timestamp_str
 from pipupgrade.util.environ    import getenv
+from pipupgrade.util._dict      import autodict
 from pipupgrade import log, db
 
 BASE_INDEX_URL  = "https://pypi.org/simple"
@@ -46,11 +48,12 @@ def run(*args, **kwargs):
         except PopenError:
             logger.warn("Unable to pull latest branch")
 
-    path_src = osp.join(dir_path, "db.db")
-    path_tgt = osp.join(repo, "cache.db")
+    path_deptree = osp.join(repo, "dependencies.json")
+    deptree      = autodict()
 
-    if osp.exists(path_tgt):
-        write(path_src, read(path_tgt, mode = "rb"), mode = "wb")
+    if osp.exists(path_deptree):
+        with open(path_deptree) as f:
+            deptree = autodict(json.load(f))
 
     with make_temp_dir() as dir_path:
         chunk_size  = kwargs.get("chunk_size", 1000)
@@ -68,6 +71,7 @@ def run(*args, **kwargs):
         soup = BeautifulSoup(html, 'html.parser')
 
         packages = list(map(lambda x: x.text, soup.findAll('a')))
+
         logger.info("%s packages found." % len(packages))
 
         package_chunks  = list(chunkify(packages, chunk_size))
@@ -104,28 +108,30 @@ def run(*args, **kwargs):
                                 version  = data["info"]["version"]
                                 requires = data["info"]["requires_dist"]
 
-                                query    = """
-                                    INSERT OR IGNORE INTO `tabPackageDependency`
-                                        (name, version, requires)
-                                    VALUES
-                                        (?, ?, ?)
-                                """
-                                values   = (
-                                    package,
-                                    version,
-                                    ",".join(requires) if requires else "NULL"
-                                )
+                                deptree[package][version] = requires
 
-                                connection.query(query, values)
+                                # query    = """
+                                #     INSERT OR IGNORE INTO `tabPackageDependency`
+                                #         (name, version, requires)
+                                #     VALUES
+                                #         (?, ?, ?)
+                                # """
+                                # values   = (
+                                #     package,
+                                #     version,
+                                #     ",".join(requires) if requires else "NULL"
+                                # )
+
+                                # connection.query(query, values)
                             else:
                                 logger.info("Unable to load URL: %s" % response.url)
                 else:
                     logger.info("Unable to load URL: %s" % response.url)
 
-            # shutil.copy(path_src, path_tgt)
-            write(path_tgt, read(path_src, mode = "rb"), mode = "wb")
+            with open(path_deptree, mode = "w") as f:
+                json.dump(deptree, f)
 
-            popen("git add %s" % path_tgt, cwd = repo)
+            popen("git add %s" % path_deptree, cwd = repo)
             popen("git commit --allow-empty -m 'Update database: %s'" % get_timestamp_str(),
                 cwd = repo)
             popen("git push origin master", cwd = repo)
