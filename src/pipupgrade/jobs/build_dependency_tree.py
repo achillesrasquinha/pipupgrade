@@ -6,6 +6,7 @@ import json
 import requests as req
 import grequests
 from bs4 import BeautifulSoup
+from addict import Dict
 
 from tqdm import tqdm
 
@@ -49,11 +50,11 @@ def run(*args, **kwargs):
             logger.warn("Unable to pull latest branch")
 
     path_deptree = osp.join(repo, "dependencies.json")
-    deptree      = autodict()
+    deptree      = Dict()
 
     if osp.exists(path_deptree):
         with open(path_deptree) as f:
-            deptree = autodict(json.load(f))
+            deptree = Dict(json.load(f))
 
     with make_temp_dir() as dir_path:
         chunk_size  = kwargs.get("chunk_size", 1000)

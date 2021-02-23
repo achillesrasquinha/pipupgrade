@@ -3,3 +3,4 @@ beautifulsoup4
 grequests
 fake-useragent
 proxybroker
+addict
