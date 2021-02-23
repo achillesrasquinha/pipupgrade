@@ -70,7 +70,8 @@ info: ## Display Information
 
 requirements: ## Build Requirements
 	$(call log,INFO,Building Requirements)
-	@find $(BASEDIR)/requirements -maxdepth 1 -type f | xargs awk '{print}' > $(BASEDIR)/requirements-dev.txt
+	@find $(BASEDIR)/requirements -maxdepth 1 -type f | grep -v 'jobs' | xargs awk '{print}' > $(BASEDIR)/requirements-dev.txt
+	@find $(BASEDIR)/requirements -maxdepth 1 -type f | xargs awk '{print}' > $(BASEDIR)/requirements-jobs.txt
 	@cat $(BASEDIR)/requirements/production.txt  > $(BASEDIR)/requirements.txt
 
 install: clean info requirements ## Install dependencies and module.
