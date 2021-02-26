@@ -71,7 +71,7 @@ def run(*args, **kwargs):
 
         soup = BeautifulSoup(html, 'html.parser')
 
-        packages = list(map(lambda x: x.text, soup.findAll('a')))
+        packages = list(filter(lambda x: x not in deptree, map(lambda x: x.text, soup.findAll('a'))))
 
         logger.info("%s packages found." % len(packages))
 
