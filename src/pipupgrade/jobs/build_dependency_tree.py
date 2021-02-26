@@ -49,8 +49,12 @@ def run(*args, **kwargs):
         except PopenError:
             logger.warn("Unable to pull latest branch")
 
-    path_deptree = osp.join(repo, "dependencies.json")
     deptree      = Dict()
+    path_deptree = osp.join(repo, "dependencies.json.gz")
+
+    with gzip.open(path_deptree) as f:
+        content = f.read()
+        deptree = json.loads(content)
 
     if osp.exists(path_deptree):
         with open(path_deptree) as f:
@@ -129,8 +133,9 @@ def run(*args, **kwargs):
                 else:
                     logger.info("Unable to load URL: %s" % response.url)
 
-            with open(path_deptree, mode = "w") as f:
-                json.dump(deptree, f)
+            with gzip.open(path_deptree, mode = "wt") as f:
+                content = json.dumps(deptree)
+                f.write(content)
 
             popen("git add %s" % path_deptree, cwd = repo)
             popen("git commit --allow-empty -m 'Update database: %s'" % get_timestamp_str(),

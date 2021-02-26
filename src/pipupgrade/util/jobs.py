@@ -15,9 +15,13 @@ settings = Settings()
 logger   = log.get_logger()
 
 JOBS = [
-    { "name": "build_proxy_list" },
+    {
+        "name": "build_proxy_list",
+        "schedule": "*/30 * * * *"
+    },
     {
         "name": "build_dependency_tree",
+        "schedule": "0 1 * * *",
         "variables": {
             getenvvar("JOBS_GEVENT_PATCH"): True
         },
