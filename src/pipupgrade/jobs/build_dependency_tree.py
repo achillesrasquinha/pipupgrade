@@ -90,7 +90,7 @@ def run(*args, **kwargs):
                 if response.ok:
                     data     = response.json()
                     package  = data["info"]["name"]
-                    releases = list(iterkeys(data["releases"]))
+                    releases = list(filter(lambda x: x not in deptree[package], iterkeys(data["releases"])))
 
                     release_chunks = chunkify(releases, 100)
 
