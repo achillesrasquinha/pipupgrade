@@ -1,6 +1,7 @@
 import os.path as osp
 import shutil
 import json
+import gzip
 
 # imports - standard imports
 import requests as req
