@@ -136,6 +136,6 @@ def run(*args, **kwargs):
                 f.write(content)
 
             popen("git add %s" % path_deptree, cwd = repo)
-            popen("git commit --allow-empty -m 'Update database: %s'" % get_timestamp_str(),
+            popen("git commit --allow-empty -m '[skip ci]: Update database - %s'" % get_timestamp_str(),
                 cwd = repo)
             popen("git push origin master", cwd = repo)
