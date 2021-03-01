@@ -50,16 +50,13 @@ def run(*args, **kwargs):
         except PopenError:
             logger.warn("Unable to pull latest branch")
 
-    deptree      = Dict()
+    deptree = Dict()
     path_deptree = osp.join(repo, "dependencies.json.gz")
 
-    with gzip.open(path_deptree) as f:
-        content = f.read()
-        deptree = json.loads(content)
-
     if osp.exists(path_deptree):
-        with open(path_deptree) as f:
-            deptree = Dict(json.load(f))
+        with gzip.open(path_deptree) as f:
+            content = f.read()
+            deptree = json.loads(content)
 
     with make_temp_dir() as dir_path:
         chunk_size  = kwargs.get("chunk_size", 1000)
