@@ -50,7 +50,7 @@ def run(*args, **kwargs):
         except PopenError:
             logger.warn("Unable to pull latest branch")
 
-    deptree      = Dict()
+    deptree = Dict()
     path_deptree = osp.join(repo, "data", "dependencies.json.gz")
 
     if osp.exists(path_deptree):
@@ -60,7 +60,7 @@ def run(*args, **kwargs):
 
     with make_temp_dir() as dir_path:
         chunk_size  = kwargs.get("chunk_size", 1000)
-        index_url   = kwargs.get("index_url", BASE_INDEX_URL)
+        index_url   = kwargs.get("index_url",  BASE_INDEX_URL)
 
         logger.info("Fetching Package List...")
 
@@ -92,7 +92,7 @@ def run(*args, **kwargs):
                 if response.ok:
                     data     = response.json()
                     package  = data["info"]["name"]
-                    releases = list(filter(lambda x: x not in deptree[package], iterkeys(data["releases"])))
+                    releases = list(iterkeys(data["releases"]))
 
                     release_chunks = chunkify(releases, 100)
 
