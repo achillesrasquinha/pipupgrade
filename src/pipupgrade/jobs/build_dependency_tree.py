@@ -33,13 +33,13 @@ def run(*args, **kwargs):
     dir_path = PATH["CACHE"]
 
     # seed database...
-    repo = osp.join(dir_path, "pipupgrade-assets")
+    repo = osp.join(dir_path, "pipupgrade")
 
     if not osp.exists(repo):
         github_username    = getenv("JOBS_GITHUB_USERNAME",    raise_err = True)
         github_oauth_token = getenv("JOBS_GITHUB_OAUTH_TOKEN", raise_err = True)
 
-        popen("git clone https://%s:%s@github.com/achillesrasquinha/pipupgrade-assets %s" %
+        popen("git clone https://%s:%s@github.com/achillesrasquinha/pipupgrade %s" %
             (github_username, github_oauth_token, repo), cwd = dir_path)
 
         popen("git config user.email 'bot.pipupgrade@gmail.com'", cwd = repo)
@@ -50,8 +50,8 @@ def run(*args, **kwargs):
         except PopenError:
             logger.warn("Unable to pull latest branch")
 
-    deptree = Dict()
-    path_deptree = osp.join(repo, "dependencies.json.gz")
+    deptree      = Dict()
+    path_deptree = osp.join(repo, "data", "dependencies.json.gz")
 
     if osp.exists(path_deptree):
         with gzip.open(path_deptree) as f:
