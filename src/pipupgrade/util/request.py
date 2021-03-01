@@ -6,7 +6,7 @@ from pipupgrade.db import get_connection
 from pipupgrade.util.proxy import get_random_requests_proxies
 from pipupgrade.util._dict import merge_dict
 
-user_agent = UserAgent()
+user_agent = UserAgent(verify_ssl = False)
 
 def proxy_request(*args, **kwargs):
     fallback = kwargs.pop("fallback", False)
