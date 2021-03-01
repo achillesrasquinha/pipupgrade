@@ -1,6 +1,6 @@
 requests
 beautifulsoup4
-grequests
+grequests; python_version > '2.7'
 fake-useragent
 proxybroker
 addict
