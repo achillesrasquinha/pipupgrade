@@ -1,12 +1,12 @@
 import requests
 import grequests
-from fake_useragent import UserAgent
+# from fake_useragent import UserAgent
 
 from pipupgrade.db import get_connection
 from pipupgrade.util.proxy import get_random_requests_proxies
 from pipupgrade.util._dict import merge_dict
 
-user_agent = UserAgent(verify_ssl = False)
+# user_agent = UserAgent(verify_ssl = False)
 
 def proxy_request(*args, **kwargs):
     fallback = kwargs.pop("fallback", False)
@@ -14,7 +14,7 @@ def proxy_request(*args, **kwargs):
     session  = requests.Session()
 
     proxies = get_random_requests_proxies()
-    session.headers.update({ "User-Agent": user_agent.random })
+    # session.headers.update({ "User-Agent": user_agent.random })
     session.proxies.update(proxies)
 
     try:
@@ -32,8 +32,8 @@ def proxy_request(*args, **kwargs):
 def proxy_grequest(*args, **kwargs):
     proxies = get_random_requests_proxies()
     
-    kwargs["headers"] = merge_dict(kwargs.get("headers", {}), {
-        "User-Agent": user_agent.random })
+    # kwargs["headers"] = merge_dict(kwargs.get("headers", {}), {
+    #     "User-Agent": user_agent.random })
     kwargs["proxies"] = merge_dict(kwargs.get("proxies", {}), proxies)
 
     return grequests.request(*args, **kwargs)
