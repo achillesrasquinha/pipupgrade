@@ -39,10 +39,10 @@ def get_parser():
         nargs   = "*",
         help    = "Packages to Upgrade."
     )
-    # parser.add_argument("--resolve",
-    #     action  = "store_true",
-    #     help    = "Resolve Dependencies"
-    # )
+    parser.add_argument("--resolve",
+        action  = "store_true",
+        help    = "Resolve Dependencies"
+    )
     parser.add_argument("--ignore",
         action  = "append",
         help    = "Ignore packages to upgrade."

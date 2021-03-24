@@ -16,6 +16,7 @@ vulture
 safety
 pre-commit
 twine
+Flask
 pytest
 pytest-cov
 pytest-xdist

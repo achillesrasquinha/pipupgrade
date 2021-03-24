@@ -5,3 +5,4 @@ vulture
 safety
 pre-commit
 twine
+Flask
