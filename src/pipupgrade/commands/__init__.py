@@ -34,7 +34,6 @@ from pipupgrade._compat			import builtins, iteritems
 from pipupgrade.__attr__      	import __name__
 from pipupgrade.config			import environment
 from pipupgrade.exception       import DependencyNotFoundError
-from pipupgrade.pubgrub         import populate_db
 
 logger   = log.get_logger(level = log.DEBUG)
 
@@ -128,6 +127,7 @@ def _command(*args, **kwargs):
         import_or_raise("mixology")
         import_or_raise("semver", name = "poetry-semver")
 
+        populate_db = import_handler("pipupgrade.pubgrub.populate_db")
         populate_db()
 
     file_ = a.output
