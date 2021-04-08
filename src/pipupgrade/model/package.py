@@ -103,6 +103,8 @@ class Package(object):
 		# if pip_exec and not self.dependencies:
 		# 	self.dependencies = _get_pip_info(self.name)
 
+		self.extras = frozenset()
+
 		res = None
 
 		try:

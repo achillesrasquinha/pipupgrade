@@ -2,7 +2,7 @@ requests
 beautifulsoup4
 grequests; python_version > '2.7'
 fake-useragent
-proxybroker
+proxybroker; python_version > '3.5'
 addict
 pip
 sphinx
