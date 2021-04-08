@@ -38,7 +38,7 @@ jobs:
           python setup.py develop
       - name: Run Tests
         run: |
-          tox -e py$(echo "{{ matrix.python-version" | tr -d '.')
+          tox -e py$(echo "{{ matrix.python-version }}" | tr -d '.')
       # - name: Run Coverage
       #   run: |
       #     coveralls
