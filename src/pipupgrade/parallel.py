@@ -21,8 +21,8 @@ class NoDaemonPool(Pool):
         self.super.__init__(*args, **kwargs)
 
     def Process(self, *args, **kwargs):
-        if PYTHON_VERSION > (3, 7):
-            kwargs['ctx'] = mp.get_context()
+        # if PYTHON_VERSION > (3, 7):
+        #     kwargs['ctx'] = mp.get_context()
 
         process             = self.super.Process(*args, **kwargs)
         process.__class__   = NonDaemonProcess
