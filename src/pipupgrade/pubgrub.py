@@ -63,15 +63,6 @@ def populate_db():
 _DEPENDENCIES = {}
 
 def _parse_dependencies(deps):
-    # reqs = []
-
-    # with make_temp_dir() as dir_path:
-    #     path_file = osp.join(dir_path, "requirements.txt")
-    #     write(path_file, "\n".join(deps))
-
-    #     reqs = [req for req in parse_requirements(path_file, session = "hack")]
-
-    # return reqs
     return [ pkg_resources.Requirement.parse(dep) for dep in deps ]
 
 def get_meta(package, version):
@@ -116,6 +107,7 @@ class PackageSource(BasePackageSource):
 
     def add(self, name, extras, version, deps = None):
         version = Version.parse(version)
+        
         if name not in self._packages:
             self._packages[name] = { extras: {} }
         if extras not in self._packages[name]:
@@ -129,35 +121,48 @@ class PackageSource(BasePackageSource):
         if deps is None:
             self._packages[name][extras][version] = None
         else:
-            dependencies = [ ]
-            # for dep_name, spec in iteritems(deps):
-            #     dependencies.append(Dependency(dep_name, spec))
+            dependencies = []
             for dep in deps:
                 dependencies.append(Dependency(dep))
 
             self._packages[name][extras][version] = dependencies
 
     def root_dep(self, package, constraint):
+        logger.info("Adding Root Dependency with Constraint: %s, %s" % (package, constraint))
+
         dependency   = Dependency(package, constraint)
         self._root_dependencies.append(dependency)
 
+        self.discover_and_add(package, constraint)
+
+    def discover_and_add(self, package, constraint = None):
+        # discover and add
         metadata     = get_meta(package, constraint)
+        logger.info("Releases for package %s found: %s" % (package, metadata["releases"]))
 
         for release in metadata["releases"]:
             self.add(package.name, package.extras, release)
 
         deps = []
+        logger.info("Adding Dependencies for package %s: %s" % (package, metadata["dependencies"]))
         for dependency in metadata["dependencies"]:
             deps.append(Package(dependency.name))
 
         self.add(package.name, package.extras, constraint, deps = deps)
 
     def _versions_for(self, package, constraint = None):
+        package = Package(package)
+
+        extras  = package.extras
+
+        if package not in self._packages or extras not in self._packages[package]:
+            self.discover_and_add(package, constraint)
+
         if package not in self._packages:
             return [ ]
 
         versions = [ ]
-        for version in iterkeys(self._packages[package]):
+        for version in iterkeys(self._packages[package][extras]):
             if not constraint or constraint.allows_any(
                 Range(version, version, True, True)
             ):
