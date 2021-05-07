@@ -5,7 +5,11 @@ from   multiprocessing.pool import Pool
 
 from pipupgrade._compat import PYTHON_VERSION
 
-if PYTHON_VERSION.major == 3 and PYTHON_VERSION.minor <= 7:
+USE_PROCESS_POOL_EXECUTOR = not (PYTHON_VERSION.major == 2 or (PYTHON_VERSION.major == 3 and PYTHON_VERSION.minor <= 7))
+
+if USE_PROCESS_POOL_EXECUTOR:
+    from concurrent.futures import ProcessPoolExecutor as NoDaemonPool
+else:
     class NonDaemonProcess(mp.Process):
         @property
         def daemon(self):
@@ -25,8 +29,6 @@ if PYTHON_VERSION.major == 3 and PYTHON_VERSION.minor <= 7:
             process = self.super.Process(*args, **kwargs)
             process.__class__ = NonDaemonProcess
             return process
-else:
-    from concurrent.futures import ProcessPoolExecutor as NoDaemonPool
 
 @contextmanager
 def pool(class_ = Pool, *args, **kwargs):
@@ -38,6 +40,10 @@ def pool(class_ = Pool, *args, **kwargs):
 
 @contextmanager
 def no_daemon_pool(*args, **kwargs):
+    if USE_PROCESS_POOL_EXECUTOR:
+        if "processes" in kwargs:
+            kwargs["max_workers"] = kwargs.pop("processes")
+
     with pool(class_ = NoDaemonPool, *args, **kwargs) as p:
         yield p
 
