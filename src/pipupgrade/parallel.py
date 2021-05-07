@@ -13,6 +13,18 @@ if USE_PROCESS_POOL_EXECUTOR:
     class NoDaemonPool(ProcessPoolExecutor):
         def imap_unordered(self, *args, **kwargs):
             return self.map(*args, **kwargs)
+
+        def _shutdown(self):
+            self.shutdown()
+
+        def terminate(self):
+            self._shutdown()
+
+        def close(self):
+            self._shutdown()
+
+        def join(self):
+            pass
 else:
     class NonDaemonProcess(mp.Process):
         @property
@@ -38,9 +50,7 @@ else:
 def pool(class_ = Pool, *args, **kwargs):
     pool = class_(*args, **kwargs)
     yield pool
-
-    if getattr(pool, "terminate", None):
-        pool.terminate()
+    pool.terminate()
 
 @contextmanager
 def no_daemon_pool(*args, **kwargs):
