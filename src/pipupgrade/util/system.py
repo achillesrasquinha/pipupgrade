@@ -89,7 +89,8 @@ def popen(*args, **kwargs):
     code       = proc.wait()
 
     if code and raise_err:
-        raise PopenError(code, command)
+        print("An error occurred while updating package:", PopenError(code, command))
+        #raise PopenError(code, command)
 
     if output:
         output, error = proc.communicate()
