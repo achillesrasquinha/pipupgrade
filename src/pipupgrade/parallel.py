@@ -3,6 +3,8 @@ from   contextlib      import contextmanager
 import multiprocessing as mp
 from   multiprocessing.pool import Pool
 
+from pipupgrade._compat import PYTHON_VERSION
+
 class NonDaemonProcess(mp.Process):
     @property
     def daemon(self):
@@ -19,6 +21,9 @@ class NoDaemonPool(Pool):
         self.super.__init__(*args, **kwargs)
 
     def Process(self, *args, **kwargs):
+        if PYTHON_VERSION > (3, 7):
+            kwargs['ctx'] = mp.get_context()
+
         process             = self.super.Process(*args, **kwargs)
         process.__class__   = NonDaemonProcess
         return process

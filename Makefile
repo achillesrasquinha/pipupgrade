@@ -199,5 +199,8 @@ else
 	$(TWINE) upload --repository-url https://upload.pypi.org/legacy/ $(BASEDIR)/dist/* 
 endif
 
+start: ## Start app.
+	$(PYTHON) -m flask run
+
 help: ## Show help and exit.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)

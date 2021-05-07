@@ -1,4 +1,11 @@
+import os.path as osp
+import gzip
+from   datetime import datetime as dt
+import json
+
 from pipupgrade._compat import iteritems, iterkeys
+from pipupgrade.log     import get_logger
+from pipupgrade.config  import PATH, Settings
 
 from semver import Version, VersionRange, parse_constraint
 
@@ -6,6 +13,64 @@ from mixology.constraint     import Constraint
 from mixology.package_source import PackageSource as BasePackageSource
 from mixology.range          import Range
 from mixology.union          import Union
+
+logger   = get_logger()
+settings = Settings()
+
+def populate_db():
+    dt_now = dt.now()
+
+    logger.info("Populating DB...")
+
+    path_gzip = osp.join(PATH["CACHE"], "dependencies.json.gz")
+    path_uzip = osp.join(PATH["CACHE"], "dependencies.json")
+
+    refresh   = False
+
+    if not osp.exists(path_gzip):
+        refresh = True
+    else:
+        time_modified = dt.fromtimestamp( osp.getmtime(path_gzip) )
+        cache_seconds = settings.get("cache_timeout")
+        delta_seconds = (time_modified - dt_now).total_seconds()
+
+        if delta_seconds > cache_seconds:
+            refresh = True
+
+    if refresh:
+        logger.info("Fetching Dependency Graph...")
+
+        response = req.get("https://github.com/achillesrasquinha/pipupgrade/blob/master/data/dependencies.json.gz?raw=true",
+            stream = True)
+
+        if response.ok:
+            with open(path_gzip, "wb") as f:
+                for content in response.iter_content(chunk_size = 1024):
+                    f.write(content)
+        else:
+            response.raise_for_status()
+
+        with gzip.open(path_gzip, "rb") as rf:
+            with open(path_uzip, "wb") as wf:
+                content = rf.read()
+                wf.write(content)
+
+_DEPENDENCIES = {}
+
+def get_meta(package):
+    global _DEPENDENCIES
+    
+    if not _DEPENDENCIES:
+        path_dependencies = osp.join(PATH["CACHE"], "dependencies.json")
+
+        with open(path_dependencies) as f:
+            _DEPENDENCIES = json.load(f)
+
+    data = _DEPENDENCIES.get(package.name, {})
+
+    return {
+        "releases": list(iterkeys(data))
+    }
 
 class Dependency:
     def __init__(self, package, constraint):
@@ -50,8 +115,10 @@ class PackageSource(BasePackageSource):
         dependency = Dependency(package, constraint)
         self._root_dependencies.append(dependency)
 
-        # for release in package.releases:
-        #     self.add(package.name, release)
+        metadata    = get_meta(package)
+
+        for release in metadata["releases"]:
+            self.add(package.name, release)
 
         # self.add(package.name, package.current_version, package.dependency_tree.children)
 

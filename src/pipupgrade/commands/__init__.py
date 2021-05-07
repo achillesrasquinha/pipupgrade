@@ -2,7 +2,7 @@
 from __future__ import absolute_import
 
 # imports - standard imports
-import sys, os, os.path as osp
+import sys, os
 import re
 import json
 import multiprocessing as mp
@@ -34,8 +34,9 @@ from pipupgrade._compat			import builtins, iteritems
 from pipupgrade.__attr__      	import __name__
 from pipupgrade.config			import environment
 from pipupgrade.exception       import DependencyNotFoundError
+from pipupgrade.pubgrub         import populate_db
 
-logger = log.get_logger(level = log.DEBUG)
+logger   = log.get_logger(level = log.DEBUG)
 
 ARGUMENTS = dict(
     packages					= [ ],
@@ -127,6 +128,8 @@ def _command(*args, **kwargs):
         import_or_raise("mixology")
         import_or_raise("semver", name = "poetry-semver")
 
+        populate_db()
+
     file_ = a.output
 
     if file_:
@@ -173,7 +176,7 @@ def _command(*args, **kwargs):
         pipfile      = sequencify(a.pipfile or [])
         
         if a.project:
-            project		 = sequencify(a.project)
+            project	 = sequencify(a.project)
 
             logger.info("Detecting projects and its dependencies...")
             

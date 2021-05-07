@@ -1,6 +1,7 @@
 import os.path as osp
 import shutil
 import json
+import gzip
 
 # imports - standard imports
 import requests as req
@@ -32,13 +33,13 @@ def run(*args, **kwargs):
     dir_path = PATH["CACHE"]
 
     # seed database...
-    repo = osp.join(dir_path, "pipupgrade-assets")
+    repo = osp.join(dir_path, "pipupgrade")
 
     if not osp.exists(repo):
         github_username    = getenv("JOBS_GITHUB_USERNAME",    raise_err = True)
         github_oauth_token = getenv("JOBS_GITHUB_OAUTH_TOKEN", raise_err = True)
 
-        popen("git clone https://%s:%s@github.com/achillesrasquinha/pipupgrade-assets %s" %
+        popen("git clone https://%s:%s@github.com/achillesrasquinha/pipupgrade %s" %
             (github_username, github_oauth_token, repo), cwd = dir_path)
 
         popen("git config user.email 'bot.pipupgrade@gmail.com'", cwd = repo)
@@ -49,16 +50,17 @@ def run(*args, **kwargs):
         except PopenError:
             logger.warn("Unable to pull latest branch")
 
-    path_deptree = osp.join(repo, "dependencies.json")
-    deptree      = Dict()
+    deptree = Dict()
+    path_deptree = osp.join(repo, "data", "dependencies.json.gz")
 
     if osp.exists(path_deptree):
-        with open(path_deptree) as f:
-            deptree = Dict(json.load(f))
+        with gzip.open(path_deptree) as f:
+            content = f.read()
+            deptree = Dict(json.loads(content))
 
     with make_temp_dir() as dir_path:
         chunk_size  = kwargs.get("chunk_size", 1000)
-        index_url   = kwargs.get("index_url", BASE_INDEX_URL)
+        index_url   = kwargs.get("index_url",  BASE_INDEX_URL)
 
         logger.info("Fetching Package List...")
 
@@ -71,7 +73,7 @@ def run(*args, **kwargs):
 
         soup = BeautifulSoup(html, 'html.parser')
 
-        packages = list(map(lambda x: x.text, soup.findAll('a')))
+        packages = list(filter(lambda x: x not in deptree, map(lambda x: x.text, soup.findAll('a'))))
 
         logger.info("%s packages found." % len(packages))
 
@@ -90,7 +92,7 @@ def run(*args, **kwargs):
                 if response.ok:
                     data     = response.json()
                     package  = data["info"]["name"]
-                    releases = list(iterkeys(data["releases"]))
+                    releases = list(filter(lambda x: x not in deptree[package], iterkeys(data["releases"])))
 
                     release_chunks = chunkify(releases, 100)
 
@@ -129,10 +131,11 @@ def run(*args, **kwargs):
                 else:
                     logger.info("Unable to load URL: %s" % response.url)
 
-            with open(path_deptree, mode = "w") as f:
-                json.dump(deptree, f)
+            with gzip.open(path_deptree, mode = "wt") as f:
+                content = json.dumps(deptree)
+                f.write(content)
 
             popen("git add %s" % path_deptree, cwd = repo)
-            popen("git commit --allow-empty -m 'Update database: %s'" % get_timestamp_str(),
+            popen("git commit --allow-empty -m '[skip ci]: Update database - %s'" % get_timestamp_str(),
                 cwd = repo)
             popen("git push origin master", cwd = repo)
