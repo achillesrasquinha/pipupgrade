@@ -8,7 +8,11 @@ from pipupgrade._compat import PYTHON_VERSION
 USE_PROCESS_POOL_EXECUTOR = not (PYTHON_VERSION.major == 2 or (PYTHON_VERSION.major == 3 and PYTHON_VERSION.minor <= 7))
 
 if USE_PROCESS_POOL_EXECUTOR:
-    from concurrent.futures import ProcessPoolExecutor as NoDaemonPool
+    from concurrent.futures import ProcessPoolExecutor
+
+    class NoDaemonPool(ProcessPoolExecutor):
+        def imap_unordered(self, *args, **kwargs):
+            return self.map(*args, **kwargs)
 else:
     class NonDaemonProcess(mp.Process):
         @property
