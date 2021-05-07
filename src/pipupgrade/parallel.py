@@ -11,6 +11,13 @@ if USE_PROCESS_POOL_EXECUTOR:
     from concurrent.futures import ProcessPoolExecutor
 
     class NoDaemonPool(ProcessPoolExecutor):
+        def __init__(self, *args, **kwargs):
+            if "processes" in kwargs:
+                kwargs["max_workers"] = kwargs.pop("processes")
+
+            self.super = super(NoDaemonPool, self)
+            self.super.__init__(*args, **kwargs)
+
         def imap_unordered(self, *args, **kwargs):
             return self.map(*args, **kwargs)
 
@@ -54,10 +61,6 @@ def pool(class_ = Pool, *args, **kwargs):
 
 @contextmanager
 def no_daemon_pool(*args, **kwargs):
-    if USE_PROCESS_POOL_EXECUTOR:
-        if "processes" in kwargs:
-            kwargs["max_workers"] = kwargs.pop("processes")
-
     with pool(class_ = NoDaemonPool, *args, **kwargs) as p:
         yield p
 
