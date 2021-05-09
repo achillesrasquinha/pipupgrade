@@ -43,7 +43,7 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
       - name: Install dependencies
         run: |
-          pip install -r requirements-dev.txt
+          pip install -r requirements-jobs.txt
           python setup.py develop
       - name: Run Jobs
         run: |
