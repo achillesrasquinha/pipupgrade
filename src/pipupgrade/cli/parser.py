@@ -171,6 +171,10 @@ def get_parser():
         default = getenv("FORCE", False),
         help    = "Force search for files within a project."
     )
+    parser.add_argument("--doctor",
+        action  = "store_true",
+        help    = "Perform diagnostics and fix it."
+    )
 
     if _CAN_ANSI_FORMAT or "pytest" in sys.modules:
         parser.add_argument("--no-color",

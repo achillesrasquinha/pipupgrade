@@ -135,7 +135,7 @@ class Package(object):
 				self.latest_version = _pypi_info.get("version")
 
 			self.home_page  = _pypi_info.get("home_page")
-			self.releases   = [version for version in iterkeys(_pypi_info.get("releases"))]
+			self.releases   = [version for version in iterkeys(_pypi_info.get("releases") or [])]
 
 		if not res:
 			try:

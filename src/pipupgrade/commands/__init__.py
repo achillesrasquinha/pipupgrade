@@ -70,6 +70,7 @@ ARGUMENTS = dict(
     output						= None,
     ignore_error				= False,
     force						= False,
+    doctor                      = False,
     verbose		 				= False
 )
 
@@ -123,6 +124,11 @@ def _command(*args, **kwargs):
 
     logger.info("Environment: %s" % environment())
     logger.info("Arguments Passed: %s" % locals())
+
+    if a.doctor:
+        logger.info("Performing Diagnostics and attempting to fix.")
+
+        
 
     if a.resolve:
         import_or_raise("mixology")
