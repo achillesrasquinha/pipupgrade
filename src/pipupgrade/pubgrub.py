@@ -2,10 +2,15 @@ import os.path as osp
 import gzip
 from   datetime import datetime as dt
 import json
+import pkg_resources
 
 from pipupgrade._compat import iteritems, iterkeys
 from pipupgrade.log     import get_logger
 from pipupgrade.config  import PATH, Settings
+from pipupgrade         import request as req
+from pipupgrade._pip    import parse_requirements
+from pipupgrade.util.system  import make_temp_dir, write
+from pipupgrade.model.package import Package
 
 from semver import Version, VersionRange, parse_constraint
 
@@ -57,7 +62,10 @@ def populate_db():
 
 _DEPENDENCIES = {}
 
-def get_meta(package):
+def _parse_dependencies(deps):
+    return [ pkg_resources.Requirement.parse(dep) for dep in deps ]
+
+def get_meta(package, version):
     global _DEPENDENCIES
     
     if not _DEPENDENCIES:
@@ -68,14 +76,17 @@ def get_meta(package):
 
     data = _DEPENDENCIES.get(package.name, {})
 
+    dependencies = _parse_dependencies(data.get(version) or [])
+    
     return {
-        "releases": list(iterkeys(data))
+        "releases": list(iterkeys(data)),
+        "dependencies": dependencies
     }
 
 class Dependency:
-    def __init__(self, package, constraint):
+    def __init__(self, package, constraint = None):
         self.name               = package.name
-        self.constraint         = parse_constraint(constraint)
+        self.constraint         = parse_constraint(constraint or "*")
         self.pretty_constraint  = constraint
 
     def __str__(self):
@@ -94,40 +105,64 @@ class PackageSource(BasePackageSource):
     def root_version(self):
         return self._root_version
 
-    def add(self, name, version, deps = None):
-        if deps is None:
-            deps = { }
-
+    def add(self, name, extras, version, deps = None):
         version = Version.parse(version)
+        
         if name not in self._packages:
-            self._packages[name] = { }
+            self._packages[name] = { extras: {} }
+        if extras not in self._packages[name]:
+            self._packages[name][extras] = {}
 
-        if version in self._packages[name]:
+        if version in self._packages[name][extras] and not (
+            deps is None or self._packages[name][extras][version] is None
+        ):
             raise ValueError("{} ({}) already exists".format(name, version))
 
-        dependencies = [ ]
-        for dep_name, spec in iteritems(deps):
-            dependencies.append(Dependency(dep_name, spec))
+        if deps is None:
+            self._packages[name][extras][version] = None
+        else:
+            dependencies = []
+            for dep in deps:
+                dependencies.append(Dependency(dep))
 
-        self._packages[name][version] = dependencies
+            self._packages[name][extras][version] = dependencies
 
     def root_dep(self, package, constraint):
-        dependency = Dependency(package, constraint)
+        logger.info("Adding Root Dependency with Constraint: %s, %s" % (package, constraint))
+
+        dependency   = Dependency(package, constraint)
         self._root_dependencies.append(dependency)
 
-        metadata    = get_meta(package)
+        self.discover_and_add(package, constraint)
+
+    def discover_and_add(self, package, constraint = None):
+        # discover and add
+        metadata     = get_meta(package, constraint)
+        logger.info("Releases for package %s found: %s" % (package, metadata["releases"]))
 
         for release in metadata["releases"]:
-            self.add(package.name, release)
+            self.add(package.name, package.extras, release)
 
-        # self.add(package.name, package.current_version, package.dependency_tree.children)
+        deps = []
+        logger.info("Adding Dependencies for package %s: %s" % (package, metadata["dependencies"]))
+        for dependency in metadata["dependencies"]:
+            deps.append(Package(dependency.name))
 
-    def _versions_for(self, package, constraint):
+        self.add(package.name, package.extras, constraint, deps = deps)
+
+    def _versions_for(self, package, constraint = None):
+        package = Package(package)
+
+        extras  = package.extras
+
+        if package not in self._packages or extras not in self._packages[package]:
+            self.discover_and_add(package, constraint)
+
         if package not in self._packages:
             return [ ]
 
         versions = [ ]
-        for version in iterkeys(self._packages[package]):
+        for version in iterkeys(self._packages[package][extras]):
             if not constraint or constraint.allows_any(
                 Range(version, version, True, True)
             ):

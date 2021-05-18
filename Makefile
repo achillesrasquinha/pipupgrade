@@ -127,7 +127,7 @@ console: install ## Open Console.
 
 test: install ## Run tests.
 	$(call log,INFO,Running Python Tests using $(JOBS) jobs.)
-	$(TOX) --skip-missing-interpreters $(ARGS)
+	$(TOX) $(ARGS)
 
 coverage: install ## Run tests and display coverage.
 ifeq (${ENVIRONMENT},development)

@@ -14,7 +14,7 @@
         "htmlcov": true
     },
     "editor.rulers": [78],
-    "editor.fontFamily": "Consolas",
+    "editor.fontFamily": "Consolas, sans-serif",
     "editor.tabSize": 4,
     "editor.renderWhitespace": "all",
     "python.linting.pylintPath": "${workspaceFolder}/.venv/bin/pylint"

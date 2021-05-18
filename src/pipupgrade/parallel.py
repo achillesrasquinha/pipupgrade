@@ -5,28 +5,53 @@ from   multiprocessing.pool import Pool
 
 from pipupgrade._compat import PYTHON_VERSION
 
-class NonDaemonProcess(mp.Process):
-    @property
-    def daemon(self):
-        return False
+USE_PROCESS_POOL_EXECUTOR = not (PYTHON_VERSION.major == 2 or (PYTHON_VERSION.major == 3 and PYTHON_VERSION.minor <= 7))
 
-    @daemon.setter
-    def daemon(self, val):
-        pass
+if USE_PROCESS_POOL_EXECUTOR:
+    from concurrent.futures import ProcessPoolExecutor
 
-# https://github.com/nipy/nipype/pull/2754
-class NoDaemonPool(Pool):
-    def __init__(self, *args, **kwargs):
-        self.super = super(NoDaemonPool, self)
-        self.super.__init__(*args, **kwargs)
+    class NoDaemonPool(ProcessPoolExecutor):
+        def __init__(self, *args, **kwargs):
+            if "processes" in kwargs:
+                kwargs["max_workers"] = kwargs.pop("processes")
 
-    def Process(self, *args, **kwargs):
-        if PYTHON_VERSION > (3, 7):
-            kwargs['ctx'] = mp.get_context()
+            self.super = super(NoDaemonPool, self)
+            self.super.__init__(*args, **kwargs)
 
-        process             = self.super.Process(*args, **kwargs)
-        process.__class__   = NonDaemonProcess
-        return process
+        def imap_unordered(self, *args, **kwargs):
+            return self.map(*args, **kwargs)
+
+        def _shutdown(self):
+            self.shutdown()
+
+        def terminate(self):
+            self._shutdown()
+
+        def close(self):
+            self._shutdown()
+
+        def join(self):
+            pass
+else:
+    class NonDaemonProcess(mp.Process):
+        @property
+        def daemon(self):
+            return False
+
+        @daemon.setter
+        def daemon(self, val):
+            pass
+
+    # https://github.com/nipy/nipype/pull/2754
+    class NoDaemonPool(Pool):
+        def __init__(self, *args, **kwargs):
+            self.super = super(NoDaemonPool, self)
+            self.super.__init__(*args, **kwargs)
+
+        def Process(self, *args, **kwargs):
+            process = self.super.Process(*args, **kwargs)
+            process.__class__ = NonDaemonProcess
+            return process
 
 @contextmanager
 def pool(class_ = Pool, *args, **kwargs):
