@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS `tabSettings` (
 );
 
 CREATE TABLE IF NOT EXISTS `tabProxies` (
+    `id`                    INTEGER     PRIMARY KEY AUTOINCREMENT,
     `host`                  TEXT        NOT NULL,
     `port`                  INTEGER     NOT NULL,
     `secure`                INTEGER     NOT NULL,

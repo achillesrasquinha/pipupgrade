@@ -4,14 +4,17 @@ import re
 import asyncio
 import csv
 
+import requests as req
+import grequests as greq
 from proxybroker import Broker
+from tqdm import tqdm
 
 from pipupgrade.exception       import PopenError
 from pipupgrade.util.environ    import getenv
 from pipupgrade.util.array      import chunkify
 from pipupgrade.util.system     import make_temp_dir, popen, read, write
 from pipupgrade.util.proxy      import (fetch as fetch_proxies, save as save_proxies_to_db,
-    PROXY_COLUMNS)
+    PROXY_COLUMNS, to_addr)
 from pipupgrade.util.request    import proxy_request
 from pipupgrade.util.string     import safe_decode, strip
 from pipupgrade.util.datetime   import get_timestamp_str
@@ -49,15 +52,76 @@ async def save_proxies(proxies):
 
         save_proxies_to_db(values)
 
+def exception_handler(request, err):
+    if not isinstance(err, (
+        req.exceptions.Timeout,
+        req.exceptions.ConnectionError
+    )):
+        raise err
+
+def check_proxies(timeout_threshold = 5):
+    nchunks = 100
+    rows    = connection.query("SELECT * FROM `tabProxies`")
+    
+    chunks  = list(chunkify(rows, nchunks))
+    ids     = [ ]
+
+    for chunk in tqdm(chunks):
+        requests_map = [ ]
+        rows         = list(chunk)
+        
+        for row in rows:
+            type_ = "http" if not row["secure"] else "https"
+            addr  = to_addr(row)
+
+            proxies  = { type_: addr }
+            url      = "%s://www.google.com" % type_
+
+            request  = greq.get(url, proxies = proxies, timeout = timeout_threshold)
+            requests_map.append(request)
+        
+        responses = greq.map(requests_map, exception_handler = exception_handler)
+        for i, response in enumerate(responses):
+            if not (response and response.ok):
+                ids.append(rows[i]["id"])
+
+    if ids:
+        logger.info("Deleting %s proxies." % len(ids))
+        connection.query("DELETE FROM `tabProxies` WHERE rowid IN (%s)" % ",".join(map(str,ids)))
+
+def _write_proxies(repo, fname = "proxies"):
+    proxies_path = osp.join(repo, "%s.csv" % fname)
+
+    with open(proxies_path, "w") as f:
+        f.write(PROXY_COLUMNS)
+        f.write("\n")
+
+        for row in connection.query("SELECT * FROM `tabProxies`"):
+            values = itervalues(row)
+            data   = ",".join(map(str, values))
+
+            f.write(data)
+            f.write("\n")
+
+    write(proxies_path, strip(read(proxies_path)))
+
+    popen("git add %s" % proxies_path, cwd = repo)
+    commit_message = "Update Proxy List: %s" % get_timestamp_str()
+    popen("git commit --allow-empty -m '%s'" % commit_message, cwd = repo)
+
+    popen("git push origin master", cwd = repo)
+
+    logger.info("Proxy List upto date.")
+
 def run(*args, **kwargs):
     logger.info("Fetching Proxies...")
 
-    fetch_proxies()
+    fetch_proxies(fname = "proxies-all")
 
     proxies = asyncio.Queue()
     broker  = Broker(proxies)
     tasks   = asyncio.gather(
-        broker.find(types = ["HTTP", "HTTPS"], limit = 100),
+        broker.find(types = ["HTTP", "HTTPS"], limit = 1),
         save_proxies(proxies)
     )
 
@@ -78,25 +142,9 @@ def run(*args, **kwargs):
         popen("git config user.email 'bot.pipupgrade@gmail.com'", cwd = repo)
         popen("git config user.name  'pipupgrade bot'", cwd = repo)
 
-        proxies_path = osp.join(repo, "proxies.csv")
+        _write_proxies(repo, "proxies-all")
 
-        with open(proxies_path, "w") as f:
-            f.write(PROXY_COLUMNS)
-            f.write("\n")
-
-            for row in connection.query("SELECT * FROM `tabProxies`"):
-                values = itervalues(row)
-                data   = ",".join(map(str, values))
-
-                f.write(data)
-                f.write("\n")
-
-        write(proxies_path, strip(read(proxies_path)))
-
-        popen("git add %s" % proxies_path, cwd = repo)
-        commit_message = "Update Proxy List: %s" % get_timestamp_str()
-        popen("git commit --allow-empty -m '%s'" % commit_message, cwd = repo)
-
-        popen("git push origin master", cwd = repo)
-
-        logger.info("Proxy List upto date.")
+        logger.info("Checking Proxies...")
+        check_proxies()
+        
+        _write_proxies(repo)

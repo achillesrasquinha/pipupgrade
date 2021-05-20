@@ -24,7 +24,7 @@ def save(values):
             for v in values])
     , script = True)
 
-def fetch():
+def fetch(fname = "proxies"):
     dir_path = PATH["CACHE"]
 
     # seed database...
@@ -38,7 +38,7 @@ def fetch():
         except PopenError:
             logger.warn("Unable to pull latest branch")
 
-    proxies_path = osp.join(repo, "proxies.csv")
+    proxies_path = osp.join(repo, "%s.csv" % fname)
 
     if osp.exists(proxies_path):
         logger.info("Reading cached proxies...")
