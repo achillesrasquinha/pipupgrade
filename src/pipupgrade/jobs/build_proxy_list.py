@@ -72,7 +72,7 @@ def check_proxies(timeout_threshold = 5):
         
         for row in rows:
             type_ = "http" if not row["secure"] else "https"
-            addr  = to_addr(row)
+            addr  = "%s:%s" % (type_, to_addr(row))
 
             proxies  = { type_: addr }
             url      = "%s://www.google.com" % type_
@@ -96,7 +96,7 @@ def _write_proxies(repo, fname = "proxies"):
         f.write(PROXY_COLUMNS)
         f.write("\n")
 
-        for row in connection.query("SELECT * FROM `tabProxies`"):
+        for row in connection.query("SELECT %s FROM `tabProxies`" % PROXY_COLUMNS):
             values = itervalues(row)
             data   = ",".join(map(str, values))
 
