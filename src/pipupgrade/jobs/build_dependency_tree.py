@@ -129,7 +129,10 @@ def run(*args, **kwargs):
                             else:
                                 logger.info("Unable to load URL: %s" % response.url)
                 else:
-                    logger.info("Unable to load URL: %s" % response.url)
+                    try:
+                        response.raise_for_status()
+                    except Exception as e:
+                        logger.info("response error: %s" % e)
 
             with gzip.open(path_deptree, mode = "wt") as f:
                 content = json.dumps(deptree)
