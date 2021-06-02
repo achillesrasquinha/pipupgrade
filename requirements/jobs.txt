@@ -5,4 +5,4 @@ fake-useragent
 proxybroker==0.3.2; python_version > '3.5'
 # git+https://github.com/bluet/proxybroker2.git; python_version > '3.5'
 addict
-urllib3==1.25.11
+urllib3==1.26.5
