@@ -109,8 +109,7 @@ def check_proxies(timeout_threshold = 5):
         
         for row in rows:
             type_ = "http" if not row["secure"] else "https"
-            # addr  = "%s:%s" % (type_, to_addr(row))
-            addr  = to_addr(row)
+            addr  = "%s://%s" % (type_, to_addr(row))
 
             proxies  = { type_: addr }
             url      = "%s://www.google.com" % type_
