@@ -92,7 +92,8 @@ async def save_proxies(proxies):
 def exception_handler(request, err):
     if not isinstance(err, (
         req.exceptions.Timeout,
-        req.exceptions.ConnectionError
+        req.exceptions.ConnectionError,
+        req.exceptions.TooManyRedirects
     )):
         raise err
 
