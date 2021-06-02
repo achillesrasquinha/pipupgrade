@@ -161,17 +161,17 @@ def run(*args, **kwargs):
 
     loop    = asyncio.get_event_loop()
 
-    proxies = asyncio.Queue()
-    broker  = Broker(proxies)
+    # proxies = asyncio.Queue()
+    # broker  = Broker(proxies)
 
-    # broker._resolver = CustomResolver(loop = loop)
+    # # broker._resolver = CustomResolver(loop = loop)
     
-    tasks   = asyncio.gather(
-        broker.find(types = ["HTTP", "HTTPS"], limit = 100),
-        save_proxies(proxies)
-    )
+    # tasks   = asyncio.gather(
+    #     broker.find(types = ["HTTP", "HTTPS"], limit = 100),
+    #     save_proxies(proxies)
+    # )
 
-    loop.run_until_complete(tasks)
+    # loop.run_until_complete(tasks)
 
     logger.info("Commiting Latest Proxy List...")
 
