@@ -94,8 +94,7 @@ def exception_handler(request, err):
         req.exceptions.Timeout,
         req.exceptions.ConnectionError
     )):
-        # raise err
-        pass
+        raise err
 
 def check_proxies(timeout_threshold = 5):
     nchunks = 100
