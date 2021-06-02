@@ -1,7 +1,7 @@
 try:
     import os
 
-    if os.environ.get("PIPUPGRADE_JOBS_GEVENT_PATCH"):
+    if os.environ.get("PIPUPGRADE_GEVENT_PATCH"):
         from gevent import monkey
         monkey.patch_all(threaded = False, select = False)
 except ImportError:
