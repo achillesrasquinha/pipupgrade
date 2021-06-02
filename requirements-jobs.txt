@@ -15,7 +15,8 @@ requests
 beautifulsoup4
 grequests; python_version > '2.7'
 fake-useragent
-git+https://github.com/bluet/proxybroker2.git; python_version > '3.5'
+proxybroker==0.3.2; python_version > '3.5'
+# git+https://github.com/bluet/proxybroker2.git; python_version > '3.5'
 addict
 pipenv
 jedi<0.18

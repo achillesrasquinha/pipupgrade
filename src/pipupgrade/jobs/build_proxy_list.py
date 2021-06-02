@@ -23,14 +23,51 @@ from pipupgrade._compat import iterkeys, itervalues, iteritems
 from pipupgrade import db
 from pipupgrade import log
 
+import asyncio
+import random
+
 logger      = log.get_logger(level = log.DEBUG)
 connection  = db.get_connection()
+
+import aiohttp
+
+from proxybroker.resolver import Resolver
+from proxybroker.utils import log
 
 PROXY_LEVEL_CODES = {
     "High": "H",
     "Transparent": "T",
     "Anonymous": "A"
 }
+
+# https://github.com/constverum/ProxyBroker/issues/141#issuecomment-628080856
+class CustomResolver(Resolver):
+    _c_ip_hosts = [ ]
+
+    def _get_random_ip_host(self):
+        host = random.choice(self._c_ip_hosts)
+        self._c_ip_hosts.remove(host)
+        return host
+
+    async def get_real_ext_ip(self):
+        self._c_ip_hosts = self._ip_hosts.copy()
+        while self._c_ip_hosts:
+            try:
+                timeout = aiohttp.ClientTimeout(total = self._timeout)
+                async with aiohttp.ClientSession(
+                    timeout = timeout, loop = self._loop
+                ) as session, session.get( self._get_random_ip_host() ) as response:
+                    print("foobar")
+                    ip = await response.text()
+            except asyncio.TimeoutError:
+                pass
+            else:
+                ip = strip(ip)
+                if self.host_is_ip(ip):
+                    logger.debug("Real external IP:", ip)
+                    break
+        else:
+            raise RuntimeError("Could not get the external IP")
 
 async def save_proxies(proxies):
     while True:
@@ -57,7 +94,8 @@ def exception_handler(request, err):
         req.exceptions.Timeout,
         req.exceptions.ConnectionError
     )):
-        raise err
+        # raise err
+        pass
 
 def check_proxies(timeout_threshold = 5):
     nchunks = 100
@@ -72,7 +110,8 @@ def check_proxies(timeout_threshold = 5):
         
         for row in rows:
             type_ = "http" if not row["secure"] else "https"
-            addr  = "%s:%s" % (type_, to_addr(row))
+            # addr  = "%s:%s" % (type_, to_addr(row))
+            addr  = to_addr(row)
 
             proxies  = { type_: addr }
             url      = "%s://www.google.com" % type_
@@ -85,9 +124,10 @@ def check_proxies(timeout_threshold = 5):
             if not (response and response.ok):
                 ids.append(rows[i]["id"])
 
-    if ids:
-        logger.info("Deleting %s proxies." % len(ids))
-        connection.query("DELETE FROM `tabProxies` WHERE rowid IN (%s)" % ",".join(map(str,ids)))
+        if ids:
+            logger.info("Deleting %s proxies." % len(ids))
+            connection.query("DELETE FROM `tabProxies` WHERE rowid IN (%s)" % ",".join(map(str,ids)))
+            ids = [ ]
 
 def _write_proxies(repo, fname = "proxies"):
     proxies_path = osp.join(repo, "%s.csv" % fname)
@@ -118,15 +158,19 @@ def run(*args, **kwargs):
 
     fetch_proxies(fname = "proxies-all")
 
-    proxies = asyncio.Queue()
-    broker  = Broker(proxies)
-    tasks   = asyncio.gather(
-        broker.find(types = ["HTTP", "HTTPS"], limit = 100),
-        save_proxies(proxies)
-    )
+    # loop    = asyncio.get_event_loop()
 
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(tasks)
+    # proxies = asyncio.Queue()
+    # broker  = Broker(proxies)
+
+    # broker._resolver = CustomResolver(loop = loop)
+    
+    # tasks   = asyncio.gather(
+    #     broker.find(types = ["HTTP", "HTTPS"], limit = 3),
+    #     save_proxies(proxies)
+    # )
+
+    # loop.run_until_complete(tasks)
 
     logger.info("Commiting Latest Proxy List...")
 
