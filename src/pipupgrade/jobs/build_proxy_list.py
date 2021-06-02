@@ -95,7 +95,8 @@ def exception_handler(request, err):
         req.exceptions.ConnectionError,
         req.exceptions.TooManyRedirects
     )):
-        raise err
+        # raise err
+        pass
 
 def check_proxies(timeout_threshold = 5):
     nchunks = 100
@@ -158,19 +159,19 @@ def run(*args, **kwargs):
 
     fetch_proxies(fname = "proxies-all")
 
-    # loop    = asyncio.get_event_loop()
+    loop    = asyncio.get_event_loop()
 
-    # proxies = asyncio.Queue()
-    # broker  = Broker(proxies)
+    proxies = asyncio.Queue()
+    broker  = Broker(proxies)
 
     # broker._resolver = CustomResolver(loop = loop)
     
-    # tasks   = asyncio.gather(
-    #     broker.find(types = ["HTTP", "HTTPS"], limit = 3),
-    #     save_proxies(proxies)
-    # )
+    tasks   = asyncio.gather(
+        broker.find(types = ["HTTP", "HTTPS"], limit = 100),
+        save_proxies(proxies)
+    )
 
-    # loop.run_until_complete(tasks)
+    loop.run_until_complete(tasks)
 
     logger.info("Commiting Latest Proxy List...")
 
