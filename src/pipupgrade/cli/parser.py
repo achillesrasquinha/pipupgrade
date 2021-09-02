@@ -11,7 +11,7 @@ from pipupgrade.__attr__     import (
     __description__,
     __command__
 )
-from pipupgrade.util.environ  import getenv
+from bpyutils.util.environ  import getenv
 from pipupgrade.cli           import util as _cli
 from pipupgrade.cli.formatter import ArgumentParserFormatter
 from pipupgrade.cli.util      import _CAN_ANSI_FORMAT

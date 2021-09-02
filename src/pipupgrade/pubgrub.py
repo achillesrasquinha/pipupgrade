@@ -4,12 +4,14 @@ from   datetime import datetime as dt
 import json
 import pkg_resources
 
-from pipupgrade._compat import iteritems, iterkeys
-from pipupgrade.log     import get_logger
+from pipupgrade.__attr__ import __name__ as NAME
+
+from bpyutils._compat import iteritems, iterkeys
+from bpyutils.log     import get_logger
 from pipupgrade.config  import PATH, Settings
-from pipupgrade         import request as req
+from bpyutils           import request as req
 from pipupgrade._pip    import parse_requirements
-from pipupgrade.util.system  import make_temp_dir, write
+from bpyutils.util.system  import make_temp_dir, write
 from pipupgrade.model.package import Package
 
 from semver import Version, VersionRange, parse_constraint
@@ -19,7 +21,7 @@ from mixology.package_source import PackageSource as BasePackageSource
 from mixology.range          import Range
 from mixology.union          import Union
 
-logger   = get_logger()
+logger   = get_logger(name = NAME)
 settings = Settings()
 
 def populate_db():

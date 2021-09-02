@@ -12,18 +12,20 @@ from addict import Dict
 from tqdm import tqdm
 
 from pipupgrade.config          import PATH
-from pipupgrade._compat         import iterkeys
-from pipupgrade.util.request    import proxy_request, proxy_grequest, get_random_requests_proxies as get_rand_proxy
-from pipupgrade.util.system     import read, write, make_temp_dir, popen
-from pipupgrade.util.string     import safe_decode
-from pipupgrade.util.array      import chunkify
-from pipupgrade.util.datetime   import get_timestamp_str
-from pipupgrade.util.environ    import getenv
-from pipupgrade.util._dict      import autodict
-from pipupgrade import log, db
+from bpyutils._compat         import iterkeys
+from bpyutils.util.request    import proxy_request, proxy_grequest, get_random_requests_proxies as get_rand_proxy
+from bpyutils.util.system     import read, write, make_temp_dir, popen
+from bpyutils.util.string     import safe_decode
+from bpyutils.util.array      import chunkify
+from bpyutils.util.datetime   import get_timestamp_str
+from bpyutils.util.environ    import getenv
+from bpyutils.util._dict      import autodict
+
+from pipupgrade.__attr__ import __name__ as NAME
+from bpyutils import log, db
 
 BASE_INDEX_URL  = "https://pypi.org/simple"
-logger          = log.get_logger(level = log.DEBUG)
+logger          = log.get_logger(name = NAME, level = log.DEBUG)
 connection      = db.get_connection()
 
 def exception_handler(request, exception):

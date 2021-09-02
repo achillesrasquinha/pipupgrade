@@ -1,6 +1,6 @@
 # imports - compatibility imports
 from __future__ import print_function
-from pipupgrade._compat import input
+from bpyutils._compat import input
 
 # imports - standard imports
 import sys, os
@@ -8,10 +8,10 @@ import platform
 import inspect
 
 # imports - module imports
-from pipupgrade._compat         import EX_OK
-from pipupgrade.util.imports    import import_handler
-from pipupgrade.util.system     import write
-from pipupgrade.util.string     import strip_ansi
+from bpyutils._compat         import EX_OK
+from bpyutils.util.imports    import import_handler
+from bpyutils.util.system     import write
+from bpyutils.util.string     import strip_ansi
 
 _ACCEPTABLE_INPUTS_YES      = ("", "y", "Y")
 _ACCEPTABLE_INPUTS_QUIT     = ("q", "Q")

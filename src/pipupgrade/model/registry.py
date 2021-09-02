@@ -6,13 +6,17 @@ import re
 from   functools import partial, cmp_to_key
 
 # imports - module imports
-from pipupgrade.model.package   import Package, _get_pip_info
-from pipupgrade                 import _pip, parallel
-from pipupgrade.util.array      import compact, flatten
-from pipupgrade.util.string     import kebab_case
-from pipupgrade._compat		    import iteritems, iterkeys, itervalues
-from pipupgrade.tree            import Node as TreeNode
-from pipupgrade.log             import get_logger
+from pipupgrade.__attr__ import __name__ as NAME
+
+from pipupgrade.model.package import Package, _get_pip_info
+from pipupgrade               import _pip
+from bpyutils.util.array      import compact, flatten
+from bpyutils.util.string     import kebab_case
+from bpyutils._compat		  import iteritems, iterkeys, itervalues
+from bpytuils.tree            import Node as TreeNode
+from bpyutils.log             import get_logger
+
+from bpyutils import parallel
 
 logger = get_logger()
 

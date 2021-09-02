@@ -9,14 +9,16 @@ import 	re
 
 # imports - module imports
 from pipupgrade.__attr__    import __name__ as NAME
-from pipupgrade 	 		import _pip, semver, request as req, db, log
-from pipupgrade.tree 		import Node as TreeNode
-from pipupgrade.util.string import kebab_case, strip
-from pipupgrade.util._dict  import merge_dict
-from pipupgrade._compat		import iterkeys, iteritems, string_types
+from pipupgrade 	 		import _pip, semver
+from bpytuils.tree 			import Node as TreeNode
+from bpyutils.util.string 	import kebab_case, strip
+from bpyutils.util._dict  	import merge_dict
+from bpyutils._compat		import iterkeys, iteritems, string_types
 from pipupgrade.config		import Settings
 
-logger  	= log.get_logger()
+from bpyutils import request as req, db, log
+
+logger  	= log.get_logger(name = NAME)
 _db			= db.get_connection()
 settings	= Settings()
 
@@ -67,7 +69,7 @@ def _get_pip_info(*args, **kwargs):
 # 	return info["version"]
 
 def to_datetime(string):
-	return datetime.strptime(string, "%Y-%m-%d %H:%M:%S")
+	return datetime.strptime(string, "%Y-%m-%d %H:%M:%S.")
 
 class Package(object):
 	def __init__(self, package, sync = False, pip_exec = None):

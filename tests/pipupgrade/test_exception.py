@@ -2,7 +2,7 @@
 import subprocess as sp
 
 # imports - module imports
-from pipupgrade.util.system import popen
+from bpyutils.util.system import popen
 from pipupgrade.exception   import (
     PipupgradeError,
     PopenError

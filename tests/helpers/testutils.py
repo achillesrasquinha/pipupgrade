@@ -1,7 +1,7 @@
 # imports - compatibility imports
-from pipupgrade.util.system import popen, pardir
-from pipupgrade.util.string import safe_decode
-from pipupgrade._compat     import StringIO, EX_OK, input
+from bpyutils.util.system import popen, pardir
+from bpyutils.util.string import safe_decode
+from bpyutils._compat     import StringIO, EX_OK, input
 
 # imports - standard imports
 import sys
