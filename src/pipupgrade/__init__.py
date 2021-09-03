@@ -14,6 +14,6 @@ from pipupgrade.__attr__  import (
     __author__
 )
 from pipupgrade.__main__  import main
-from bpyutils.config      import Settings
+from bpyutils.config      import Settings, get_config_path
 
-settings = Settings()
+settings = Settings(location = get_config_path(__name__))

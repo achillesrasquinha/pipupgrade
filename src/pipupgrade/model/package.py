@@ -2,22 +2,26 @@
 from __future__ import absolute_import
 
 # imports - standard imports
-from   	datetime	import datetime, timedelta
-import 	re
+import os.path as osp
+from   datetime	import datetime, timedelta
+import re
 
 # imports - module imports
 from pipupgrade.__attr__    import __name__ as NAME
 from pipupgrade 	 		import _pip, semver
+from pipupgrade.config 		import PATH
 from bpyutils.tree 			import Node as TreeNode
 from bpyutils.util.string 	import kebab_case, strip
 from bpyutils.util._dict  	import merge_dict
 from bpyutils._compat		import iterkeys, iteritems, string_types
-from bpyutils.config		import Settings
+from bpyutils.config		import Settings, get_config_path
 
 from bpyutils import request as req, db, log
 
 logger  	= log.get_logger(name = NAME)
-_db			= db.get_connection()
+_db			= db.get_connection(location = get_config_path(NAME))
+_db.from_file(osp.join(PATH["DATA"], "bootstrap.sql"))
+
 settings	= Settings()
 
 def _get_pypi_info(name, raise_err = True):

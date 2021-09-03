@@ -9,7 +9,7 @@ from addict import Dict
 
 from tqdm import tqdm
 
-from bpyutils.config          import PATH
+from bpyutils.config          import get_config_path
 from bpyutils._compat         import iterkeys
 from bpyutils.util.request    import proxy_request, proxy_grequest
 from bpyutils.util.system     import make_temp_dir, popen
@@ -17,19 +17,22 @@ from bpyutils.util.string     import safe_decode
 from bpyutils.util.array      import chunkify
 from bpyutils.util.datetime   import get_timestamp_str
 from bpyutils.util.environ    import getenv
+from bpyutils.exception       import PopenError
 
 from pipupgrade.__attr__ import __name__ as NAME
 from bpyutils import log, db
 
+PATH_CACHE      = get_config_path(NAME)
+
 BASE_INDEX_URL  = "https://pypi.org/simple"
 logger          = log.get_logger(name = NAME, level = log.DEBUG)
-connection      = db.get_connection()
+connection      = db.get_connection(location = PATH_CACHE)
 
 def exception_handler(request, exception):
     logger.warning("Unable to load request: %s", exception)
 
 def run(*args, **kwargs):
-    dir_path = PATH["CACHE"]
+    dir_path = PATH_CACHE
 
     # seed database...
     repo = osp.join(dir_path, "pipupgrade")

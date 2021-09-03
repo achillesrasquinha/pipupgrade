@@ -11,12 +11,13 @@ from bpyutils.util.proxy      import (fetch as fetch_proxies, save as save_proxi
 from bpyutils.util.string     import strip
 from bpyutils.util.datetime   import get_timestamp_str
 from bpyutils._compat         import itervalues, iteritems
+from bpyutils.config          import get_config_path
 
 from pipupgrade.__attr__ import __name__ as NAME
 from bpyutils import log, db
 
 logger      = log.get_logger(name = NAME, level = log.DEBUG)
-connection  = db.get_connection()
+connection  = db.get_connection(location = get_config_path(NAME)))
 
 PROXY_LEVEL_CODES = {
     "High": "H",
