@@ -15,7 +15,7 @@ from bpyutils.util.proxy      import (fetch as fetch_proxies, save as save_proxi
 from bpyutils.util.request    import proxy_request
 from bpyutils.util.string     import safe_decode, strip
 from bpyutils.util.datetime   import get_timestamp_str
-from pipupgrade.config          import PATH
+from bpyutils.config          import PATH
 from bpyutils._compat import iterkeys, itervalues, iteritems
 
 from pipupgrade.__attr__ import __name__ as NAME

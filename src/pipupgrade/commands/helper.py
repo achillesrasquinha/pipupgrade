@@ -10,15 +10,13 @@ import json
 from pipupgrade.model         	import Registry
 from pipupgrade.commands.util 	import cli_format
 from bpyutils.table      	  	import Table
-from bpyutils.util.string     import pluralize, strip
+from bpyutils.util.string     	import pluralize, strip
 from bpyutils.util.system   	import read, write, popen, which
 from bpyutils.util.array		import squash
-from pipupgrade 		      	import (_pip, cli, semver,
-	log
-)
+from pipupgrade 		      	import _pip, cli, semver
 from pipupgrade.exception		import PopenError
 
-from bpyutils import parallel
+from bpyutils import parallel, log
 
 logger = log.get_logger()
 

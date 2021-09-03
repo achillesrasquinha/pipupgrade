@@ -27,16 +27,14 @@ from bpyutils.util.system   	import (read, write, touch, popen, which)
 from bpyutils.util.environ  	import getenvvar
 from bpyutils.util.datetime 	import get_timestamp_str
 from bpyutils.util.imports      import import_handler
-from pipupgrade 		      	import (_pip, cli,
-    log
-)
+from pipupgrade 		      	import _pip, cli
 from bpyutils._compat			import builtins, iteritems
 from pipupgrade.__attr__      	import __name__
-from pipupgrade.config			import environment
+from bpyutils.config			import environment
 from pipupgrade.exception       import DependencyNotFoundError
 
 from bpyutils import request as req
-from bpyutils import parallel
+from bpyutils import parallel, log
 
 logger   = log.get_logger(level = log.DEBUG)
 

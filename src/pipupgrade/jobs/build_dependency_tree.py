@@ -11,7 +11,7 @@ from addict import Dict
 
 from tqdm import tqdm
 
-from pipupgrade.config          import PATH
+from bpyutils.config          import PATH
 from bpyutils._compat         import iterkeys
 from bpyutils.util.request    import proxy_request, proxy_grequest, get_random_requests_proxies as get_rand_proxy
 from bpyutils.util.system     import read, write, make_temp_dir, popen

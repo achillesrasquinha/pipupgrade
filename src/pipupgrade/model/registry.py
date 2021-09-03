@@ -13,7 +13,7 @@ from pipupgrade               import _pip
 from bpyutils.util.array      import compact, flatten
 from bpyutils.util.string     import kebab_case
 from bpyutils._compat		  import iteritems, iterkeys, itervalues
-from bpytuils.tree            import Node as TreeNode
+from bpyutils.tree            import Node as TreeNode
 from bpyutils.log             import get_logger
 
 from bpyutils import parallel

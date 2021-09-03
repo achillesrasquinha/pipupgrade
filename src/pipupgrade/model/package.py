@@ -10,11 +10,11 @@ import 	re
 # imports - module imports
 from pipupgrade.__attr__    import __name__ as NAME
 from pipupgrade 	 		import _pip, semver
-from bpytuils.tree 			import Node as TreeNode
+from bpyutils.tree 			import Node as TreeNode
 from bpyutils.util.string 	import kebab_case, strip
 from bpyutils.util._dict  	import merge_dict
 from bpyutils._compat		import iterkeys, iteritems, string_types
-from pipupgrade.config		import Settings
+from bpyutils.config		import Settings
 
 from bpyutils import request as req, db, log
 

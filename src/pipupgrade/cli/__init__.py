@@ -1,5 +1,5 @@
 # imports - module imports
-from pipupgrade.cli.util   import *
+from bpyutils.cli.util   import *
 from pipupgrade.cli.parser import get_args
 from bpyutils.util._dict import merge_dict
 from bpyutils.util.types import get_function_arguments

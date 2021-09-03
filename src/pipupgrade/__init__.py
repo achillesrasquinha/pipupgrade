@@ -14,8 +14,10 @@ from pipupgrade.__attr__    import (
     __author__
 )
 from pipupgrade.__main__    import main
-from pipupgrade.config      import Settings
 from pipupgrade             import _pip
+from bpyutils.config      import Settings
 from bpyutils.util.jobs   import run_all as run_all_jobs, run_job
 
 settings = Settings()
+
+from bpyutils.tree import Node
