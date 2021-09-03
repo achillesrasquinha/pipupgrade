@@ -6,12 +6,10 @@ import pkg_resources
 
 from pipupgrade.__attr__ import __name__ as NAME
 
-from bpyutils._compat import iteritems, iterkeys
-from bpyutils.log     import get_logger
-from bpyutils.config  import PATH, Settings
+from bpyutils._compat   import iterkeys
+from bpyutils.log       import get_logger
+from bpyutils.config    import PATH, Settings
 from bpyutils           import request as req
-from pipupgrade._pip    import parse_requirements
-from bpyutils.util.system  import make_temp_dir, write
 from pipupgrade.model.package import Package
 
 from semver import Version, VersionRange, parse_constraint

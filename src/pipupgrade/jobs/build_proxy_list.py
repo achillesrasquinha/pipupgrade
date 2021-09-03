@@ -1,22 +1,16 @@
 # imports - standard imports
-import os, os.path as osp
-import re
+import os.path as osp
 import asyncio
-import csv
 
 from proxybroker import Broker
 
-from pipupgrade.exception       import PopenError
 from bpyutils.util.environ    import getenv
-from bpyutils.util.array      import chunkify
 from bpyutils.util.system     import make_temp_dir, popen, read, write
 from bpyutils.util.proxy      import (fetch as fetch_proxies, save as save_proxies_to_db,
     PROXY_COLUMNS)
-from bpyutils.util.request    import proxy_request
-from bpyutils.util.string     import safe_decode, strip
+from bpyutils.util.string     import strip
 from bpyutils.util.datetime   import get_timestamp_str
-from bpyutils.config          import PATH
-from bpyutils._compat import iterkeys, itervalues, iteritems
+from bpyutils._compat         import itervalues, iteritems
 
 from pipupgrade.__attr__ import __name__ as NAME
 from bpyutils import log, db

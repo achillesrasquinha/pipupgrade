@@ -14,7 +14,7 @@ from bpyutils.util.string     	import pluralize, strip
 from bpyutils.util.system   	import read, write, popen, which
 from bpyutils.util.array		import squash
 from pipupgrade 		      	import _pip, cli, semver
-from pipupgrade.exception		import PopenError
+from bpyutils.exception			import PopenError
 
 from bpyutils import parallel, log
 

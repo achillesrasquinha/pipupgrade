@@ -3,7 +3,6 @@ from bpyutils._compat import iteritems
 
 # imports - standard imports
 import pip
-import json
 import os.path as osp
 
 # imports - module imports

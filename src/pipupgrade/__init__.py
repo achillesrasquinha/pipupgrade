@@ -8,16 +8,12 @@ except ImportError:
     pass
 
 # imports - module imports
-from pipupgrade.__attr__    import (
+from pipupgrade.__attr__  import (
     __name__,
     __version__,
     __author__
 )
-from pipupgrade.__main__    import main
-from pipupgrade             import _pip
+from pipupgrade.__main__  import main
 from bpyutils.config      import Settings
-from bpyutils.util.jobs   import run_all as run_all_jobs, run_job
 
 settings = Settings()
-
-from bpyutils.tree import Node

@@ -1,10 +1,8 @@
 import os.path as osp
-import shutil
 import json
 import gzip
 
 # imports - standard imports
-import requests as req
 import grequests
 from bs4 import BeautifulSoup
 from addict import Dict
@@ -13,13 +11,12 @@ from tqdm import tqdm
 
 from bpyutils.config          import PATH
 from bpyutils._compat         import iterkeys
-from bpyutils.util.request    import proxy_request, proxy_grequest, get_random_requests_proxies as get_rand_proxy
-from bpyutils.util.system     import read, write, make_temp_dir, popen
+from bpyutils.util.request    import proxy_request, proxy_grequest
+from bpyutils.util.system     import make_temp_dir, popen
 from bpyutils.util.string     import safe_decode
 from bpyutils.util.array      import chunkify
 from bpyutils.util.datetime   import get_timestamp_str
 from bpyutils.util.environ    import getenv
-from bpyutils.util._dict      import autodict
 
 from pipupgrade.__attr__ import __name__ as NAME
 from bpyutils import log, db
@@ -50,7 +47,7 @@ def run(*args, **kwargs):
         try:
             popen("git pull origin master", cwd = repo)
         except PopenError:
-            logger.warn("Unable to pull latest branch")
+            logger.warning("Unable to pull latest branch")
 
     deptree = Dict()
     path_deptree = osp.join(repo, "data", "dependencies.json.gz")

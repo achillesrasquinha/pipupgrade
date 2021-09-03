@@ -10,7 +10,6 @@ from pipupgrade.__attr__ import (
     __name__    as NAME,
     __author__
 )
-from pipupgrade import semver
 
 def test___get_pypi_info():
     info = _get_pypi_info("pipupgrade")

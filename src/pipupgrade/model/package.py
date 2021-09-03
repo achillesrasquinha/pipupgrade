@@ -3,8 +3,6 @@ from __future__ import absolute_import
 
 # imports - standard imports
 from   	datetime	import datetime, timedelta
-from 	functools 	import partial
-import 	os.path as osp
 import 	re
 
 # imports - module imports
@@ -118,7 +116,7 @@ class Package(object):
 				WHERE name = '%s'
 			""" % self.name)
 		except db.OperationalError as e:
-			logger.warn("Unable to fetch package name. %s" % e)
+			logger.warning("Unable to fetch package name. %s" % e)
 
 		if res:
 			cache_timeout = settings.get("cache_timeout")
@@ -153,7 +151,7 @@ class Package(object):
 						('%s', '%s', '%s', '%s', '%s', '%s')
 				""" % values)
 			except (db.IntegrityError, db.OperationalError) as e:
-				logger.warn("Unable to save package name. %s" % e)
+				logger.warning("Unable to save package name. %s" % e)
 		else:
 			if sync:
 				logger.info("Attempting to UPDATE package %s within database." % self)
@@ -166,7 +164,7 @@ class Package(object):
 							name = '%s'
 					""" % (self.latest_version, self.home_page, ",".join(self.releases), datetime.now(), self.name))
 				except db.OperationalError as e:
-					logger.warn("Unable to update package name. %s" % e)
+					logger.warning("Unable to update package name. %s" % e)
 			else:
 				logger.info("Using cached info for package %s." % self)
 

@@ -1,6 +1,5 @@
 # imports - standard imports
 import sys
-import os
 import argparse
 import multiprocessing as mp
 
@@ -15,7 +14,6 @@ from bpyutils.util.environ    import getenv
 from bpyutils.cli             import util as _cli
 from bpyutils.cli.formatter   import ArgumentParserFormatter
 from bpyutils.cli.util        import _CAN_ANSI_FORMAT
-from pipupgrade._pip          import _PIP_EXECUTABLES
 
 _DESCRIPTION_JUMBOTRON = \
 """

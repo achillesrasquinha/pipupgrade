@@ -2,10 +2,7 @@
 from __future__ import absolute_import
 
 # imports - standard imports
-import sys, os
-import re
 import json
-import multiprocessing as mp
 from   functools import partial
 import traceback
 
@@ -23,7 +20,7 @@ from pipupgrade.model.project 	import get_included_requirements
 from pipupgrade.commands.util 	import cli_format
 from bpyutils.util.array    	import flatten, sequencify
 from bpyutils.util._dict        import merge_dict
-from bpyutils.util.system   	import (read, write, touch, popen, which)
+from bpyutils.util.system   	import (touch, popen, which)
 from bpyutils.util.environ  	import getenvvar
 from bpyutils.util.datetime 	import get_timestamp_str
 from bpyutils.util.imports      import import_handler
