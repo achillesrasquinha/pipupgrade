@@ -5,6 +5,7 @@ from __future__ import absolute_import
 import sys, os, os.path as osp
 import re
 import json
+import subprocess
 
 # imports - module imports
 from pipupgrade.model         	import Registry
@@ -305,7 +306,9 @@ def update_registry(registry,
 									upgrade = True
 								)
 							except PopenError as e:
-								if raise_err:
+   								if(type(e) == subprocess.CalledProcessError):
+									print(f"Non-zero value returned by pip while updating {package.name}: {e}")
+								elif raise_err:
 									raise
 	else:
 		cli.echo("%s upto date." % cli_format(stitle, cli.CYAN),
