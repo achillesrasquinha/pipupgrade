@@ -11,10 +11,7 @@ tox
 coveralls
 pluggy<1,>=0.12.0
 pip
-<<<<<<< HEAD
 bpyutils
-=======
->>>>>>> master
 requests
 beautifulsoup4
 grequests; python_version > '2.7'
@@ -22,10 +19,7 @@ fake-useragent
 proxybroker==0.3.2; python_version > '3.5'
 # git+https://github.com/bluet/proxybroker2.git; python_version > '3.5'
 addict
-<<<<<<< HEAD
-=======
 urllib3==1.25.11
->>>>>>> master
 pipenv
 jedi<0.18
 ipython
