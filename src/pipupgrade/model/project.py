@@ -4,10 +4,11 @@ import fnmatch
 import glob
 
 # imports - module imports
-from pipupgrade import log
-from pipupgrade.util.string import strip
+from pipupgrade.__attr__ import __name__ as NAME
+from bpyutils import log
+from bpyutils.util.string import strip
 
-logger = log.get_logger()
+logger = log.get_logger(name = NAME)
 
 class Project(object):
 	@staticmethod

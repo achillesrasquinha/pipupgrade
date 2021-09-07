@@ -1,15 +1,6 @@
-import os.path as osp
-
 # imports - compatibility imports
-from pipupgrade.commands    import _command as command
-from pipupgrade.util._dict  import merge_dict
-from pipupgrade.util.string import strip_ansi
-
-# imports - test imports
-import pytest
-
-# imports - test imports
-from testutils import mock_input, PATH
+from pipupgrade.commands  import _command as command
+from bpyutils.util.string import strip_ansi
 
 def test_command_self(capfd):
     command(self = True, pip = True)

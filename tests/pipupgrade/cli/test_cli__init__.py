@@ -1,10 +1,10 @@
 # imports - compatibility imports
-from pipupgrade._compat import iteritems, iterkeys
+from bpyutils._compat import iteritems, iterkeys
 
 # imports - module imports
 from pipupgrade import cli
 from pipupgrade.cli import get_args
-from pipupgrade.util._dict import merge_dict
+from bpyutils.util._dict import merge_dict
 
 def test_command():
     def _assert_command(values, override = dict(), initial = dict()):

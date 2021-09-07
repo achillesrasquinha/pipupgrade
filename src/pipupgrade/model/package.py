@@ -2,22 +2,26 @@
 from __future__ import absolute_import
 
 # imports - standard imports
-from   	datetime	import datetime, timedelta
-from 	functools 	import partial
-import 	os.path as osp
-import 	re
+import os.path as osp
+from   datetime	import datetime, timedelta
+import re
 
 # imports - module imports
 from pipupgrade.__attr__    import __name__ as NAME
-from pipupgrade 	 		import _pip, semver, request as req, db, log
-from pipupgrade.tree 		import Node as TreeNode
-from pipupgrade.util.string import kebab_case, strip
-from pipupgrade.util._dict  import merge_dict
-from pipupgrade._compat		import iterkeys, iteritems, string_types
-from pipupgrade.config		import Settings
+from pipupgrade 	 		import _pip, semver
+from pipupgrade.config 		import PATH
+from bpyutils.tree 			import Node as TreeNode
+from bpyutils.util.string 	import kebab_case, strip
+from bpyutils.util._dict  	import merge_dict
+from bpyutils._compat		import iterkeys, iteritems, string_types
+from bpyutils.config		import Settings, get_config_path
 
-logger  	= log.get_logger()
-_db			= db.get_connection()
+from bpyutils import request as req, db, log
+
+logger  	= log.get_logger(name = NAME)
+_db			= db.get_connection(location = get_config_path(NAME))
+_db.from_file(osp.join(PATH["DATA"], "bootstrap.sql"))
+
 settings	= Settings()
 
 def _get_pypi_info(name, raise_err = True):
@@ -67,7 +71,7 @@ def _get_pip_info(*args, **kwargs):
 # 	return info["version"]
 
 def to_datetime(string):
-	return datetime.strptime(string, "%Y-%m-%d %H:%M:%S.%f")
+	return datetime.strptime(string, "%Y-%m-%d %H:%M:%S")
 
 class Package(object):
 	def __init__(self, package, sync = False, pip_exec = None):
@@ -116,7 +120,7 @@ class Package(object):
 				WHERE name = '%s'
 			""" % self.name)
 		except db.OperationalError as e:
-			logger.warn("Unable to fetch package name. %s" % e)
+			logger.warning("Unable to fetch package name. %s" % e)
 
 		if res:
 			cache_timeout = settings.get("cache_timeout")
@@ -137,7 +141,7 @@ class Package(object):
 				self.latest_version = _pypi_info.get("version")
 
 			self.home_page  = _pypi_info.get("home_page")
-			self.releases   = [version for version in iterkeys(_pypi_info.get("releases"))]
+			self.releases   = [version for version in iterkeys(_pypi_info.get("releases") or [])]
 
 		if not res:
 			try:
@@ -151,7 +155,7 @@ class Package(object):
 						('%s', '%s', '%s', '%s', '%s', '%s')
 				""" % values)
 			except (db.IntegrityError, db.OperationalError) as e:
-				logger.warn("Unable to save package name. %s" % e)
+				logger.warning("Unable to save package name. %s" % e)
 		else:
 			if sync:
 				logger.info("Attempting to UPDATE package %s within database." % self)
@@ -164,7 +168,7 @@ class Package(object):
 							name = '%s'
 					""" % (self.latest_version, self.home_page, ",".join(self.releases), datetime.now(), self.name))
 				except db.OperationalError as e:
-					logger.warn("Unable to update package name. %s" % e)
+					logger.warning("Unable to update package name. %s" % e)
 			else:
 				logger.info("Using cached info for package %s." % self)
 

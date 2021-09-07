@@ -11,6 +11,7 @@ tox
 coveralls
 pluggy<1,>=0.12.0
 pip
+bpyutils
 requests
 beautifulsoup4
 grequests; python_version > '2.7'

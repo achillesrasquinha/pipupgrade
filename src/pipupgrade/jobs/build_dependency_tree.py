@@ -1,36 +1,38 @@
 import os.path as osp
-import shutil
 import json
 import gzip
 
 # imports - standard imports
-import requests as req
 import grequests
 from bs4 import BeautifulSoup
 from addict import Dict
 
 from tqdm import tqdm
 
-from pipupgrade.config          import PATH
-from pipupgrade._compat         import iterkeys
-from pipupgrade.util.request    import proxy_request, proxy_grequest, get_random_requests_proxies as get_rand_proxy
-from pipupgrade.util.system     import read, write, make_temp_dir, popen
-from pipupgrade.util.string     import safe_decode
-from pipupgrade.util.array      import chunkify
-from pipupgrade.util.datetime   import get_timestamp_str
-from pipupgrade.util.environ    import getenv
-from pipupgrade.util._dict      import autodict
-from pipupgrade import log, db
+from bpyutils.config          import get_config_path
+from bpyutils._compat         import iterkeys
+from bpyutils.util.request    import proxy_request, proxy_grequest
+from bpyutils.util.system     import make_temp_dir, popen
+from bpyutils.util.string     import safe_decode
+from bpyutils.util.array      import chunkify
+from bpyutils.util.datetime   import get_timestamp_str
+from bpyutils.util.environ    import getenv
+from bpyutils.exception       import PopenError
+
+from pipupgrade.__attr__ import __name__ as NAME
+from bpyutils import log, db
+
+PATH_CACHE      = get_config_path(NAME)
 
 BASE_INDEX_URL  = "https://pypi.org/simple"
-logger          = log.get_logger(level = log.DEBUG)
-connection      = db.get_connection()
+logger          = log.get_logger(name = NAME, level = log.DEBUG)
+connection      = db.get_connection(location = PATH_CACHE)
 
 def exception_handler(request, exception):
     logger.warning("Unable to load request: %s", exception)
 
 def run(*args, **kwargs):
-    dir_path = PATH["CACHE"]
+    dir_path = PATH_CACHE
 
     # seed database...
     repo = osp.join(dir_path, "pipupgrade")
@@ -48,7 +50,7 @@ def run(*args, **kwargs):
         try:
             popen("git pull origin master", cwd = repo)
         except PopenError:
-            logger.warn("Unable to pull latest branch")
+            logger.warning("Unable to pull latest branch")
 
     deptree = Dict()
     path_deptree = osp.join(repo, "data", "dependencies.json.gz")

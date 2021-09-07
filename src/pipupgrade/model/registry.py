@@ -3,16 +3,18 @@ from __future__ import absolute_import
 
 # imports - standard imports
 import re
-from   functools import partial, cmp_to_key
+from   functools import partial
 
 # imports - module imports
-from pipupgrade.model.package   import Package, _get_pip_info
-from pipupgrade                 import _pip, parallel
-from pipupgrade.util.array      import compact, flatten
-from pipupgrade.util.string     import kebab_case
-from pipupgrade._compat		    import iteritems, iterkeys, itervalues
-from pipupgrade.tree            import Node as TreeNode
-from pipupgrade.log             import get_logger
+from pipupgrade.__attr__ import __name__ as NAME
+
+from pipupgrade.model.package import Package, _get_pip_info
+from bpyutils.util.array      import compact
+from bpyutils._compat		  import iteritems
+from bpyutils.tree            import Node as TreeNode
+from bpyutils.log             import get_logger
+
+from bpyutils import parallel
 
 logger = get_logger()
 

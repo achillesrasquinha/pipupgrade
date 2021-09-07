@@ -1,33 +1,27 @@
 # imports - standard imports
-import os, os.path as osp
-import re
+import os.path as osp
 import asyncio
-import csv
 
 import requests as req
 import grequests as greq
 from proxybroker import Broker
 from tqdm import tqdm
 
-from pipupgrade.exception       import PopenError
-from pipupgrade.util.environ    import getenv
-from pipupgrade.util.array      import chunkify
-from pipupgrade.util.system     import make_temp_dir, popen, read, write
-from pipupgrade.util.proxy      import (fetch as fetch_proxies, save as save_proxies_to_db,
-    PROXY_COLUMNS, to_addr)
-from pipupgrade.util.request    import proxy_request
-from pipupgrade.util.string     import safe_decode, strip
-from pipupgrade.util.datetime   import get_timestamp_str
-from pipupgrade.config          import PATH
-from pipupgrade._compat import iterkeys, itervalues, iteritems
-from pipupgrade import db
-from pipupgrade import log
+from bpyutils.util.environ    import getenv
+from bpyutils.util.system     import make_temp_dir, popen, read, write
+from bpyutils.util.proxy      import (fetch as fetch_proxies, save as save_proxies_to_db,
+    PROXY_COLUMNS)
+from bpyutils.util.array      import chunkify
+from bpyutils.util.string     import strip
+from bpyutils.util.datetime   import get_timestamp_str
+from bpyutils._compat         import itervalues, iteritems
+from bpyutils.config          import get_config_path
 
-import asyncio
-import random
+from pipupgrade.__attr__ import __name__ as NAME
+from bpyutils import log, db
 
-logger      = log.get_logger(level = log.DEBUG)
-connection  = db.get_connection()
+logger      = log.get_logger(name = NAME, level = log.DEBUG)
+connection  = db.get_connection(location = get_config_path(NAME)))
 
 import aiohttp
 

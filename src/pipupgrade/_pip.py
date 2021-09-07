@@ -1,19 +1,20 @@
 # imports - compatibility imports
-from pipupgrade._compat import iteritems
+from bpyutils._compat import iteritems
 
 # imports - standard imports
 import pip
-import json
 import os.path as osp
 
 # imports - module imports
-from pipupgrade.util.system  import which, popen
-from pipupgrade.util.string  import kebab_case
-from pipupgrade.util.environ import value_to_envval
-from pipupgrade.util.array   import sequencify
-from pipupgrade.log          import get_logger
+from bpyutils.util.system  import which, popen
+from bpyutils.util.string  import kebab_case
+from bpyutils.util.environ import value_to_envval
+from bpyutils.util.array   import sequencify
 
-logger = get_logger()
+from pipupgrade.__attr__   import __name__ as NAME
+from bpyutils.log          import get_logger
+
+logger = get_logger(name = NAME)
 
 PIP9 = int(pip.__version__.split(".")[0]) < 10
 

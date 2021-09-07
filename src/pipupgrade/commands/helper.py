@@ -9,15 +9,14 @@ import json
 # imports - module imports
 from pipupgrade.model         	import Registry
 from pipupgrade.commands.util 	import cli_format
-from pipupgrade.table      	  	import Table
-from pipupgrade.tree			import Node as TreeNode
-from pipupgrade.util.string     import pluralize, strip
-from pipupgrade.util.system   	import read, write, popen, which
-from pipupgrade.util.array		import squash
-from pipupgrade 		      	import (_pip, cli, semver,
-	log, parallel
-)
-from pipupgrade.exception		import PopenError
+from bpyutils.table      	  	import Table
+from bpyutils.util.string     	import pluralize, strip
+from bpyutils.util.system   	import read, write, popen, which
+from bpyutils.util.array		import squash
+from pipupgrade 		      	import _pip, cli, semver
+from bpyutils.exception			import PopenError
+
+from bpyutils import parallel, log
 
 logger = log.get_logger()
 

@@ -1,6 +1,5 @@
 # imports - standard imports
 import sys
-import os
 import argparse
 import multiprocessing as mp
 
@@ -11,11 +10,10 @@ from pipupgrade.__attr__     import (
     __description__,
     __command__
 )
-from pipupgrade.util.environ  import getenv
-from pipupgrade.cli           import util as _cli
-from pipupgrade.cli.formatter import ArgumentParserFormatter
-from pipupgrade.cli.util      import _CAN_ANSI_FORMAT
-from pipupgrade._pip          import _PIP_EXECUTABLES
+from bpyutils.util.environ    import getenv
+from bpyutils.cli             import util as _cli
+from bpyutils.cli.formatter   import ArgumentParserFormatter
+from bpyutils.cli.util        import _CAN_ANSI_FORMAT
 
 _DESCRIPTION_JUMBOTRON = \
 """
@@ -170,6 +168,10 @@ def get_parser():
         action  = "store_true",
         default = getenv("FORCE", False),
         help    = "Force search for files within a project."
+    )
+    parser.add_argument("--doctor",
+        action  = "store_true",
+        help    = "Perform diagnostics and fix it."
     )
 
     if _CAN_ANSI_FORMAT or "pytest" in sys.modules:

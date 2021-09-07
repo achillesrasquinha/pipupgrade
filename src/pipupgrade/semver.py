@@ -1,5 +1,5 @@
 # imports - compatibility imports
-from pipupgrade._compat import cmp
+from bpyutils._compat import cmp
 
 # imports - standard imports
 import re
