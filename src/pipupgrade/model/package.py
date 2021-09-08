@@ -71,7 +71,7 @@ def _get_pip_info(*args, **kwargs):
 # 	return info["version"]
 
 def to_datetime(string):
-	return datetime.strptime(string, "%Y-%m-%d %H:%M:%S")
+	return datetime.strptime(string, "%Y-%m-%d %H:%M:%S.")
 
 class Package(object):
 	def __init__(self, package, sync = False, pip_exec = None):

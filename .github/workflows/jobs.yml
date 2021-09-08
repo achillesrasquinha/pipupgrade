@@ -47,5 +47,7 @@ jobs:
           pip install -r requirements-jobs.txt
           python setup.py develop
       - name: Run Jobs
-        run: |
-          python -c "import pipupgrade as pu; pu.run_all_jobs()"
+        # run: |
+        #   python -c "import bpyutils as bpy; bpy.run_all_jobs('pipupgrade.jobs')"
+        # run:
+        #   bpyutils --run-job pipupgrade.jobs
