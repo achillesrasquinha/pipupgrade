@@ -39,6 +39,6 @@ jobs:
       - name: Run Tests
         run: |
           tox -e py$(echo "${{ matrix.python-version }}" | tr -d '.')
-      # - name: Run Coverage
-      #   run: |
-      #     coveralls --service=github
+      - name: Run Coverage
+        run: |
+          coveralls
