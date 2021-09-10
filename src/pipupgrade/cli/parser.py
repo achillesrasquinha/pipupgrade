@@ -54,6 +54,11 @@ def get_parser():
         default = getenv("ACCEPT_ALL_DIALOGS", False),
         help    = "Confirm for all dialogs."
     )
+    parser.add_argument("--clean", 
+        action  = "store_true",
+        default = getenv("CLEAN", False),
+        help    = "Clean metadata"
+    )
     parser.add_argument("-c", "--check",
         action  = "store_true",
         default = getenv("DRY_RUN", False),
@@ -167,7 +172,7 @@ def get_parser():
     parser.add_argument("--force",
         action  = "store_true",
         default = getenv("FORCE", False),
-        help    = "Force search for files within a project."
+        help    = "Force search for files within a project / Force clean."
     )
     parser.add_argument("--doctor",
         action  = "store_true",

@@ -1,5 +1,6 @@
 # imports - compatibility imports
 from __future__ import absolute_import
+import os.path as osp
 
 # imports - standard imports
 import json
@@ -20,14 +21,14 @@ from pipupgrade.model.project 	import get_included_requirements
 from pipupgrade.commands.util 	import cli_format
 from bpyutils.util.array    	import flatten, sequencify
 from bpyutils.util._dict        import merge_dict
-from bpyutils.util.system   	import (touch, popen, which)
+from bpyutils.util.system   	import (touch, popen, which, remove)
 from bpyutils.util.environ  	import getenvvar
 from bpyutils.util.datetime 	import get_timestamp_str
 from bpyutils.util.imports      import import_handler
 from pipupgrade 		      	import _pip, cli
 from bpyutils._compat			import builtins, iteritems
-from pipupgrade.__attr__      	import __name__
-from bpyutils.config			import environment
+from pipupgrade.__attr__      	import __name__ as NAME
+from bpyutils.config			import environment, get_config_path
 from pipupgrade.exception       import DependencyNotFoundError
 
 from bpyutils import request as req
@@ -68,6 +69,7 @@ ARGUMENTS = dict(
     ignore_error				= False,
     force						= False,
     doctor                      = False,
+    clean                       = False,
     verbose		 				= False
 )
 
@@ -125,6 +127,15 @@ def _command(*args, **kwargs):
     if a.doctor:
         logger.info("Performing Diagnostics and attempting to fix.")
 
+        if a.clean:
+            path_config = get_config_path(name = NAME)
+            paths = [
+                osp.join(path_config, "db.db")
+            ]
+
+            for path in paths:
+                remove(path)
+
         # check database and repair.
     else:
         if a.resolve:
@@ -164,7 +175,7 @@ def _command(*args, **kwargs):
                 )
 
         if a.self:
-            package = __name__
+            package = NAME
             logger.info("Updating %s..." % package)
 
             cli.echo(cli_format("Updating %s..." % package, cli.YELLOW),

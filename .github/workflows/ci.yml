@@ -4,6 +4,7 @@ on: [push, pull_request]
 
 env:
   COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   ENVIRONMENT: test
   VERBOSE: true
@@ -41,4 +42,4 @@ jobs:
           tox -e py$(echo "${{ matrix.python-version }}" | tr -d '.')
       - name: Run Coverage
         run: |
-          coveralls
+          coveralls --service=github
