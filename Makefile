@@ -28,7 +28,9 @@ PRECOMMIT				= ${VENVBIN}pre-commit
 SPHINXBUILD				= ${VENVBIN}sphinx-build
 TWINE					= ${VENVBIN}twine
 
-SQLITE					= sqlite
+
+SQLITE				   ?= sqlite
+
 
 JOBS				   ?= $(shell $(PYTHON) -c "import multiprocessing as mp; print(mp.cpu_count())")
 PYTHON_ENVIRONMENT      = $(shell $(PYTHON) -c "import sys;v=sys.version_info;print('py%s%s'%(v.major,v.minor))")
@@ -145,7 +147,7 @@ ifeq (${ENVIRONMENT},test)
 	$(COVERALLS)
 endif
 
-shell: ## Launch an IPython shell.
+shell: install ## Launch an IPython shell.
 	$(call log,INFO,Launching Python Shell)
 	$(IPYTHON) \
 		--no-banner
@@ -189,6 +191,12 @@ docker-tox: clean ## Test using Docker Tox Image.
 	@docker run --rm -v $(TMPDIR):/app themattrix/tox
 
 	@rm -rf  $(TMPDIR)
+
+bump: test ## Bump Version
+	$(BUMPVERSION) \
+		--current-version $(shell cat $(PROJDIR)/VERSION) \
+		$(TYPE) \
+		$(PROJDIR)/VERSION 
 
 release: ## Create a Release
 	$(PYTHON) setup.py sdist bdist_wheel

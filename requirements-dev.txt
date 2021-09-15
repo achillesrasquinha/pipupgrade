@@ -6,7 +6,6 @@ pytest
 pytest-cov
 pytest-xdist
 pytest-sugar
-pytest-travis-fold
 tox
 coveralls
 pluggy<1,>=0.12.0
@@ -15,6 +14,7 @@ bpyutils
 pipenv
 jedi<0.18
 ipython
+bumpversion
 vulture
 safety
 pre-commit

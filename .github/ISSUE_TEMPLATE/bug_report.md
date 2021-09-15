@@ -10,12 +10,12 @@ assignees: achillesrasquinha
 
 *A clear and concise description of what the bug is.*
 
-#### What command led to this issue?
+#### What snippet/command led to this issue?
 
-*Please type the exact command that led to this issue.*
+*Please type the exact snippet/command that led to this issue.*
 
 ```
-$ "<YOUR COMMAND HERE>"
+$ "<YOUR SNIPPET/COMMAND HERE>"
 ```
 
 #### Logs
