@@ -1,0 +1,24 @@
+{
+    "files.exclude": {
+        "**/*.pyc": true,
+        "**/__pycache__": true,
+        "**/*.egg-info": true,
+        ".pytest_cache": true,
+        "*.coverage": true,
+        "*.coverage.*": true,
+        "requirements*.txt": true,
+        "**/.tox": true,
+        ".venv": true,
+        "build": true,
+        "dist": true,
+        "htmlcov": true,
+        "docs/build": true
+    },
+    "editor.rulers": [78],
+    "editor.fontFamily": "Consolas",
+    "editor.tabSize": 4,
+    "editor.renderWhitespace": "all",
+    "python.pythonPath": "${workspaceFolder}/.venv/bin/python",
+    "python.linting.pylintPath": "${workspaceFolder}/.venv/bin/pylint",
+    "python.linting.pylintEnabled": true
+}

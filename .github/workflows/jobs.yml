@@ -1,0 +1,41 @@
+name: Jobs
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  ENVIRONMENT: test
+  VERBOSE: true
+  TERM: xterm
+
+  PIPUPGRADE_JOBS_GITHUB_USERNAME: achillesrasquinha
+  PIPUPGRADE_JOBS_GITHUB_OAUTH_TOKEN: ${{ secrets.PIPUPGRADE_JOBS_GITHUB_OAUTH_TOKEN }}
+
+jobs:
+  jobs:
+    name: Test
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v2
+      - name: Show ref
+        run: |
+          echo "Checking out $GITHUB_REF..."
+      - uses: actions/setup-python@v2
+        name: Set up Python 3.9
+        with:
+          python-version: 3.9
+      - name: Upgrade PIP and packages
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+      - name: Install dependencies
+        run: |
+          pip install -r requirements-jobs.txt
+          python setup.py develop
+      - name: Run Jobs
+        run: |
+          python -c "import pipupgrade; pipupgrade.run_all_jobs()"
