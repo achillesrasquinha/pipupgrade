@@ -1,0 +1,11 @@
+.git
+.venv
+.vscode
+ci
+docker/pipupgrade
+.appveyor.yml
+.env
+.gitignore
+.releasrc
+.travis.yml
+Makefile
