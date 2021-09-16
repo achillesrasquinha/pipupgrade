@@ -152,18 +152,10 @@ shell: install ## Launch an IPython shell.
 	$(IPYTHON) \
 		--no-banner
 
-<<<<<<< HEAD
-=======
-
->>>>>>> template/master
 dbshell:
 	$(call log,INFO,Launching SQLite Shell)
 	$(SQLITE) ~/.config/${PROJECT}/db.db
 
-<<<<<<< HEAD
-=======
-
->>>>>>> template/master
 build: clean ## Build the Distribution.
 	$(PYTHON) setup.py sdist bdist_wheel
 

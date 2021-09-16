@@ -1,11 +1,5 @@
 sphinx
 recommonmark
-<<<<<<< HEAD
-=======
-
-ipykernel
-nbsphinx
->>>>>>> template/master
 pylint
 autopep8
 pytest
@@ -15,7 +9,6 @@ pytest-sugar
 tox
 coveralls
 pluggy<1,>=0.12.0
-<<<<<<< HEAD
 pip
 bpyutils
 requests
@@ -26,10 +19,6 @@ proxybroker==0.3.2; python_version > '3.5'
 # git+https://github.com/bluet/proxybroker2.git; python_version > '3.5'
 addict
 urllib3==1.25.11
-=======
-
-bpyutils
->>>>>>> template/master
 pipenv
 jedi<0.18
 ipython
@@ -38,10 +27,4 @@ vulture
 safety
 pre-commit
 twine
-<<<<<<< HEAD
-=======
-
-jupyter
-
->>>>>>> template/master
 Flask
