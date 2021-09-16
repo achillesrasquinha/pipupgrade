@@ -113,6 +113,7 @@ setup(
     packages             = find_packages(where = SRCDIR),
     package_dir          = { "": SRCDIR },
     zip_safe             = False,
+    
     entry_points         = {
         "console_scripts": [
             "%s = %s.__main__:main" % (
@@ -121,6 +122,7 @@ setup(
             )
         ]
     },
+    
     install_requires     = get_dependencies(type_ = "production"),
     extras_require       = dict(
         dev = get_dependencies(type_ = "development")

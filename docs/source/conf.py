@@ -7,13 +7,9 @@ def pardir(path, level = 1):
         path = osp.dirname(path)
     return path
 
-<<<<<<< HEAD
-BASEDIR = osp.abspath(pardir(__file__, 2))
-=======
 BASEDIR = osp.abspath(pardir(__file__, 3))
 DOCSDIR = osp.join(BASEDIR, "docs")
 SRCDIR  = osp.join(BASEDIR, "src")
->>>>>>> template/master
 NOW     = dt.datetime.now()
 
 sys.path.insert(0, BASEDIR)
@@ -27,12 +23,10 @@ copyright = "%s %s" % (NOW.year, pipupgrade.__author__)
 version   = pipupgrade.__version__
 release   = pipupgrade.__version__
 
-<<<<<<< HEAD
 source_suffix  = ".md"
 source_parsers = { ".md": "recommonmark.parser.CommonMarkParser" }
 
 master_doc     = "index"
-=======
 source_suffix       = [".rst"]
 
 master_doc          = "index"
@@ -62,4 +56,3 @@ html_sidebars       = {
         "sidebar.html"
     ]
 }
->>>>>>> template/master
