@@ -1,7 +1,0 @@
-pytest
-pytest-cov
-pytest-xdist
-pytest-sugar
-tox
-coveralls
-pluggy<1,>=0.12.0
