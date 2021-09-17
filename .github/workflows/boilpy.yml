@@ -8,7 +8,7 @@ jobs:
     name: Template
     runs-on: ubuntu-latest
     steps:
-      - uses: achillesrasquinha/boilpy-action@0.1.0-beta
+      - uses: achillesrasquinha/boilpy-action@develop
       - name: Updating template
         run: |
           echo "Updating template..."
