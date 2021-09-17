@@ -1,0 +1,4 @@
+sphinx
+recommonmark
+ipykernel
+nbsphinx
