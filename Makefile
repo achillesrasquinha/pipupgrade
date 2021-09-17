@@ -11,6 +11,12 @@ PROJDIR					= ${BASEDIR}/src/pipupgrade
 TESTDIR					= ${BASEDIR}/tests
 DOCSDIR					= ${BASEDIR}/docs
 
+<<<<<<< HEAD
+=======
+NOTEBOOKSDIR			= ${DOCSDIR}/source/notebooks
+
+
+>>>>>>> template/master
 PYTHONPATH		 	   ?= python
 
 VIRTUAL_ENV			   ?= ${BASEDIR}/.venv
@@ -23,6 +29,12 @@ PYTEST				   ?= ${VENVBIN}pytest
 TOX						= ${VENVBIN}tox
 COVERALLS			   ?= ${VENVBIN}coveralls
 IPYTHON					= ${VENVBIN}ipython
+<<<<<<< HEAD
+=======
+
+JUPYTER					= ${VENVBIN}jupyter
+
+>>>>>>> template/master
 SAFETY					= ${VENVBIN}safety
 PRECOMMIT				= ${VENVBIN}pre-commit
 SPHINXBUILD				= ${VENVBIN}sphinx-build
@@ -152,10 +164,18 @@ shell: install ## Launch an IPython shell.
 	$(IPYTHON) \
 		--no-banner
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> template/master
 dbshell:
 	$(call log,INFO,Launching SQLite Shell)
 	$(SQLITE) ~/.config/${PROJECT}/db.db
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> template/master
 build: clean ## Build the Distribution.
 	$(PYTHON) setup.py sdist bdist_wheel
 
@@ -167,6 +187,19 @@ ifneq (${VERBOSE},true)
 	$(eval OUT = > /dev/null)
 endif
 
+<<<<<<< HEAD
+=======
+	
+	$(call log,INFO,Building Notebooks)
+	@find $(DOCSDIR)/source/notebooks -type f -name '*.ipynb' -not -path "*/.ipynb_checkpoints/*" | \
+		xargs $(JUPYTER) nbconvert \
+			--to notebook 		\
+			--inplace 			\
+			--execute 			\
+			--ExecutePreprocessor.timeout=300
+	
+
+>>>>>>> template/master
 	$(call log,INFO,Building Documentation)
 	$(SPHINXBUILD) $(DOCSDIR)/source $(DOCSDIR)/build $(OUT)
 
@@ -211,5 +244,13 @@ endif
 start: ## Start app.
 	$(PYTHON) -m flask run
 
+<<<<<<< HEAD
+=======
+
+notebooks: ## Launch Notebooks
+	$(JUPYTER) notebook --notebook-dir $(NOTEBOOKSDIR) $(ARGS)
+
+
+>>>>>>> template/master
 help: ## Show help and exit.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)

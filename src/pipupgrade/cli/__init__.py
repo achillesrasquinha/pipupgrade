@@ -4,6 +4,10 @@ from pipupgrade.cli.parser import get_args
 from bpyutils.util._dict   import merge_dict
 from bpyutils.util.types   import get_function_arguments
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> template/master
 def command(fn):
     args    = get_args()
     

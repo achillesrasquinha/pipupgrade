@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> template/master
 FROM  python:3.7-alpine
 
 LABEL maintainer=achillesrasquinha@gmail.com

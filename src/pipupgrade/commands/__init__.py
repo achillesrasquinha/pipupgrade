@@ -1,5 +1,6 @@
 # imports - compatibility imports
 from __future__ import absolute_import
+<<<<<<< HEAD
 import os.path as osp
 
 # imports - standard imports
@@ -33,10 +34,35 @@ from pipupgrade.exception       import DependencyNotFoundError
 
 from bpyutils import request as req
 from bpyutils import parallel, log
+=======
+
+# imports - standard imports
+import sys, os
+import re
+import json
+import multiprocessing as mp
+from   functools import partial
+import traceback
+
+from pipupgrade.commands.util 	import cli_format
+from bpyutils.util.array    	import flatten, sequencify
+from bpyutils.util._dict        import merge_dict
+from bpyutils.util.system   	import (read, write, touch, popen, which)
+from bpyutils.util.environ  	import getenvvar
+from bpyutils.util.datetime 	import get_timestamp_str
+from bpyutils.util.imports      import import_or_raise
+from bpyutils.config			import environment
+from bpyutils import request as req, log, parallel
+from pipupgrade 	import cli
+from bpyutils._compat		    import builtins, iteritems
+from pipupgrade.__attr__      	import __name__
+from pipupgrade.exception      import DependencyNotFoundError
+>>>>>>> template/master
 
 logger   = log.get_logger(level = log.DEBUG)
 
 ARGUMENTS = dict(
+<<<<<<< HEAD
     packages					= [ ],
     resolve                     = False,
     ignore						= [ ],
@@ -63,13 +89,22 @@ ARGUMENTS = dict(
     interactive  				= False,
     yes			 				= False,
     no_included_requirements 	= False,
+=======
+    jobs						= 1,
+    check		 				= False,
+    interactive  				= False,
+    yes			 				= False,
+>>>>>>> template/master
     no_cache		            = False,
     no_color 	 				= True,
     output						= None,
     ignore_error				= False,
     force						= False,
+<<<<<<< HEAD
     doctor                      = False,
     clean                       = False,
+=======
+>>>>>>> template/master
     verbose		 				= False
 )
 
@@ -103,6 +138,7 @@ def to_params(kwargs):
 
     return params
 
+<<<<<<< HEAD
 def import_or_raise(package, name = None):
     name = name or package
 
@@ -115,6 +151,8 @@ def import_or_raise(package, name = None):
             "Please install {package} by executing 'pip install {name}'."
         ).format(package = package, name = name))
 
+=======
+>>>>>>> template/master
 def _command(*args, **kwargs):
     a = to_params(kwargs)
 
@@ -124,6 +162,7 @@ def _command(*args, **kwargs):
     logger.info("Environment: %s" % environment())
     logger.info("Arguments Passed: %s" % locals())
 
+<<<<<<< HEAD
     if a.doctor:
         logger.info("Performing Diagnostics and attempting to fix.")
 
@@ -347,3 +386,12 @@ def _command(*args, **kwargs):
                             cli.echo(cli_format(message, cli.GREEN), file = file_)
                         else:
                             response.raise_for_status()
+=======
+    file_ = a.output
+
+    if file_:
+        logger.info("Writing to output file %s..." % file_)
+        touch(file_)
+    
+    logger.info("Using %s jobs..." % a.jobs)
+>>>>>>> template/master

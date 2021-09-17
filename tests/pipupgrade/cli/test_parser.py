@@ -11,7 +11,10 @@ def test_args():
     def _assert_args(args):
         assert _get_arg(args, "yes")      == False
         assert _get_arg(args, "check")    == False
+<<<<<<< HEAD
         assert _get_arg(args, "latest")   == False
+=======
+>>>>>>> template/master
         assert _get_arg(args, "no_color") == False
 
     args = get_args()

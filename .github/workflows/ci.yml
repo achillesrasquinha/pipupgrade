@@ -42,4 +42,8 @@ jobs:
           tox -e py$(echo "${{ matrix.python-version }}" | tr -d '.')
       - name: Run Coverage
         run: |
+<<<<<<< HEAD
           coveralls --service github
+=======
+          coveralls --service github
+>>>>>>> template/master

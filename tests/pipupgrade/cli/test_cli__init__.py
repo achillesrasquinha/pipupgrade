@@ -22,6 +22,11 @@ def test_command():
         
         foobar()
     
+<<<<<<< HEAD
     _assert_command(dict(yes    = False))
     _assert_command(dict(latest = True), dict(latest = True), dict(latest = False))
     _assert_command(dict(force  = True), dict(force  = True), dict(force  = False))
+=======
+    _assert_command(dict(yes = False))
+    _assert_command(dict(force = True), dict(force = True), dict(force = False))
+>>>>>>> template/master

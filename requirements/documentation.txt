@@ -1,2 +1,8 @@
 sphinx
 recommonmark
+<<<<<<< HEAD
+=======
+
+ipykernel
+nbsphinx
+>>>>>>> template/master

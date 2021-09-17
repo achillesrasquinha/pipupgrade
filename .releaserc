@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "plugins": [
         "@semantic-release/commit-analyzer",
         "@semantic-release/release-notes-generator",
@@ -9,6 +10,17 @@
              "assets": "src/pipupgrade/VERSION",
             "message": "chore(release): Bumped to Version ${nextRelease.version}\n\n${nextRelease.notes}" 
         }],
+=======
+    "release": {
+        "prepare": [{
+            "path": "@semantic-release/exec",
+             "cmd": "make bump VERSION=${nextRelease.version}"
+        }]
+    },
+    "plugins": [
+        "@semantic-release/commit-analyzer",
+        "@semantic-release/release-notes-generator",
+>>>>>>> template/master
         "@semantic-release/github"
     ]
 }

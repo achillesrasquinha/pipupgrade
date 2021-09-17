@@ -12,7 +12,10 @@ import traceback
 PATH            = dict()
 PATH["BASE"]    = pardir(__file__, 2)
 PATH["DATA"]    = osp.join(PATH["BASE"], "data")
+<<<<<<< HEAD
 PATH["PROJECT"] = osp.join(PATH["DATA"], "project")
+=======
+>>>>>>> template/master
 
 __STDIN__ = sys.stdin
 

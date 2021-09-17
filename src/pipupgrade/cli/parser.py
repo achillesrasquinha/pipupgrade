@@ -1,5 +1,9 @@
 # imports - standard imports
 import sys
+<<<<<<< HEAD
+=======
+import os
+>>>>>>> template/master
 import argparse
 import multiprocessing as mp
 
@@ -33,6 +37,7 @@ def get_parser():
         add_help        = False,
         formatter_class = ArgumentParserFormatter
     )
+<<<<<<< HEAD
     parser.add_argument("packages",
         nargs   = "*",
         help    = "Packages to Upgrade."
@@ -49,11 +54,14 @@ def get_parser():
         action  = "append",
         help    = "Path to pip executable to be used."
     )
+=======
+>>>>>>> template/master
     parser.add_argument("-y", "--yes",
         action  = "store_true",
         default = getenv("ACCEPT_ALL_DIALOGS", False),
         help    = "Confirm for all dialogs."
     )
+<<<<<<< HEAD
     parser.add_argument("--clean", 
         action  = "store_true",
         default = getenv("CLEAN", False),
@@ -101,12 +109,19 @@ def get_parser():
     parser.add_argument("--pipfile",
         action  = "append",
         help    = "Path(s) to Pipfile"
+=======
+    parser.add_argument("-c", "--check",
+        action  = "store_true",
+        default = getenv("DRY_RUN", False),
+        help    = "Perform a dry-run."
+>>>>>>> template/master
     )
     parser.add_argument("-i", "--interactive",
         action  = "store_true",
         default = getenv("INTERACTIVE", False),
         help    = "Interactive Mode."
     )
+<<<<<<< HEAD
     parser.add_argument("-p", "--project",
         action  = "append",
         help    = "Path(s) to Project"
@@ -139,11 +154,14 @@ def get_parser():
         help    = "Target Branch",
         default = getenv("TARGET_BRANCH", "master")
     )
+=======
+>>>>>>> template/master
     parser.add_argument("-j", "--jobs",
         type    = int,
         help    = "Number of Jobs to be used.",
         default = getenv("JOBS", max(mp.cpu_count(), 4))
     )
+<<<<<<< HEAD
     parser.add_argument("-u", "--user",
         action  = "store_true",
         default = getenv("USER_ONLY", False),
@@ -160,6 +178,8 @@ def get_parser():
         default = getenv("NO_CACHE", False),
         help    = "Avoid fetching latest updates from PyPI server."
     )
+=======
+>>>>>>> template/master
     parser.add_argument("-o", "--output",
         default = getenv("OUTPUT_FILE"),
         help    = "Print Output to File."
@@ -172,11 +192,15 @@ def get_parser():
     parser.add_argument("--force",
         action  = "store_true",
         default = getenv("FORCE", False),
+<<<<<<< HEAD
         help    = "Force search for files within a project / Force clean."
     )
     parser.add_argument("--doctor",
         action  = "store_true",
         help    = "Perform diagnostics and fix it."
+=======
+        help    = "Force."
+>>>>>>> template/master
     )
 
     if _CAN_ANSI_FORMAT or "pytest" in sys.modules:
