@@ -35,4 +35,4 @@ jobs:
           python setup.py develop
       - name: Run Jobs
         run:
-          bpyutils --run-job pipupgrade.jobs
+          bpyutils --run-jobs pipupgrade.jobs
