@@ -1,12 +1,5 @@
 name: Jobs
 
-on:
-  push:
-    branches:
-      - master
-  # schedule:
-  #   - cron: "0 0 * * *"
-
 env:
   COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
