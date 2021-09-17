@@ -1,5 +1,10 @@
 sphinx
 recommonmark
+<<<<<<< HEAD
+=======
+ipykernel
+nbsphinx
+>>>>>>> template/master
 pylint
 autopep8
 pytest
@@ -9,7 +14,11 @@ pytest-sugar
 tox
 coveralls
 pluggy<1,>=0.12.0
+<<<<<<< HEAD
 pip
+=======
+
+>>>>>>> template/master
 bpyutils
 pipenv
 jedi<0.18
@@ -19,4 +28,8 @@ vulture
 safety
 pre-commit
 twine
+<<<<<<< HEAD
+=======
+jupyter
+>>>>>>> template/master
 Flask

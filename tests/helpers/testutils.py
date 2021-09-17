@@ -1,7 +1,11 @@
 # imports - compatibility imports
 from bpyutils.util.system import popen, pardir
 from bpyutils.util.string import safe_decode
+<<<<<<< HEAD
 from bpyutils._compat     import StringIO, EX_OK, input
+=======
+from pipupgrade._compat     import StringIO, EX_OK, input
+>>>>>>> template/master
 
 # imports - standard imports
 import sys
@@ -12,7 +16,10 @@ import traceback
 PATH            = dict()
 PATH["BASE"]    = pardir(__file__, 2)
 PATH["DATA"]    = osp.join(PATH["BASE"], "data")
+<<<<<<< HEAD
 PATH["PROJECT"] = osp.join(PATH["DATA"], "project")
+=======
+>>>>>>> template/master
 
 __STDIN__ = sys.stdin
 

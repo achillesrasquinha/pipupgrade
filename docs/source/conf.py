@@ -23,10 +23,13 @@ copyright = "%s %s" % (NOW.year, pipupgrade.__author__)
 version   = pipupgrade.__version__
 release   = pipupgrade.__version__
 
+<<<<<<< HEAD
 source_suffix  = ".md"
 source_parsers = { ".md": "recommonmark.parser.CommonMarkParser" }
 
 master_doc     = "index"
+=======
+>>>>>>> template/master
 source_suffix       = [".rst"]
 
 master_doc          = "index"

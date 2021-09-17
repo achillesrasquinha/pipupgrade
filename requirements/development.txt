@@ -6,4 +6,8 @@ vulture
 safety
 pre-commit
 twine
+<<<<<<< HEAD
+=======
+jupyter
+>>>>>>> template/master
 Flask

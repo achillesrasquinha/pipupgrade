@@ -1,2 +1,6 @@
+<<<<<<< HEAD
 pip
+=======
+
+>>>>>>> template/master
 bpyutils

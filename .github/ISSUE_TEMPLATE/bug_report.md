@@ -20,7 +20,11 @@ $ "<YOUR SNIPPET/COMMAND HERE>"
 
 #### Logs
 
+<<<<<<< HEAD
 *Please paste the logs using `pipupgrade --verbose`*
+=======
+*Please paste the logs*
+>>>>>>> template/master
 
 ```
 "<YOUR LOGS HERE>"

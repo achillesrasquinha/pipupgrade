@@ -6,6 +6,7 @@
 
 #### Contributors
 
+<<<<<<< HEAD
 * Achilles Rasquinha <achillesrasquinha@gmail.com>
 * James McGuigan (@JamesMcGuigan)
 * Pedro Laguna (@vmlaguna)
@@ -13,3 +14,6 @@
 * Alex Rawson (@zombiepigdragon)
 * Rebecca Furbeck (@furbeck)
 * Cyrus Yip | 叶寻 (@CyrusYip)
+=======
+* Achilles Rasquinha <achillesrasquinha@gmail.com>
+>>>>>>> template/master
