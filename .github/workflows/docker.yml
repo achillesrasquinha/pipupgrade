@@ -1,0 +1,33 @@
+name: Docker
+
+on: [push, pull_request]
+
+env:
+  ENVIRONMENT: test
+  VERBOSE: true
+  TERM: xterm
+  
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  DOCKER_REGISTRY: ghcr.io
+  DOCKER_USERNAME: ${{ github.actor }}
+  PROJECT: ${{ github.event.repository.name }}
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+      
+    steps:
+      - uses: actions/checkout@v2
+      - name: Show ref
+        run: |
+          echo "Checking out $GITHUB_REF..."
+      - name: Login to Registry
+        run: |
+          echo $GITHUB_TOKEN | docker login $DOCKER_REGISTRY -u $DOCKER_USERNAME --password-stdin
+      - name: Build Image
+        run: |
+          make docker-build
+      - name: Push Image
+        run: |
+          make docker-push
