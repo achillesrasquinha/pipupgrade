@@ -1,6 +1,13 @@
 name: Jobs
 
+<<<<<<< HEAD
 on: [push, pull_request]
+=======
+on:
+  push:
+    branches:
+      - master
+>>>>>>> template/master
 
 env:
   COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -9,14 +16,23 @@ env:
   VERBOSE: true
   TERM: xterm
 
+<<<<<<< HEAD
   BPYUTILS_GEVENT_PATCH: true
+=======
+>>>>>>> template/master
   PIPUPGRADE_JOBS_GITHUB_USERNAME: achillesrasquinha
   PIPUPGRADE_JOBS_GITHUB_OAUTH_TOKEN: ${{ secrets.PIPUPGRADE_JOBS_GITHUB_OAUTH_TOKEN }}
 
 jobs:
   jobs:
+<<<<<<< HEAD
     name: Jobs
     runs-on: ubuntu-latest
+=======
+    name: Test
+    runs-on: ubuntu-latest
+    
+>>>>>>> template/master
     steps:
       - uses: actions/checkout@v2
       - name: Show ref

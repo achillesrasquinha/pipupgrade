@@ -1,2 +1,5 @@
 sphinx
 recommonmark
+sphinx-autobuild
+ipykernel
+nbsphinx

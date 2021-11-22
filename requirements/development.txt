@@ -6,4 +6,5 @@ vulture
 safety
 pre-commit
 twine
+jupyter
 Flask

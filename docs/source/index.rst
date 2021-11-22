@@ -1,7 +1,7 @@
 pipupgrade
 ===
 
-Release v\ |version|. (:ref:`Installation <installation>`)
+Release v\ |version|. (:ref:`Installation <install:>`)
 
 .. image:: https://img.shields.io/travis/achillesrasquinha/ccapi.svg?style=flat-square
     :target: https://travis-ci.org/achillesrasquinha/ccapi

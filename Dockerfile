@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> template/master
 FROM  python:3.7-alpine
 
 LABEL maintainer=achillesrasquinha@gmail.com
@@ -12,10 +17,18 @@ RUN apk add --no-cache \
 COPY . $PIPUPGRADE_PATH
 COPY ./docker/entrypoint.sh /entrypoint.sh
 
+<<<<<<< HEAD
 RUN pip install $PIPUPGRADE_PATH
 
 WORKDIR $PIPUPGRADE_PATH
 
+=======
+WORKDIR $PIPUPGRADE_PATH
+
+RUN pip install -r ./requirements.txt && \
+    python setup.py install
+
+>>>>>>> template/master
 ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["pipupgrade"]

@@ -6,11 +6,8 @@ import subprocess
 
 PY2 = sys.version_info.major == 2
 
-try:
-    FileNotFoundError
-except NameError: # pragma: no cover
-    if PY2:
-        FileNotFoundError = OSError
+if PY2:
+    FileNotFoundError = OSError
 
 def read(fname):
     with open(fname) as f:
