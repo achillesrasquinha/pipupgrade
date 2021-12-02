@@ -43,7 +43,8 @@ def _get_pip_executable(multiple = False):
             if not multiple:
                 return exec_
             else:
-                if exec_ not in execs and not osp.islink(exec_):
+                exec_ = osp.realpath(exec_)
+                if exec_ not in execs:
                     execs.append(exec_)
 
     if not execs: # pragma: no cover
