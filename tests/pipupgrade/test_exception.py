@@ -1,5 +1,7 @@
+
+
 # imports - module imports
-from pipupgrade.exception   import (
+from pipupgrade.exception import (
     PipupgradeError
 )
 

@@ -182,7 +182,7 @@ def _command(*args, **kwargs):
                 file = file_)
 
             _pip.call("install", package, user = a.user, quiet = not a.verbose,
-                no_cache = True, upgrade = True)
+                no_cache = True, upgrade = True, output = file_)
 
             cli.echo("%s upto date." % cli_format(package, cli.CYAN),
                 file = file_)

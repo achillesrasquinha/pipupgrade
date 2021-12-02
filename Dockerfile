@@ -12,9 +12,10 @@ RUN apk add --no-cache \
 COPY . $PIPUPGRADE_PATH
 COPY ./docker/entrypoint.sh /entrypoint.sh
 
-RUN pip install $PIPUPGRADE_PATH
-
 WORKDIR $PIPUPGRADE_PATH
+
+RUN pip install -r ./requirements.txt && \
+    python setup.py install
 
 ENTRYPOINT ["/entrypoint.sh"]
 

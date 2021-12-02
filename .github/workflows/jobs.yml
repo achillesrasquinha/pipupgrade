@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - master
-  schedule:
-    - cron: "0 0 * * *"
 
 env:
   COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -14,22 +12,14 @@ env:
   VERBOSE: true
   TERM: xterm
 
-  PIPUPGRADE_GEVENT_PATCH: true
-  PIPUPGRADE_JOBS_GITHUB_USERNAME: achillesrasquinha
+  BPYUTILS_GEVENT_PATCH: true
+  PIPUPGRADE_JOBS_GITHUB_USERNAME: ${{ github.actor }}
   PIPUPGRADE_JOBS_GITHUB_OAUTH_TOKEN: ${{ secrets.PIPUPGRADE_JOBS_GITHUB_OAUTH_TOKEN }}
 
 jobs:
   jobs:
-    name: Test
-    # runs-on: ${{ matrix.os }}
+    name: Jobs
     runs-on: ubuntu-latest
-
-    # strategy:
-    #   fail-fast: false
-    #   matrix:
-    #     os: [ubuntu-latest]
-    #     python-version: [3.9]
-    
     steps:
       - uses: actions/checkout@v2
       - name: Show ref
@@ -47,7 +37,5 @@ jobs:
           pip install -r requirements-jobs.txt
           python setup.py develop
       - name: Run Jobs
-        # run: |
-        #   python -c "import bpyutils as bpy; bpy.run_all_jobs('pipupgrade.jobs')"
-        # run:
-        #   bpyutils --run-job pipupgrade.jobs
+        run:
+          bpyutils --run-jobs pipupgrade.jobs

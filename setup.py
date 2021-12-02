@@ -33,7 +33,7 @@ def parse_requirements(filename, session = None):
         return line
 
     def check_line(line):
-        return line and not line.startswith("#")
+        return line and not line.startswith("#") and not line.startswith("git")
 
     return [
         FakeRequirement(sanitize_line(line)) for line in open(filename) if check_line(line)
@@ -113,6 +113,7 @@ setup(
     packages             = find_packages(where = SRCDIR),
     package_dir          = { "": SRCDIR },
     zip_safe             = False,
+    
     entry_points         = {
         "console_scripts": [
             "%s = %s.__main__:main" % (
@@ -121,6 +122,7 @@ setup(
             )
         ]
     },
+    
     install_requires     = get_dependencies(type_ = "production"),
     extras_require       = dict(
         dev = get_dependencies(type_ = "development")
@@ -142,6 +144,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy"
     ],

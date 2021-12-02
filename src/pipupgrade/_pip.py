@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 # imports - compatibility imports
 from bpyutils._compat import iteritems
 

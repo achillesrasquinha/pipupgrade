@@ -38,8 +38,8 @@ def run(*args, **kwargs):
     repo = osp.join(dir_path, "pipupgrade")
 
     if not osp.exists(repo):
-        github_username    = getenv("JOBS_GITHUB_USERNAME",    raise_err = True)
-        github_oauth_token = getenv("JOBS_GITHUB_OAUTH_TOKEN", raise_err = True)
+        github_username    = getenv("JOBS_GITHUB_USERNAME",    prefix = NAME.upper(), raise_err = True)
+        github_oauth_token = getenv("JOBS_GITHUB_OAUTH_TOKEN", prefix = NAME.upper(), raise_err = True)
 
         popen("git clone https://%s:%s@github.com/achillesrasquinha/pipupgrade %s" %
             (github_username, github_oauth_token, repo), cwd = dir_path)

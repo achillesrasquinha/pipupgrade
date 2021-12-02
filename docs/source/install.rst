@@ -1,3 +1,5 @@
+.. _install:
+
 ### Installation
 
 #### Installation via pip
@@ -13,13 +15,13 @@ For instructions on installing python and pip see “The Hitchhiker’s Guide to
 
 #### Building from source
 
-`pipupgrade` is actively developed on [GitHub](https://github.com/achillesrasquinha/pipupgrade)
+`pipupgrade` is actively developed on [https://github.com](https://github.com/achillesrasquinha/pipupgrade)
 and is always avaliable.
 
 You can clone the base repository with git as follows:
 
 ```shell
-$ git clone git@github.com:achillesrasquinha/pipupgrade.git
+$ git clone https://github.com/achillesrasquinha/pipupgrade
 ```
 
 Optionally, you could download the tarball or zipball as follows:

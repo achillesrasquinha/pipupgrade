@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
 
 if [ "${1:0:1}" = "-" ]; then
     set -- pipupgrade "$@"

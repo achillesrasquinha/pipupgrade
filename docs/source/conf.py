@@ -7,7 +7,9 @@ def pardir(path, level = 1):
         path = osp.dirname(path)
     return path
 
-BASEDIR = osp.abspath(pardir(__file__, 2))
+BASEDIR = osp.abspath(pardir(__file__, 3))
+DOCSDIR = osp.join(BASEDIR, "docs")
+SRCDIR  = osp.join(BASEDIR, "src")
 NOW     = dt.datetime.now()
 
 sys.path.insert(0, BASEDIR)
@@ -21,7 +23,32 @@ copyright = "%s %s" % (NOW.year, pipupgrade.__author__)
 version   = pipupgrade.__version__
 release   = pipupgrade.__version__
 
-source_suffix  = ".md"
-source_parsers = { ".md": "recommonmark.parser.CommonMarkParser" }
+source_suffix       = [".rst"]
 
-master_doc     = "index"
+master_doc          = "index"
+
+exclude_patterns    = [
+    osp.join(DOCSDIR, "source", "notebooks", ".ipynb_checkpoints")
+]
+
+extensions          = [
+    "sphinx.ext.autodoc",
+    "nbsphinx"
+]
+
+templates_path      = [
+    osp.join(DOCSDIR, "source", "_templates")
+]
+
+html_theme          = "alabaster"
+
+html_static_path    = [
+    osp.join(DOCSDIR, "source", "_static")
+]
+
+html_sidebars       = {
+    "index": ["sidebar.html"],
+    "**": [
+        "sidebar.html"
+    ]
+}
