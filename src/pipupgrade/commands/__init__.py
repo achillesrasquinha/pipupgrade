@@ -116,6 +116,8 @@ def import_or_raise(package, name = None):
         ).format(package = package, name = name))
 
 def _command(*args, **kwargs):
+    check_update_available()
+
     a = to_params(kwargs)
 
     if not a.verbose:

@@ -14,7 +14,7 @@ coveralls
 pluggy<1,>=0.12.0
 docstr-coverage
 pip
-git+https://github.com/achillesrasquinha/bpyutils.git@develop#egg=bpyutils
+bpyutils
 pipenv
 jedi<0.18
 ipython

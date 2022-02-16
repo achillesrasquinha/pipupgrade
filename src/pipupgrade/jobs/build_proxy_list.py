@@ -21,7 +21,7 @@ from pipupgrade.__attr__ import __name__ as NAME
 from bpyutils import log, db
 
 logger      = log.get_logger(name = NAME, level = log.DEBUG)
-connection  = db.get_connection(location = get_config_path(NAME)))
+connection  = db.get_connection(location = get_config_path(NAME))
 
 import aiohttp
 
