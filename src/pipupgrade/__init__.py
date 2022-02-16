@@ -22,14 +22,10 @@ from pipupgrade.__attr__ import (
 from pipupgrade.config      import PATH
 from pipupgrade.__main__    import main
 
-from bpyutils.cache       import Cache
 from bpyutils.config      import Settings
 from bpyutils.util.jobs   import run_all as run_all_jobs, run_job
 
-cache = Cache(dirname = __name__)
-cache.create()
-
-settings = Settings()
+settings = Settings(location = PATH["CACHE"])
 
 def get_version_str():
     version = "%s%s" % (__version__, " (%s)" % __build__ if __build__ else "")

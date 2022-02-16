@@ -11,6 +11,8 @@ PROJDIR					= ${BASEDIR}/src/pipupgrade
 TESTDIR					= ${BASEDIR}/tests
 DOCSDIR					= ${BASEDIR}/docs
 
+NOTEBOOKSDIR			= ${DOCSDIR}/source/notebooks
+
 PYTHONPATH		 	   ?= python
 
 VIRTUAL_ENV			   ?= ${BASEDIR}/.venv

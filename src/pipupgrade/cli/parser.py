@@ -167,7 +167,7 @@ def get_parser():
     parser.add_argument("--ignore-error",
         action  = "store_true",
         default = getenv("IGNORE_ERROR", False),
-        help    = "Ignore Error in case of upgrade failure."
+        help    = "Ignore Error in case of failure."
     )
     parser.add_argument("--force",
         action  = "store_true",

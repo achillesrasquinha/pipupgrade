@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 import os.path as osp
 
 from pipupgrade.__attr__ import __name__ as NAME
