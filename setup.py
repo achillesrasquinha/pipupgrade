@@ -30,8 +30,6 @@ def parse_requirements(filename, session = None):
             
     def sanitize_line(line):
         if "git+" in line:
-            line = line.replace("git+", "")
-
             if "#egg=" in line:
                 _, name = line.split("#egg=")
                 name    = name.strip()
