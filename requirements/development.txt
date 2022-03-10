@@ -1,0 +1,12 @@
+pipenv
+jedi<0.18
+ipython
+bumpversion
+vulture
+safety
+pre-commit
+twine
+
+jupyter
+
+Flask

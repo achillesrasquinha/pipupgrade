@@ -1,0 +1,25 @@
+name: 🐛 Report a bug
+description: ———
+labels: bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # Thanks for reporting a bug! ⛰
+
+        Help us replicate the issue by filling in this form.
+  - type: textarea
+    attributes:
+      label: Description
+      description: Describe the issue and how to replicate it
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Screenshot
+      description: You can provide screenshots/video/gif showing the issue, if it’s visual. Files can be dropped in this field
+  - type: textarea
+    attributes:
+      label: Console errors
+      description: If any
+      render: shell

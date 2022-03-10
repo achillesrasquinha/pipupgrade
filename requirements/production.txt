@@ -1,0 +1,2 @@
+
+git+https://github.com/achillesrasquinha/bpyutils.git@develop#egg=bpyutils
