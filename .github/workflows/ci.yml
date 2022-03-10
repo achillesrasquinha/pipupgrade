@@ -39,7 +39,7 @@ jobs:
           python setup.py develop
       - name: Run Tests
         run: |
-          python -m tox -e py$(echo "${{ matrix.python-version }}" | tr -d '.')
+          tox -e py$(echo "${{ matrix.python-version }}" | tr -d '.') --parallel all
       - name: Run Coverage
         run: |
           coveralls --service github

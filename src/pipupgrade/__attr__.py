@@ -6,6 +6,7 @@ import subprocess
 
 PY2 = sys.version_info.major == 2
 
+    
 if PY2:
     FileNotFoundError = OSError
 
@@ -62,11 +63,11 @@ path["version"]             = osp.join(path["base"], "VERSION")
 
 __name__                    = "pipupgrade"
 __command__                 = "pipupgrade"
-__version__                 = strip(read(path["version"]))
-__build__                   = get_revision(pardir(path["base"], 2), short = True, raise_err = False)
-__url__                     = "https://github.com/achillesrasquinha/pipupgrade"
+__version__                 = read(osp.join(pardir(__file__), "VERSION"))
+__build__                   = get_revision(pardir(__file__, 2), short = True, raise_err = False)
 __author__                  = "Achilles Rasquinha"
 __email__                   = "achillesrasquinha@gmail.com"
 __description__             = "UPGRADE ALL THE PIP PACKAGES!"
-__keywords__                = ["pip", "update", "upgrade", "cli", "command"]
-__license__                 = "MIT"
+__keywords__                = ['pip', 'update', 'upgrade', 'cli', 'command']
+__url__                     = "https://github.com/achillesrasquinha/pipupgrade"
+__license__                 = "MIT License"

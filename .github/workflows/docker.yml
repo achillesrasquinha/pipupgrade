@@ -13,7 +13,7 @@ env:
   PROJECT: ${{ github.event.repository.name }}
 
 jobs:
-  build:
+  build-docker:
     name: Build
     runs-on: ubuntu-latest
       

@@ -36,6 +36,7 @@ SPHINXAUTOBUILD			= ${VENVBIN}sphinx-autobuild
 TWINE					= ${VENVBIN}twine
 
 DOCKER_IMAGE		   ?= ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/${PROJECT}
+DOCKER_BUILDKIT		   ?= 1
 
 
 SQLITE				   ?= sqlite
@@ -79,13 +80,16 @@ endif
 info: ## Display Information
 	@echo "Python Environment: ${PYTHON_ENVIRONMENT}"
 
+upgrade-tools: # Upgrade pip, setuptools, wheel to latest
+	$(PIP) install --upgrade pip setuptools wheel
+
 requirements: ## Build Requirements
 	$(call log,INFO,Building Requirements)
 	@find $(BASEDIR)/requirements -maxdepth 1 -type f | grep -v 'jobs' | xargs awk '{print}' > $(BASEDIR)/requirements-dev.txt
 	@find $(BASEDIR)/requirements -maxdepth 1 -type f | xargs awk '{print}' > $(BASEDIR)/requirements-jobs.txt
 	@cat $(BASEDIR)/requirements/production.txt  > $(BASEDIR)/requirements.txt
 
-install: clean info requirements ## Install dependencies and module.
+install: clean info upgrade-tools requirements ## Install dependencies and module.
 ifneq (${VERBOSE},true)
 	$(eval OUT = > /dev/null)
 endif
@@ -115,7 +119,7 @@ ifneq (${ENVIRONMENT},test)
 	@clear
 
 	$(call log,INFO,Cleaning Python Cache)
-	@find $(BASEDIR) | grep -E "__pycache__|\.pyc" | xargs rm -rf
+	@find $(BASEDIR) | grep -E "__pycache__|\.pyc|\.egg-info" | xargs rm -rf
 
 	@rm -rf \
 		$(BASEDIR)/*.egg-info \
@@ -127,6 +131,7 @@ ifneq (${ENVIRONMENT},test)
 		$(BASEDIR)/htmlcov \
 		$(BASEDIR)/dist \
 		$(BASEDIR)/build \
+		$(BASEDIR)/*.log \
 		~/.config/$(PROJECT)
 
 	$(call log,SUCCESS,Cleaning Successful)
@@ -195,8 +200,25 @@ ifeq (${launch},true)
 	$(call browse,file:///${DOCSDIR}/build/index.html)
 endif
 
-docker-build: clean ## Build the Docker Image.
+docker-pull: ## Pull Latest Docker Images
+	$(call log,INFO,Pulling latest Docker Image)
+
+	if [[ -d "${BASEDIR}/docker/files" ]]; then \
+		for folder in `ls ${BASEDIR}/docker/files`; do \
+			docker pull $(DOCKER_IMAGE):$$folder || true; \
+		done; \
+	fi
+
+	@docker pull $(DOCKER_IMAGE):latest || true
+
+docker-build: clean docker-pull ## Build the Docker Image.
 	$(call log,INFO,Building Docker Image)
+
+	if [[ -d "${BASEDIR}/docker/files" ]]; then \
+		for folder in `ls ${BASEDIR}/docker/files`; do \
+			docker build ${BASEDIR}/docker/files/$$folder --tag $(DOCKER_IMAGE):$$folder $(DOCKER_BUILD_ARGS) ; \
+		done \
+	fi
 
 	@docker build $(BASEDIR) --tag $(DOCKER_IMAGE) $(DOCKER_BUILD_ARGS)
 
@@ -233,8 +255,10 @@ endif
 start: ## Start app.
 	$(PYTHON) -m flask run
 
+
 notebooks: ## Launch Notebooks
 	$(JUPYTER) notebook --notebook-dir $(NOTEBOOKSDIR) $(ARGS)
+
 
 help: ## Show help and exit.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)

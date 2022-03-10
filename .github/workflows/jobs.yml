@@ -37,5 +37,5 @@ jobs:
           pip install -r requirements-jobs.txt
           python setup.py develop
       - name: Run Jobs
-        run:
+        run: |
           bpyutils --run-jobs pipupgrade.jobs
