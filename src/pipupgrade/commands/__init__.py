@@ -17,6 +17,7 @@ from pipupgrade.commands.helper import (
     _DEPENDENCY_FORMATS
 )
 from pipupgrade.model           import Project
+from pipupgrade.model.package   import check_update_available
 from pipupgrade.model.project 	import get_included_requirements
 from pipupgrade.commands.util 	import cli_format
 from bpyutils.util.array    	import flatten, sequencify

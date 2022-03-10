@@ -3,7 +3,7 @@ from __future__ import absolute_import
 
 # imports - standard imports
 import os.path as osp
-from   datetime	import datetime, timedelta
+from datetime import datetime, timedelta
 import re
 
 # imports - module imports
@@ -18,11 +18,14 @@ from bpyutils.config		import Settings, get_config_path
 
 from bpyutils import request as req, db, log
 
-logger  	= log.get_logger(name = NAME)
-_db			= db.get_connection(location = get_config_path(NAME))
+logger  = log.get_logger(name = NAME)
+_db		= db.get_connection(location = get_config_path(NAME))
 _db.from_file(osp.join(PATH["DATA"], "bootstrap.sql"))
 
-settings	= Settings()
+settings = Settings()
+
+def check_update_available():
+	pass
 
 def _get_pypi_info(name, raise_err = True):
 	url  = "https://pypi.org/pypi/{}/json".format(name)
