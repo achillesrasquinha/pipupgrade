@@ -7,9 +7,10 @@ from datetime import datetime, timedelta
 import re
 
 # imports - module imports
-from pipupgrade.__attr__    import __name__ as NAME
-from pipupgrade 	 		import _pip, semver
+from pipupgrade.__attr__    import __name__ as NAME, __version__ as VERSION
+from pipupgrade 	 		import _pip, semver, cli
 from pipupgrade.config 		import PATH
+from pipupgrade.commands.util import cli_format
 from bpyutils.tree 			import Node as TreeNode
 from bpyutils.util.string 	import kebab_case, strip
 from bpyutils.util._dict  	import merge_dict
@@ -24,8 +25,13 @@ _db.from_file(osp.join(PATH["DATA"], "bootstrap.sql"))
 
 settings = Settings()
 
-def check_update_available():
-	pass
+def check_update_available(name = NAME):
+	package = Package(name)
+	latest  = package.latest_version
+
+	if latest != VERSION:
+		cli.echo(cli_format(
+			"{name} has a new version {latest}. However, you're system currently contains version {version}. To upgrade, type pipupgrade {name} --latest".format(name = NAME, version = VERSION, latest = latest), cli.YELLOW))
 
 def _get_pypi_info(name, raise_err = True):
 	url  = "https://pypi.org/pypi/{}/json".format(name)
