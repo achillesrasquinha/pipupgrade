@@ -82,6 +82,12 @@ def _get_pip_info(*args, **kwargs):
 def to_datetime(string):
 	return datetime.strptime(string, "%Y-%m-%d %H:%M:%S.%f")
 
+def parse_parsed_requirement(package):
+	requirement = package.requirement
+	meta_data   = { }
+	
+	return meta_data
+
 class Package(object):
 	def __init__(self, package, sync = False, pip_exec = None):
 		logger.info("Initializing Package %s of type %s..." % (package, type(package)))
@@ -101,6 +107,9 @@ class Package(object):
 					self.current_version = str(package.req.specifier)
 			else:
 				self.current_version = package.installed_version
+		elif isinstance(package, _pip.ParsedRequirement):
+			meta_data = parse_parsed_requirement(package)
+			self.name = meta_data["name"]
 		elif isinstance(package, dict):
 			self.name            = package["name"]
 			self.current_version = package["version"]
