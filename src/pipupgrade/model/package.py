@@ -83,8 +83,11 @@ def to_datetime(string):
 	return datetime.strptime(string, "%Y-%m-%d %H:%M:%S.%f")
 
 def parse_parsed_requirement(package):
-	requirement = package.requirement
+	requirement = _pip.Requirement(package.requirement)
 	meta_data   = { }
+
+	meta_data["name"] = requirement.name
+	meta_data["current_version"] = str(requirement.specifier)
 	
 	return meta_data
 
@@ -110,6 +113,7 @@ class Package(object):
 		elif isinstance(package, _pip.ParsedRequirement):
 			meta_data = parse_parsed_requirement(package)
 			self.name = meta_data["name"]
+			self.current_version = meta_data["current_version"]
 		elif isinstance(package, dict):
 			self.name            = package["name"]
 			self.current_version = package["version"]
@@ -159,7 +163,7 @@ class Package(object):
 				self.latest_version = _pypi_info.get("version")
 
 			self.home_page  = _pypi_info.get("home_page")
-			self.releases   = [version for version in iterkeys(_pypi_info.get("releases") or [])]
+			self.releases   = [version for version in iterkeys(_pypi_info.get("releases") or {})]
 
 		if not res:
 			try:

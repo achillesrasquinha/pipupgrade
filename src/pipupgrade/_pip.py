@@ -40,6 +40,9 @@ from pip._vendor.pkg_resources import (
     DistInfoDistribution,
     EggInfoDistribution
 )
+from pip._vendor.packaging.requirements import (
+    Requirement
+)
 
 def _get_pip_executable(multiple = False):
     pips  = ("pip", "pip3", "pip2")
