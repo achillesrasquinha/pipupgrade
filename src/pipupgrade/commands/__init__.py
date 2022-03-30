@@ -30,6 +30,7 @@ from pipupgrade 		      	import _pip, cli
 from bpyutils._compat			import builtins, iteritems
 from pipupgrade.__attr__      	import __name__ as NAME
 from bpyutils.config			import environment, get_config_path
+from bpyutils                   import _
 from pipupgrade.exception       import DependencyNotFoundError
 
 from bpyutils import request as req
@@ -154,7 +155,7 @@ def _command(*args, **kwargs):
             logger.info("Writing to output file %s..." % file_)
             touch(file_)
 
-        cli.echo(cli_format("Checking...", cli.YELLOW), file = file_)
+        cli.echo(cli_format(_("Checking..."), cli.YELLOW), file = file_)
 
         pip_path    = a.pip_path or [ ]
         pip_path    = [which(p) for p in pip_path] or _pip._PIP_EXECUTABLES
@@ -296,7 +297,7 @@ def _command(*args, **kwargs):
                     popen("git config user.name  %s" % a.git_username, cwd = p.path)
                     popen("git config user.email %s" % a.git_email,    cwd = p.path)
 
-                    _, output, _ = popen("git status -s", output = True,
+                    code, output, err = popen("git status -s", output = True,
                         cwd = p.path)
 
                     if output:
