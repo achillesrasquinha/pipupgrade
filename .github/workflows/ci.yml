@@ -39,7 +39,6 @@ jobs:
           python setup.py develop
       - name: Run Tests
         run: |
-          python -m pip --version # For some reason, Windows doesn't run tests until this is called.
           python -m tox -e py$(echo "${{ matrix.python-version }}" | tr -d '.') --parallel all
       - name: Run Coverage
         run: |
