@@ -43,8 +43,8 @@ def _build_packages_info_dict(packages, pip_exec = None):
         _build_packages_info_dict(requirements, pip_exec = pip_exec)
 
 def _create_package(name, sync = False):
-    data    = dict(
-        name    = name,
+    data = dict(
+        name = name,
         version = _INFO_DICT[name]["version"]
     )
     package = Package(data, sync = sync)

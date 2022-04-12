@@ -316,7 +316,7 @@ def get_registry_from_pip(pip_path, user = False, sync = False, outdated = True,
 ):
 	logger.info("Fetching installed packages for %s..." % pip_path)
 
-	_, output, _ = _pip.call("list", user = user, outdated = outdated, \
+	_, output, _ = _pip.call("list", user = user, outdated = outdated and not resolve, \
 		format = "json", pip_exec = pip_path, output = True)
 
 	packages     = json.loads(output)

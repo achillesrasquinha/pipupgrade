@@ -90,6 +90,11 @@ def get_parser():
         default = getenv("UPDATE_PIP", False),
         help    = "Update pip."
     )
+    parser.add_argument("--dbshell",
+        action  = "store_true",
+        default = getenv("DATABASE_SHELL", False),
+        help    = "Activate database shell."
+    )
     parser.add_argument("-s", "--self",
         action  = "store_true",
         help    = "Update %s." % __name__

@@ -20,6 +20,7 @@ from pipupgrade.model           import Project
 from pipupgrade.model.package   import check_update_available
 from pipupgrade.model.project 	import get_included_requirements
 from pipupgrade.commands.util 	import cli_format
+from bpyutils.db                import run_db_shell
 from bpyutils.util.array    	import flatten, sequencify
 from bpyutils.util._dict        import merge_dict
 from bpyutils.util.system   	import (touch, popen, which, remove)
@@ -57,6 +58,7 @@ ARGUMENTS = dict(
     format						= "table",
     all							= False,
     pip							= False,
+    dbshell                     = False,
     self 		 				= False,
     jobs						= 1,
     user		 				= False,
@@ -71,7 +73,7 @@ ARGUMENTS = dict(
     force						= False,
     doctor                      = False,
     clean                       = False,
-    verbose		 				= False
+    verbose		 				= False,
 )
 
 @cli.command
@@ -127,13 +129,18 @@ def _command(*args, **kwargs):
     logger.info("Environment: %s" % environment())
     logger.info("Arguments Passed: %s" % locals())
 
+    path_config = get_config_path(name = NAME)
+    path_db = osp.join(path_config, "db.db")
+
+    if a.dbshell:
+        run_db_shell(path_db)
+
     if a.doctor:
         logger.info("Performing Diagnostics and attempting to fix.")
 
         if a.clean:
-            path_config = get_config_path(name = NAME)
             paths = [
-                osp.join(path_config, "db.db")
+                path_db
             ]
 
             for path in paths:

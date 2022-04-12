@@ -8,9 +8,10 @@ from pipupgrade.__attr__ import __name__ as NAME
 
 from bpyutils._compat   import iterkeys
 from bpyutils.log       import get_logger
-from bpyutils.config    import PATH, Settings
+from bpyutils.config    import Settings
 from bpyutils           import request as req
 from pipupgrade.model.package import Package
+from pipupgrade.config  import PATH
 
 from semver import Version, VersionRange, parse_constraint
 
@@ -137,7 +138,7 @@ class PackageSource(BasePackageSource):
 
     def discover_and_add(self, package, constraint = None):
         # discover and add
-        metadata     = get_meta(package, constraint)
+        metadata = get_meta(package, constraint)
         logger.info("Releases for package %s found: %s" % (package, metadata["releases"]))
 
         for release in metadata["releases"]:

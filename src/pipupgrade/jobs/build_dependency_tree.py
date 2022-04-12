@@ -14,7 +14,7 @@ from bpyutils._compat         import iterkeys
 from bpyutils.util.request    import proxy_request, proxy_grequest
 from bpyutils.util.system     import make_temp_dir, popen
 from bpyutils.util.string     import safe_decode
-from bpyutils.util.array      import chunkify
+from bpyutils.util.array      import chunkify, sequencify
 from bpyutils.util.datetime   import get_timestamp_str
 from bpyutils.util.environ    import getenv
 from bpyutils.exception       import PopenError
@@ -64,21 +64,26 @@ def run(*args, **kwargs):
         chunk_size  = kwargs.get("chunk_size", 1000)
         index_url   = kwargs.get("index_url",  BASE_INDEX_URL)
 
+        only_packages = sequencify(kwargs.get("packages", []))
+
         logger.info("Fetching Package List...")
 
-        res  = proxy_request("GET", index_url, stream = True)
-        res.raise_for_status()
+        if not only_packages:
+            res  = proxy_request("GET", index_url, stream = True)
+            res.raise_for_status()
 
-        html = ""
-        for content in res.iter_content(chunk_size = 1024):
-            html += safe_decode(content)
+            html = ""
+            for content in res.iter_content(chunk_size = 1024):
+                html += safe_decode(content)
 
-        soup = BeautifulSoup(html, 'html.parser')
+            soup = BeautifulSoup(html, 'html.parser')
 
-        packages = list(filter(lambda x: x not in deptree, map(lambda x: x.text, soup.findAll('a'))))
+            packages = list(filter(lambda x: x not in deptree, map(lambda x: x.text, soup.findAll('a'))))
+        else:
+            packages = only_packages
 
         logger.info("%s packages found." % len(packages))
-
+        
         package_chunks  = list(chunkify(packages, chunk_size))
 
         for package_chunk in tqdm(package_chunks):
