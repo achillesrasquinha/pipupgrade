@@ -145,11 +145,13 @@ class PackageSource(BasePackageSource):
             self.add(package.name, package.extras, release)
 
         deps = []
-        logger.info("Adding Dependencies for package %s: %s" % (package, metadata["dependencies"]))
         for dependency in metadata["dependencies"]:
-            deps.append(Package(dependency.name))
+            dep_pkg = Package(dependency.name)
+            deps.append(dep_pkg)
 
-        self.add(package.name, package.extras, constraint, deps = deps)
+            logger.info("Adding dependency for package %s: %s" % (package, dep_pkg))
+
+        self.add(package.name, package.extras, str(constraint), deps = deps)
 
     def _versions_for(self, package, constraint = None):
         package = Package(package)
@@ -196,6 +198,6 @@ class PackageSource(BasePackageSource):
                 )
                 for _range in dependency.constraint.ranges
             ]
-            constraint = Union.of(ranges)
+            constraint = Union.of(*ranges)
 
         return Constraint(dependency.name, constraint)
