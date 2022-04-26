@@ -5,7 +5,6 @@ import os.path as osp
 # imports - standard imports
 import json
 from   functools import partial
-import traceback
 
 # imports - module imports
 from pipupgrade.commands.helper import (
@@ -27,6 +26,7 @@ from bpyutils.util.system   	import (touch, popen, which, remove)
 from bpyutils.util.environ  	import getenvvar
 from bpyutils.util.datetime 	import get_timestamp_str
 from bpyutils.util.imports      import import_handler
+from bpyutils.util.system       import pretty_print_error
 from pipupgrade 		      	import _pip, cli
 from bpyutils._compat			import builtins, iteritems
 from pipupgrade.__attr__      	import __name__ as NAME
@@ -84,8 +84,7 @@ def command(**ARGUMENTS):
         if not isinstance(e, DependencyNotFoundError):
             cli.echo()
 
-            traceback_str = traceback.format_exc()
-            cli.echo(traceback_str)
+            pretty_print_error(e)
 
             cli.echo(cli_format("""\
 An error occured while performing the above command. This could be an issue with
@@ -269,7 +268,7 @@ def _command(*args, **kwargs):
                     latest = a.latest, interactive = a.interactive, verbose = a.verbose,
                     format_ = a.format, all = a.all, filter_ = a.packages,
                     file = file_, raise_err = not a.ignore_error,
-                    upgrade_type = a.upgrade_type
+                    upgrade_type = a.upgrade_type, jobs = a.jobs
                 )
 
             if pipfile:

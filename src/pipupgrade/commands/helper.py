@@ -5,6 +5,8 @@ from __future__ import absolute_import
 import sys, os, os.path as osp
 import re
 import json
+import multiprocessing as mp
+from functools import partial
 
 # imports - module imports
 from pipupgrade.model         	import Registry
@@ -188,6 +190,39 @@ def _resolve_dependencies(nodes):
 	
 	return nodes
 
+def update_package(package, interactive = False, yes = False,
+	file = None, verbose = False, user = False, raise_err = True):
+	update = True
+					
+	query  = "%s (%s) -> (%s)" % (
+		cli_format(package.name, _SEMVER_COLOR_MAP.get(package.difference, cli.CLEAR)),
+		package.current_version,
+		_cli_format_semver(package.latest_version, package.difference)
+	)
+
+	if interactive:
+		update = yes or cli.confirm(query)
+	
+	if update:
+		cli.echo(cli_format(
+			"Updating %s..." % (
+				cli_format(package.name, cli.GREEN)
+			)
+		, cli.BOLD), file = file)
+
+		if not package.installed:
+			_update_requirements(package.source, package)
+		else:
+			try:
+				_pip.call("install", package.name,
+					pip_exec = package.source, user = user,
+					quiet = not verbose, no_cache_dir = True,
+					upgrade = True
+				)
+			except PopenError as e:
+				if raise_err:
+					raise
+
 def update_registry(registry,
 	yes         	= False,
 	user 			= False,
@@ -200,6 +235,7 @@ def update_registry(registry,
 	file			= None,
 	raise_err		= True,
 	verbose 		= False,
+	jobs			= mp.cpu_count(),
 	upgrade_type 	= ("minor", "patch")
 ):
 	source   = registry.source
@@ -272,40 +308,16 @@ def update_registry(registry,
 			query     = "Do you wish to update %s %s?" % (npackages, spackages)
 
 			if npackages and (yes or interactive or cli.confirm(query, quit_ = True)):
-				for i, package in enumerate(packages):
-					update = True
-					
-					query  = "%s (%s) -> (%s)" % (
-						cli_format(package.name, _SEMVER_COLOR_MAP.get(package.difference, cli.CLEAR)),
-						package.current_version,
-						_cli_format_semver(package.latest_version, package.difference)
-					)
-
-					if interactive:
-						update = yes or cli.confirm(query)
-					
-					if update:
-						cli.echo(cli_format(
-							"Updating %s of %s %s: %s" % (
-								i + 1,
-								npackages,
-								spackages,
-								cli_format(package.name, cli.GREEN)
-							)
-						, cli.BOLD), file = file)
-
-						if not package.installed:
-							_update_requirements(package.source, package)
-						else:
-							try:
-								_pip.call("install", package.name,
-									pip_exec = package.source, user = user,
-									quiet = not verbose, no_cache_dir = True,
-									upgrade = True
-								)
-							except PopenError as e:
-								if raise_err:
-									raise
+				with parallel.no_daemon_pool(processes = jobs) as pool:
+					results = pool.imap_unordered(
+                        partial(
+                            update_package,
+                            **{ "verbose": verbose,
+								"yes": yes, "user": user, "raise_err": raise_err,
+								"file": file, "interactive": interactive }
+                        ),
+                        packages
+                    )
 	else:
 		cli.echo("%s upto date." % cli_format(stitle, cli.CYAN),
 			file = file)
