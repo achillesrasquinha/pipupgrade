@@ -102,9 +102,6 @@ def run(*args, **kwargs):
             packages = only_packages
 
         logger.info("%s packages found." % len(packages))
-
-        for package in packages:
-            deptree[packages] = {}
         
         package_chunks  = list(chunkify(packages, chunk_size))
 
@@ -121,6 +118,10 @@ def run(*args, **kwargs):
                 if response.ok:
                     data     = response.json()
                     package  = data["info"]["name"]
+
+                    if package not in deptree:
+                        deptree[package] = {}
+
                     releases = list(filter(lambda x: x not in deptree[package], iterkeys(data["releases"])))
 
                     release_chunks = chunkify(releases, 100)
