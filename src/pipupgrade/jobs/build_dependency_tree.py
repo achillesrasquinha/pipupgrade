@@ -102,6 +102,9 @@ def run(*args, **kwargs):
             packages = only_packages
 
         logger.info("%s packages found." % len(packages))
+
+        for package in packages:
+            deptree[packages] = {}
         
         package_chunks  = list(chunkify(packages, chunk_size))
 
