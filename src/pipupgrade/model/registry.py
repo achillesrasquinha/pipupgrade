@@ -136,7 +136,7 @@ class Registry(object):
 
             source = PackageSource()
             for package in self._packages:
-                source.root_dep(package, package.latest_version)
+                source.root_dep(package)
 
             solver = VersionSolver(source)
             result = solver.solve()

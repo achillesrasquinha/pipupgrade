@@ -77,8 +77,9 @@ def run(*args, **kwargs):
                 html += safe_decode(content)
 
             soup = BeautifulSoup(html, 'html.parser')
+            package_names = map(lambda x: x.text, soup.findAll('a'))
 
-            packages = list(filter(lambda x: x not in deptree, map(lambda x: x.text, soup.findAll('a'))))
+            packages = list(package_names)
         else:
             packages = only_packages
 

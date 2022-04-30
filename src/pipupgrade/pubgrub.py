@@ -124,21 +124,21 @@ class PackageSource(BasePackageSource):
         else:
             dependencies = []
             for dep in deps:
-                dependencies.append(Dependency(dep))
+                dependencies.append(Dependency(dep, dep.constraint))
 
             self._packages[name][extras][version] = dependencies
 
-    def root_dep(self, package, constraint):
+    def root_dep(self, package, constraint = None):
         logger.info("Adding Root Dependency with Constraint: %s, %s" % (package, constraint))
 
-        dependency   = Dependency(package, constraint)
+        dependency = Dependency(package, constraint)
         self._root_dependencies.append(dependency)
 
         self.discover_and_add(package, constraint)
 
     def discover_and_add(self, package, constraint = None):
         # discover and add
-        metadata = get_meta(package, constraint)
+        metadata = get_meta(package, package.latest_version) # TODO: check
         logger.info("Releases for package %s found: %s" % (package, metadata["releases"]))
 
         for release in metadata["releases"]:
@@ -147,11 +147,12 @@ class PackageSource(BasePackageSource):
         deps = []
         for dependency in metadata["dependencies"]:
             dep_pkg = Package(dependency.name)
+            dep_pkg.constraint = dependency.specifier
             deps.append(dep_pkg)
 
             logger.info("Adding dependency for package %s: %s" % (package, dep_pkg))
 
-        self.add(package.name, package.extras, str(constraint), deps = deps)
+        self.add(package.name, package.extras, package.latest_version, deps = deps)
 
     def _versions_for(self, package, constraint = None):
         package = Package(package)

@@ -15,7 +15,7 @@
         "docs/build": true
     },
     "editor.rulers": [78],
-    "editor.fontFamily": "Consolas",
+    "editor.fontFamily": "Consolas, Menlo",
     "editor.tabSize": 4,
     "editor.renderWhitespace": "all",
     "python.pythonPath": "${workspaceFolder}/.venv/bin/python",
