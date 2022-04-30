@@ -64,6 +64,9 @@ def run(*args, **kwargs):
         chunk_size  = kwargs.get("chunk_size", 1000)
         index_url   = kwargs.get("index_url",  BASE_INDEX_URL)
 
+        interval    = kwargs.get("interval", None)
+        limit       = kwargs.get("limit", None)
+
         only_packages = sequencify(kwargs.get("packages", []))
 
         logger.info("Fetching Package List...")
@@ -80,6 +83,12 @@ def run(*args, **kwargs):
             package_names = map(lambda x: x.text, soup.findAll('a'))
 
             packages = list(package_names)
+
+            if interval:
+                if limit:
+                    packages = packages[ interval : interval + limit ]
+                else:
+                    packages = packages[ interval : ]
         else:
             packages = only_packages
 

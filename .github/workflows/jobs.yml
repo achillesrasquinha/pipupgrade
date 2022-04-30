@@ -20,6 +20,13 @@ jobs:
   jobs:
     name: Jobs
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        interval: [50000, 100000, 150000, 200000, 250000, 300000, 350000]
+
     steps:
       - uses: actions/checkout@v2
       - name: Show ref
@@ -38,4 +45,4 @@ jobs:
           python setup.py develop
       - name: Run Jobs
         run: |
-          bpyutils --run-jobs pipupgrade.jobs
+          bpyutils --run-jobs pipupgrade.jobs --param "interval=${{ matrix.interval }}; limit=50000"
