@@ -64,6 +64,8 @@ def exception_handler(request, exception):
     logger.warning("Unable to load request: %s", exception)
 
 def run(*args, **kwargs):
+    logger.info("Fetching latest deptree...")
+
     path_deptree, deptree = sync_deptree({})
     repo = pardir(path_deptree, 2)
 
@@ -112,7 +114,7 @@ def run(*args, **kwargs):
             responses   = grequests.map(requestsmap,
                 exception_handler = exception_handler)
 
-            for response in responses:
+            for response in tqdm(responses):
                 if response.ok:
                     data     = response.json()
                     package  = data["info"]["name"]
