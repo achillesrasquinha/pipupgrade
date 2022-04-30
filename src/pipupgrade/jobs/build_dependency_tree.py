@@ -12,11 +12,12 @@ from tqdm import tqdm
 from bpyutils.config          import get_config_path
 from bpyutils._compat         import iterkeys
 from bpyutils.util.request    import proxy_request, proxy_grequest
-from bpyutils.util.system     import make_temp_dir, popen
+from bpyutils.util.system     import make_temp_dir, popen, pardir
 from bpyutils.util.string     import safe_decode
 from bpyutils.util.array      import chunkify, sequencify
 from bpyutils.util.datetime   import get_timestamp_str
 from bpyutils.util.environ    import getenv
+from bpyutils.util._dict      import merge_dict
 from bpyutils.exception       import PopenError
 
 from pipupgrade.__attr__ import __name__ as NAME
@@ -28,21 +29,16 @@ BASE_INDEX_URL  = "https://pypi.org/simple"
 logger          = log.get_logger(name = NAME, level = log.DEBUG)
 connection      = db.get_connection(location = PATH_CACHE)
 
-def exception_handler(request, exception):
-    logger.warning("Unable to load request: %s", exception)
-
-def run(*args, **kwargs):
-    dir_path = PATH_CACHE
-
+def sync_deptree(source = {}, commit = False):
     # seed database...
-    repo = osp.join(dir_path, "pipupgrade")
+    repo = osp.join(PATH_CACHE, "pipupgrade")
 
     if not osp.exists(repo):
         github_username    = getenv("JOBS_GITHUB_USERNAME",    prefix = NAME.upper(), raise_err = True)
         github_oauth_token = getenv("JOBS_GITHUB_OAUTH_TOKEN", prefix = NAME.upper(), raise_err = True)
 
         popen("git clone https://%s:%s@github.com/achillesrasquinha/pipupgrade %s" %
-            (github_username, github_oauth_token, repo), cwd = dir_path)
+            (github_username, github_oauth_token, repo), cwd = PATH_CACHE)
 
         popen("git config user.email 'bot.pipupgrade@gmail.com'", cwd = repo)
         popen("git config user.name  'pipupgrade bot'", cwd = repo)
@@ -60,7 +56,18 @@ def run(*args, **kwargs):
             content = f.read()
             deptree = Dict(json.loads(content))
 
-    with make_temp_dir() as dir_path:
+    deptree = merge_dict(deptree, source, deep = True)
+
+    return path_deptree, deptree
+
+def exception_handler(request, exception):
+    logger.warning("Unable to load request: %s", exception)
+
+def run(*args, **kwargs):
+    path_deptree, deptree = sync_deptree({})
+    repo = pardir(path_deptree, 2)
+
+    with make_temp_dir() as PATH_CACHE:
         chunk_size  = kwargs.get("chunk_size", 1000)
         index_url   = kwargs.get("index_url",  BASE_INDEX_URL)
 
@@ -150,6 +157,8 @@ def run(*args, **kwargs):
                         response.raise_for_status()
                     except Exception as e:
                         logger.info("response error: %s" % e)
+
+            path_deptree, deptree = sync_deptree(deptree)
 
             with gzip.open(path_deptree, mode = "wt") as f:
                 content = json.dumps(deptree)

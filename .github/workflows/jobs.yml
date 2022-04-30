@@ -25,7 +25,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
         interval: [50000, 100000, 150000, 200000, 250000, 300000, 350000]
 
     steps:
