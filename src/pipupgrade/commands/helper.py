@@ -362,7 +362,7 @@ def get_registry_from_requirements(requirements, sync = False, jobs = 1,
 			file = file)
 		sys.exit(os.EX_NOINPUT)
 	else:
-		packages =  _pip.parse_requirements(requirements, session = "hack")
+		packages = _pip.parse_requirements(requirements, session = "hack")
 		
 		if only_packages:
 			packages = [p for p in packages if p.name in only_packages]
