@@ -1,3 +1,4 @@
+import sys
 import os.path as osp
 import gzip
 from   datetime import datetime as dt
@@ -7,9 +8,11 @@ import pkg_resources
 from pipupgrade.__attr__ import __name__ as NAME
 
 from bpyutils._compat   import iterkeys
+from bpyutils.util._dict import merge_dict
 from bpyutils.log       import get_logger
-from bpyutils.config    import Settings
+from bpyutils.config    import Settings, environment
 from bpyutils           import request as req
+from bpyutils.util.system import popen
 from pipupgrade.model.package import Package
 from pipupgrade.config  import PATH
 
@@ -63,25 +66,47 @@ def populate_db():
 
 _DEPENDENCIES = {}
 
-def _parse_dependencies(deps):
-    return [ pkg_resources.Requirement.parse(dep) for dep in deps ]
+def _parse_dependencies(deps, extra = None):
+    parsed_req = [pkg_resources.Requirement.parse(dep) for dep in deps]
+    results = []
 
-def get_meta(package, version):
+    for req in parsed_req:
+        if not req.marker:
+            results.append(req)
+        else:
+            evaluation = merge_dict(environment(), dict(extra = extra))
+            if req.marker.evaluate(evaluation):
+                results.append(req)
+
+    return results
+
+def get_deptree(reload = False):
     global _DEPENDENCIES
     
-    if not _DEPENDENCIES:
+    if not _DEPENDENCIES or reload:
         path_dependencies = osp.join(PATH["CACHE"], "dependencies.json")
 
         with open(path_dependencies) as f:
             _DEPENDENCIES = json.load(f)
 
-    data = _DEPENDENCIES.get(package.name, {})
+    return _DEPENDENCIES
 
-    dependencies = _parse_dependencies(data.get(version) or [])
+def get_meta(package, version):
+    dependencies = get_deptree()
+
+    if not package in dependencies:
+        logger.warn("%s not found within cached dependencies." % package)
+        # popen("bpyutils --run-jobs pipupgrade.job --param 'package=%s'" % package.name,
+        #     output = sys.stdout)
+        # dependencies = get_deptree(reload = True)
+
+    data = dependencies.get(package.name, {})
+
+    deps = _parse_dependencies(data.get(version) or [])
     
     return {
         "releases": list(iterkeys(data)),
-        "dependencies": dependencies
+        "dependencies": deps
     }
 
 class Dependency:
@@ -124,7 +149,7 @@ class PackageSource(BasePackageSource):
         else:
             dependencies = []
             for dep in deps:
-                dependencies.append(Dependency(dep, dep.constraint))
+                dependencies.append(Dependency(dep, str(dep.constraint)))
 
             self._packages[name][extras][version] = dependencies
 
@@ -138,7 +163,7 @@ class PackageSource(BasePackageSource):
 
     def discover_and_add(self, package, constraint = None):
         # discover and add
-        metadata = get_meta(package, package.latest_version) # TODO: check
+        metadata = get_meta(package, package.latest_version) # TODO: extras
         logger.info("Releases for package %s found: %s" % (package, metadata["releases"]))
 
         for release in metadata["releases"]:
@@ -159,14 +184,14 @@ class PackageSource(BasePackageSource):
 
         extras  = package.extras
 
-        if package not in self._packages or extras not in self._packages[package]:
+        if package.name not in self._packages or extras not in self._packages[package.name]:
             self.discover_and_add(package, constraint)
 
-        if package not in self._packages:
+        if package.name not in self._packages:
             return [ ]
 
         versions = [ ]
-        for version in iterkeys(self._packages[package][extras]):
+        for version in iterkeys(self._packages[package.name][extras]):
             if not constraint or constraint.allows_any(
                 Range(version, version, True, True)
             ):
@@ -177,7 +202,7 @@ class PackageSource(BasePackageSource):
     def dependencies_for(self, package, version):
         if package == self.root:
             return self._root_dependencies
-        return self._packages[package][version]
+        return self._packages[package][frozenset()][version]
 
     def convert_dependency(self, dependency):
         if isinstance(dependency.constraint, VersionRange):

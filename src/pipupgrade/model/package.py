@@ -199,6 +199,7 @@ class Package(object):
 				self.releases       = res["releases"].split(",")
 
 		self.dependency_tree = TreeNode(self)
+		self.install_version = None
 
 	@property
 	def difference(self):

@@ -37,7 +37,7 @@ def sync_deptree(source = {}, commit = False):
         github_username    = getenv("JOBS_GITHUB_USERNAME",    prefix = NAME.upper(), raise_err = True)
         github_oauth_token = getenv("JOBS_GITHUB_OAUTH_TOKEN", prefix = NAME.upper(), raise_err = True)
 
-        popen("git clone https://%s:%s@github.com/achillesrasquinha/pipupgrade %s" %
+        popen("git clone https://%s:%s@github.com/achillesrasquinha/pipupgrade %s --depth 1" %
             (github_username, github_oauth_token, repo), cwd = PATH_CACHE)
 
         popen("git config user.email 'bot.pipupgrade@gmail.com'", cwd = repo)

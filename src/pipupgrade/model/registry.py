@@ -16,7 +16,7 @@ from bpyutils.log             import get_logger
 
 from bpyutils import parallel
 
-logger = get_logger()
+logger = get_logger(name = NAME)
 
 # cache package information
 _INFO_DICT = dict()
@@ -138,10 +138,18 @@ class Registry(object):
             for package in self._packages:
                 source.root_dep(package)
 
+            logger.info("Solving...")
+
             solver = VersionSolver(source)
             result = solver.solve()
 
             logger.info("Resolution Result: %s", result.decisions)
+
+            for pkg, version in iteritems(result.decisions):
+                if str(pkg) != "_root_":
+                    for i, package in enumerate(self._packages):
+                        if package.name == str(pkg):
+                            self._packages[i].install_version = str(version)
 
     @property
     def packages(self):

@@ -259,8 +259,10 @@ def update_registry(registry,
 		if all or current_version:
 			current_version = current_version.replace("==", "")
 
-		if all or (package.latest_version and current_version != package.latest_version):
-			render	  = True
+		install_version = package.install_version or package.latest_version
+
+		if all or (install_version and current_version != install_version):
+			render = True
 
 			if format_ in _DEPENDENCY_FORMATS:
 				nodes.append(package)
@@ -268,7 +270,7 @@ def update_registry(registry,
 				table.insert([
 					cli_format(package.name, _SEMVER_COLOR_MAP.get(package.difference, cli.CLEAR)),
 					package.current_version or "na",
-					_cli_format_semver(package.latest_version, package.difference),
+					_cli_format_semver(install_version, package.difference),
 					cli_format(package.home_page, cli.CYAN)
 				])
 
