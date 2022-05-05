@@ -102,7 +102,7 @@ class Registry(object):
         build_dependency_tree   = False,
         resolve                 = False,
         latest                  = False,
-        jobs                    = 1
+        jobs                    = 1,
     ):
         self.source     = source
 

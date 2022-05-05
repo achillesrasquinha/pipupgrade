@@ -92,7 +92,7 @@ def parse_parsed_requirement(package):
 	return meta_data
 
 class Package(object):
-	def __init__(self, package, sync = False, pip_exec = None):
+	def __init__(self, package, sync = False, pip_exec = None, info = True):
 		logger.info("Initializing Package %s of type %s..." % (package, type(package)))
 
 		self.current_version 	= None
@@ -156,8 +156,11 @@ class Package(object):
 				sync = True
 
 		if not res or sync:
-			logger.info("Fetching PyPI info for package %s..." % self)
-			_pypi_info = _get_pypi_info(self.name, raise_err = False) or { }
+			if info:
+				logger.info("Fetching PyPI info for package %s..." % self)
+				_pypi_info = _get_pypi_info(self.name, raise_err = False) or { }
+			else:
+				_pypi_info = { }
 		
 			if not getattr(self, "latest_version", None) or sync:
 				self.latest_version = _pypi_info.get("version")

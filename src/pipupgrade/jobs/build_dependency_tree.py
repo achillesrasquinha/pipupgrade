@@ -29,7 +29,7 @@ BASE_INDEX_URL  = "https://pypi.org/simple"
 logger          = log.get_logger(name = NAME, level = log.DEBUG)
 connection      = db.get_connection(location = PATH_CACHE)
 
-def sync_deptree(source = {}, commit = False):
+def sync_deptree(source = {}):
     # seed database...
     repo = osp.join(PATH_CACHE, "pipupgrade")
 
@@ -103,7 +103,7 @@ def run(*args, **kwargs):
 
         logger.info("%s packages found." % len(packages))
         
-        package_chunks  = list(chunkify(packages, chunk_size))
+        package_chunks = list(chunkify(packages, chunk_size))
 
         for package_chunk in tqdm(package_chunks):
             requestsmap = (
@@ -115,7 +115,7 @@ def run(*args, **kwargs):
                 exception_handler = exception_handler)
 
             for response in tqdm(responses):
-                if response.ok:
+                if response and response.ok:
                     data     = response.json()
                     package  = data["info"]["name"]
 
@@ -136,7 +136,7 @@ def run(*args, **kwargs):
                             exception_handler = exception_handler)
 
                         for response in responses:
-                            if response.ok:
+                            if response and response.ok:
                                 data     = response.json()
                                 version  = data["info"]["version"]
                                 requires = data["info"]["requires_dist"]

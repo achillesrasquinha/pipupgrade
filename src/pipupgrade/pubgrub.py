@@ -12,7 +12,8 @@ from bpyutils.util._dict import merge_dict
 from bpyutils.log       import get_logger
 from bpyutils.config    import Settings, environment
 from bpyutils           import request as req
-from bpyutils.util.system import popen
+from bpyutils.util.imports import import_handler
+from bpyutils.util.system  import popen
 from pipupgrade.model.package import Package
 from pipupgrade.config  import PATH
 
@@ -91,16 +92,24 @@ def get_deptree(reload = False):
 
     return _DEPENDENCIES
 
+def _pypi_info_name(name):
+    name = name.replace("-", "_")
+    return name
+
 def get_meta(package, version):
     dependencies = get_deptree()
+    pypi_name = _pypi_info_name(package.name)
 
-    if not package in dependencies:
+    if not package.name in dependencies or not pypi_name in dependencies:
         logger.warn("%s not found within cached dependencies." % package)
-        # popen("bpyutils --run-jobs pipupgrade.job --param 'package=%s'" % package.name,
-        #     output = sys.stdout)
-        # dependencies = get_deptree(reload = True)
+        env = { "BPYUTILS_GEVENT_PATCH": True }
+        popen("bpyutils --run-jobs pipupgrade.jobs --param 'packages=%s'" % package.name, env = env)
+        dependencies = get_deptree(reload = True)
 
-    data = dependencies.get(package.name, {})
+        if not package.name in dependencies or not pypi_name in dependencies:
+            logger.warn("%s not found within cached dependencies [hit 2]." % package)
+
+    data = dependencies.get(package.name) or dependencies.get(pypi_name) or {}
 
     deps = _parse_dependencies(data.get(version) or [])
     
