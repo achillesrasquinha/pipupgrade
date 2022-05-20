@@ -72,6 +72,9 @@ def call(*args, **kwargs):
     output    = kwargs.pop("output", None)    or False
     raise_err = kwargs.pop("raise_err", None) or True
 
+    if " " in pip_exec and pip_exec[0] not in ["'", '"']:
+        pip_exec = '"' + pip_exec + '"'
+
     params    = sequencify(pip_exec) + sequencify(args)
     
     for flag, value in iteritems(kwargs):
