@@ -26,7 +26,7 @@ from bpyutils.util.system   	import (touch, popen, which, remove)
 from bpyutils.util.environ  	import getenvvar
 from bpyutils.util.datetime 	import get_timestamp_str
 from bpyutils.util.imports      import import_handler
-from bpyutils.util.system       import pretty_print_error
+from bpyutils.util.error        import pretty_print_error
 from pipupgrade 		      	import _pip, cli
 from bpyutils._compat			import builtins, iteritems
 from pipupgrade.__attr__      	import __name__ as NAME
