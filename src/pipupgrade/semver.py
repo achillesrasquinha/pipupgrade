@@ -1,5 +1,6 @@
 # imports - compatibility imports
 from bpyutils._compat import cmp
+from bpyutils import _
 
 # imports - standard imports
 import re
@@ -86,6 +87,6 @@ def difference(a, b):
             if cmp(va[key], vb[key]):
                 return key
         
-        raise NotImplementedError("Unknown difference between {} and {}".format(a, b))
+        raise NotImplementedError(_("Unknown difference between {} and {}".format(a, b)))
     else:
         return None
