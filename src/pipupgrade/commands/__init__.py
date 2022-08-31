@@ -25,8 +25,8 @@ from bpyutils.util._dict        import merge_dict
 from bpyutils.util.system   	import (touch, popen, which, remove)
 from bpyutils.util.environ  	import getenvvar
 from bpyutils.util.datetime 	import get_timestamp_str
-from bpyutils.util.imports      import import_handler
 from bpyutils.util.error        import pretty_print_error
+from bpyutils.util.imports      import import_handler, import_or_raise
 from pipupgrade 		      	import _pip, cli
 from bpyutils._compat			import builtins, iteritems
 from pipupgrade.__attr__      	import __name__ as NAME
@@ -105,18 +105,6 @@ def to_params(kwargs):
 
     return params
 
-def import_or_raise(package, name = None):
-    name = name or package
-
-    try:
-        import_handler(package)
-    except ImportError:
-        raise DependencyNotFoundError((
-            "Unable to import {package} for resolving dependencies. "
-            "pipupgrade requires {package} to be installed. "
-            "Please install {package} by executing 'pip install {name}'."
-        ).format(package = package, name = name))
-
 def _command(*args, **kwargs):
     check_update_available()
 
@@ -148,8 +136,8 @@ def _command(*args, **kwargs):
         # check database and repair.
     else:
         if a.resolve:
-            import_or_raise("mixology")
-            import_or_raise("semver", name = "poetry-semver")
+            import_or_raise("mixology", dep = NAME)
+            import_or_raise("semver", name = "poetry-semver", dep = NAME)
 
             populate_db = import_handler("pipupgrade.pubgrub.populate_db")
             populate_db()
