@@ -14,6 +14,7 @@ from bpyutils.util.environ    import getenv
 from bpyutils.cli             import util as _cli
 from bpyutils.cli.formatter   import ArgumentParserFormatter
 from bpyutils.cli.util        import _CAN_ANSI_FORMAT
+from bpyutils import _
 
 _DESCRIPTION_JUMBOTRON = \
 """
@@ -35,7 +36,7 @@ def get_parser():
     )
     parser.add_argument("packages",
         nargs   = "*",
-        help    = "Packages to Upgrade."
+        help    = _("Packages to Upgrade.")
     )
     parser.add_argument("--resolve",
         action  = "store_true",

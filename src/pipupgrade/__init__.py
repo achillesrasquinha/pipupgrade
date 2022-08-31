@@ -25,7 +25,10 @@ from pipupgrade.__main__    import main
 from bpyutils.config      import Settings
 from bpyutils.util.jobs   import run_all as run_all_jobs, run_job
 
+from bpyutils.i18n import register as register_i18n
+
 settings = Settings(location = PATH["CACHE"])
+register_i18n(__name__)
 
 def get_version_str():
     version = "%s%s" % (__version__, " (%s)" % __build__ if __build__ else "")
