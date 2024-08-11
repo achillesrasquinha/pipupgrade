@@ -43,11 +43,11 @@ def _get_pip_executable(multiple = False):
         exec_ = which(pip_)
         if exec_:
             if not multiple:
-                return exec_
+                return '"' + exec_ + '"'
             else:
                 exec_ = osp.realpath(exec_)
                 if exec_ not in execs:
-                    execs.append(exec_)
+                    execs.append('"' + exec_ + '"')
 
     if not execs: # pragma: no cover
         raise ValueError("pip executable not found.")
