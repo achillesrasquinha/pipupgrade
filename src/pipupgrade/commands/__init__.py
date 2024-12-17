@@ -144,7 +144,7 @@ def _command(*args, **kwargs):
         cli.echo(cli_format("Checking...", cli.YELLOW), file = file_)
 
         pip_path    = a.pip_path or [ ]
-        pip_path    = [which(p) for p in pip_path] or _pip._PIP_EXECUTABLES
+        pip_path    = ['"' + which(p) + '"' for p in pip_path] or _pip._PIP_EXECUTABLES
 
         logger.info("`pip` executables found: %s" % pip_path)
         
